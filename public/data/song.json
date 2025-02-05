@@ -1,0 +1,47 @@
+{
+  "track": {
+    "title": "Farewell",
+    "filename": "WBF.wav",
+    "url": "/songs/",
+    "tempo": 140,
+    "timesignature": "4/4",
+    "countIn": 4,
+    "skipBeats": 1
+  },
+  "timeline": [
+    {
+      "beat": 60,
+      "message": "Drums stop on next bar w/ roll"
+    },
+    {
+      "beat": 64,
+      "message": "Drums stop Now"
+    },
+    {
+      "beat": 120,
+      "message": "Drum roll in 1 half bar"
+    },
+    {
+      "beat": 126,
+      "message": "DRUM ROLL"
+    },
+    {
+      "beat": 128,
+      "message": "Drums start again"
+    }
+  ],
+  "markers": [
+    {
+      "beat": 4,
+      "label": "Marker 1"
+    },
+    {
+      "beat": 19,
+      "label": "Marker 2"
+    },
+    {
+      "beat": 40,
+      "label": "Marker 3"
+    }
+  ]
+}

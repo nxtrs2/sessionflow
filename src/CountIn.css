@@ -1,0 +1,26 @@
+.count-in {
+  position: absolute;
+  height: 400px;
+  width: 100%;
+  z-index: 100; /* Ensures it appears on top of other elements */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: tomato;
+  pointer-events: none; /* Prevents the overlay from interfering with clicks */
+}
+
+.count-number {
+  font-size: 7rem;
+  opacity: 1;
+  animation: fadeOut 1s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
