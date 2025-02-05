@@ -6,6 +6,7 @@
     "tempo": 144,
     "timesignature": "4/4",
     "countIn": 4,
+    "skipBeatsBy": 4,
     "skipBeats": 0
   },
   "timeline": [

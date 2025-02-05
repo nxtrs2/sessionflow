@@ -16,6 +16,7 @@ export interface SongData {
     tempo: number;
     timeSignature: string;
     countIn: number;
+    skipBeatsBy: number;
     skipBeats: number;
   };
   timeline: TimeLineData[];

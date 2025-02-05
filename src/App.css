@@ -113,9 +113,7 @@ body {
 }
 
 .transport-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  /* gap: 1rem; */
   align-items: center;
   padding: 1rem;
 }
@@ -125,9 +123,17 @@ body {
   padding: 0.3rem 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 1rem;
-  width: 80px;
+  font-size: 0.8rem;
+  width: 70px;
   transition: border-color 0.2s;
+}
+
+.transport-tools button {
+  margin: 5px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+
+  background: linear-gradient(135deg, #000000, #263368);
 }
 
 .transport-controls {

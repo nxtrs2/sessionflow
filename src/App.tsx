@@ -48,8 +48,13 @@ const App: React.FC = () => {
   // Playback state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [songEnded, setSongEnded] = useState<boolean>(false);
+
   const [loop, setLoop] = useState<boolean>(false);
-  const [skipByBeats, setSkipByBeats] = useState<number>(1);
+  const [loopStart, setLoopStart] = useState<number>(0);
+  const [loopEnd, setLoopEnd] = useState<number>(0);
+
+  const [goToBeat, setGoToBeat] = useState<number>(0);
+  const [skipBeatsBy, setSkipBeatsBy] = useState<number>(1);
   const [skipBeats, setSkipBeats] = useState<number>(0);
   // const [skipStartBeat, setSkipStartBeat] = useState<number>(0);
   const [pulse, setPulse] = useState<boolean>(false);
@@ -107,6 +112,7 @@ const App: React.FC = () => {
       setSkipBeats(songData.track.skipBeats);
       setTempo(songData.track.tempo);
       setTimeSignature("4/4");
+      setSkipBeatsBy(songData.track.skipBeatsBy);
       setCountIn(songData.track.countIn);
     }
   }, [songData]);
@@ -186,6 +192,10 @@ const App: React.FC = () => {
     };
   }, [beatData]);
 
+  useEffect(() => {
+    console.log("Loop settings changed", loopStart, loopEnd);
+  }, [loopStart, loopEnd]);
+
   const handleLoadSong = (file: string) => {
     loadSongFromJson(
       file,
@@ -224,6 +234,14 @@ const App: React.FC = () => {
   // Time signature change
   const handleTimeSignatureChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setTimeSignature(e.target.value);
+  };
+
+  const handleLoopStartChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setLoopStart(parseInt(e.target.value, 10));
+  };
+
+  const handleLoopEndChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setLoopEnd(parseInt(e.target.value, 10));
   };
 
   const handleCountInComplete = () => {
@@ -400,7 +418,24 @@ const App: React.FC = () => {
             <div className="transport-system">
               <div className="transport-controls">
                 <button
-                  onClick={() => setLoop(!loop)}
+                  // disabled={loopEnd === 0}
+                  onClick={() => {
+                    if (loop) {
+                      const tObject = Tone.getTransport();
+                      tObject.loop = true;
+                      tObject.loopStart = beatData[loopStart].time;
+                      tObject.loopEnd = beatData[loopEnd].time;
+                      tObject.start();
+                    } else {
+                      const tObject = Tone.getTransport();
+                      tObject.loop = false;
+                      tObject.loopStart = 0;
+                      tObject.loopEnd = 0;
+                      tObject.stop();
+                    }
+                    setLoop(!loop);
+                  }}
+                  // onClick={() => setLoop(!loop)}
                   style={{ color: loop ? "green" : "white" }}
                 >
                   <Repeat2 />
@@ -408,14 +443,20 @@ const App: React.FC = () => {
                 <button
                   onClick={() => {
                     setIsPlaying(!isPlaying);
-                    togglePlayPause(
-                      isPlaying,
-                      countIn,
-                      timeSignature,
-                      skipBeats,
-                      setShowCountIn,
-                      setIsPlaying
-                    );
+
+                    if (loop) {
+                      const tObject = Tone.getTransport();
+                      tObject.start();
+                    } else {
+                      togglePlayPause(
+                        isPlaying,
+                        countIn,
+                        timeSignature,
+                        skipBeats,
+                        setShowCountIn,
+                        setIsPlaying
+                      );
+                    }
                   }}
                 >
                   {isPlaying ? <Pause /> : <Play />}
@@ -427,13 +468,13 @@ const App: React.FC = () => {
                 </button>
                 <button
                   onClick={() =>
-                    handleSkipBackward(skipByBeats, setCurrentTime)
+                    handleSkipBackward(skipBeatsBy, setCurrentTime)
                   }
                 >
                   <Rewind />
                 </button>
                 <button
-                  onClick={() => handleSkipForward(skipByBeats, setCurrentTime)}
+                  onClick={() => handleSkipForward(skipBeatsBy, setCurrentTime)}
                 >
                   <FastForward />
                 </button>
@@ -443,22 +484,34 @@ const App: React.FC = () => {
                   Skip by:
                   <input
                     type="number"
-                    value={skipByBeats}
+                    value={skipBeatsBy}
                     onChange={(e) =>
-                      setSkipByBeats(parseInt(e.target.value, 10))
+                      setSkipBeatsBy(parseInt(e.target.value, 10))
                     }
                   />
                 </label>
-              </div>{" "}
-              <div className="transport-tools">
+
                 <label>
-                  <button>Go to:</button>
+                  <button
+                    disabled={isPlaying}
+                    onClick={() => {
+                      const tObject = Tone.getTransport();
+                      tObject.seconds = beatData[goToBeat + 2].time;
+                    }}
+                  >
+                    Go:
+                  </button>
                   <input
+                    disabled={isPlaying}
                     type="number"
-                    value={skipByBeats}
-                    onChange={(e) =>
-                      setSkipByBeats(parseInt(e.target.value, 10))
-                    }
+                    value={goToBeat}
+                    onChange={(e) => {
+                      setGoToBeat(
+                        parseInt(e.target.value, 10) < beatData.length
+                          ? parseInt(e.target.value, 10)
+                          : 0
+                      );
+                    }}
                   />
                 </label>
               </div>
@@ -467,10 +520,10 @@ const App: React.FC = () => {
             <div className="loop-settings">
               <label>
                 Loop From:&nbsp;
-                <select>
+                <select value={loopStart || 0} onChange={handleLoopStartChange}>
                   <option value="0">None</option>
                   {markers.map((marker, index) => (
-                    <option key={index} value={marker.beat}>
+                    <option key={index} value={marker.beat + 2}>
                       {marker.label}
                     </option>
                   ))}
@@ -478,10 +531,10 @@ const App: React.FC = () => {
               </label>
               <label>
                 Loop To:&nbsp;
-                <select>
+                <select value={loopEnd || 0} onChange={handleLoopEndChange}>
                   <option value="0">None</option>
                   {markers.map((marker, index) => (
-                    <option key={index} value={marker.beat}>
+                    <option key={index} value={marker.beat + 2}>
                       {marker.label}
                     </option>
                   ))}
