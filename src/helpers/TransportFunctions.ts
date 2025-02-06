@@ -52,6 +52,31 @@ export const togglePlayPause = async (
   }
 };
 
+export const togglePlayPauseWithLoop = async (
+  isPlaying: boolean,
+  loopStart: number,
+  loopEnd: number,
+  timeSignature: string,
+  skipBeats: number,
+  setIsPlaying: SetIsPlaying
+) => {
+  // Ensure the audio context is started
+  await Tone.start();
+  const tObject = Tone.getTransport();
+
+  if (isPlaying) {
+    // Pause at the calculated bar
+    handlePauseAtBar(timeSignature, skipBeats, setIsPlaying);
+  } else {
+    tObject.loop = true;
+    tObject.loopStart = loopStart;
+    tObject.loopEnd = loopEnd;
+    tObject.seconds = loopStart;
+    tObject.start();
+    setIsPlaying(true);
+  }
+};
+
 export const handleSkipForward = (
   skipByBeats: number,
   setCurrentTime: SetCurrentTime

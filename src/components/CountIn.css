@@ -10,6 +10,25 @@
   pointer-events: none; /* Prevents the overlay from interfering with clicks */
 }
 
+.count-out {
+  position: absolute;
+  height: 400px;
+  width: 100%;
+  z-index: 100; /* Ensures it appears on top of other elements */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(21, 168, 236);
+  pointer-events: none; /* Prevents the overlay from interfering with clicks */
+}
+
+.count-out .message {
+  font-size: 1rem;
+  opacity: 1;
+  text-align: center;
+  animation: fadeOut 1s ease-out forwards;
+}
+
 .count-number {
   font-size: 7rem;
   opacity: 1;

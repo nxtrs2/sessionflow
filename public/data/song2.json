@@ -11,24 +11,29 @@
   },
   "timeline": [
     {
-      "beat": 60,
-      "message": "Drums stop on next bar w/ roll"
+      "beat": 2,
+      "message": "DRUM ROLL IN",
+      "countOut": 4
     },
     {
       "beat": 64,
-      "message": "Drums stop Now"
+      "message": "Drums stop Now",
+      "countOut": 4
     },
     {
       "beat": 120,
-      "message": "Drum roll in 1 half bar"
+      "message": "Drum roll in 1 half bar",
+      "countOut": 4
     },
     {
       "beat": 126,
-      "message": "DRUM ROLL"
+      "message": "DRUM ROLL",
+      "countOut": 4
     },
     {
       "beat": 128,
-      "message": "Drums start again"
+      "message": "Drums start again",
+      "countOut": 4
     }
   ],
   "markers": [

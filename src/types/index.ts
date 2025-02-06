@@ -1,6 +1,7 @@
 export interface TimeLineData {
   beat: number;
   message: string;
+  countOut: number;
 }
 
 export interface MarkerData {
@@ -23,10 +24,13 @@ export interface SongData {
   markers: MarkerData[];
 }
 export interface BeatData {
-  beat: number; // 1-based beat number (e.g. 1, 2, 3, ...)
-  bar: number; // Bar number (starting at 1)
-  isBarStart: boolean; // True if this beat is the first beat in a bar
-  time: number; // Time in seconds (from song start) when this beat occurs
+  beat: number;
+  bar: number;
+  isBarStart: boolean;
+  time: number;
+  hasMessage: boolean;
+  message: string;
+  countOut: number;
 }
 
 export type SetAudioSrc = (src: string) => void;

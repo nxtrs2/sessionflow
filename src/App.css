@@ -138,7 +138,8 @@ body {
 
 .transport-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 1rem;
   align-items: center;
   width: 100%;
   border-radius: 8px;
@@ -147,7 +148,7 @@ body {
   margin: 10px 0; */
 }
 
-.transport-controls button {
+button {
   margin: 5px;
   border: 1px solid slategray;
   font-size: 12px;
@@ -171,14 +172,23 @@ body {
   color: #ffffff;
 }
 
-.settings input[type="number"],
-.settings select {
+.settings input[type="number"] {
   margin-left: 0.5rem;
   padding: 0.3rem 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
   width: 100px;
+  transition: border-color 0.2s;
+}
+
+select {
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  width: 80px;
   transition: border-color 0.2s;
 }
 

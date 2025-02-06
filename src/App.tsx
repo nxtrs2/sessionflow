@@ -16,12 +16,14 @@ import {
 
 import * as Tone from "tone";
 import "./App.css";
-import CountIn from "./CountIn";
+import CountIn from "./components/CountIn";
+import CountOut from "./components/CountOut";
 import { SongData, TimeLineData, MarkerData, BeatData } from "./types";
 import { loadSongFromJson, handleFileChange } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual } from "./utils";
 import {
   togglePlayPause,
+  togglePlayPauseWithLoop,
   handleSkipBackward,
   handleSkipForward,
   handleRestart,
@@ -75,6 +77,10 @@ const App: React.FC = () => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
 
+  const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [messageCountOut, setMessageCountOut] = useState<number>(0);
+
   // High-frequency update using requestAnimationFrame
   useEffect(() => {
     // console.log("useEffect");
@@ -119,7 +125,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (duration) {
-      const newBeatData = generateBeatData(duration, tempo, timeSignature);
+      const newBeatData = generateBeatData(
+        duration,
+        tempo,
+        timeSignature,
+        skipBeats,
+        songTimeLines
+      );
+      setLoopEnd(duration);
       setBeatData(newBeatData);
     }
   }, [duration, tempo, timeSignature]);
@@ -163,6 +176,9 @@ const App: React.FC = () => {
     };
   }, []);
 
+  /* 
+  This Triggers the metronome sound at the appropriate time.
+  */
   useEffect(() => {
     const transport = Tone.getTransport();
     const clickId = transport.scheduleRepeat((time) => {
@@ -174,6 +190,11 @@ const App: React.FC = () => {
       }
       for (let i = 0; i < beatData.length; i++) {
         if (approximatelyEqual(beatData[i].time, transport.seconds, 0.07)) {
+          if (beatData[i].hasMessage) {
+            setShowMessage(true);
+            setMessage(beatData[i].message);
+            setMessageCountOut(beatData[i].countOut);
+          }
           if (beatData[i].isBarStart) {
             if (clickSynthRef.current) {
               clickSynthRef.current.triggerAttackRelease("C5", "8n", time);
@@ -249,6 +270,11 @@ const App: React.FC = () => {
     tObject.start();
     setIsPlaying(true);
     setShowCountIn(false);
+  };
+
+  const handleMessageCountOutComplete = () => {
+    setMessageCountOut(0);
+    setShowMessage(false);
   };
 
   // Compute beat duration (in seconds) based on tempo.
@@ -388,6 +414,14 @@ const App: React.FC = () => {
               onBeat={handleBeat}
             />
           )}
+          {isPlaying && showMessage && (
+            <CountOut
+              countIn={messageCountOut}
+              message={message}
+              bpm={tempo}
+              onComplete={handleMessageCountOutComplete}
+            />
+          )}
           <div
             className="timeline-inner"
             style={{
@@ -418,35 +452,18 @@ const App: React.FC = () => {
             <div className="transport-system">
               <div className="transport-controls">
                 <button
-                  // disabled={loopEnd === 0}
-                  onClick={() => {
-                    if (loop) {
-                      const tObject = Tone.getTransport();
-                      tObject.loop = true;
-                      tObject.loopStart = beatData[loopStart].time;
-                      tObject.loopEnd = beatData[loopEnd].time;
-                      tObject.start();
-                    } else {
-                      const tObject = Tone.getTransport();
-                      tObject.loop = false;
-                      tObject.loopStart = 0;
-                      tObject.loopEnd = 0;
-                      tObject.stop();
-                    }
-                    setLoop(!loop);
-                  }}
-                  // onClick={() => setLoop(!loop)}
-                  style={{ color: loop ? "green" : "white" }}
-                >
-                  <Repeat2 />
-                </button>
-                <button
                   onClick={() => {
                     setIsPlaying(!isPlaying);
 
                     if (loop) {
-                      const tObject = Tone.getTransport();
-                      tObject.start();
+                      togglePlayPauseWithLoop(
+                        isPlaying,
+                        beatData[loopStart].time,
+                        beatData[loopEnd].time,
+                        timeSignature,
+                        skipBeats,
+                        setIsPlaying
+                      );
                     } else {
                       togglePlayPause(
                         isPlaying,
@@ -509,7 +526,7 @@ const App: React.FC = () => {
                       setGoToBeat(
                         parseInt(e.target.value, 10) < beatData.length
                           ? parseInt(e.target.value, 10)
-                          : 0
+                          : beatData.length - 2
                       );
                     }}
                   />
@@ -518,26 +535,35 @@ const App: React.FC = () => {
             </div>
 
             <div className="loop-settings">
+              <button
+                disabled={loopEnd === loopStart || loopStart > loopEnd}
+                onClick={() => {
+                  setLoop(!loop);
+                }}
+                style={{ color: loop ? "limegreen" : "" }}
+              >
+                <Repeat2 />
+              </button>
               <label>
-                Loop From:&nbsp;
+                From:&nbsp;
                 <select value={loopStart || 0} onChange={handleLoopStartChange}>
-                  <option value="0">None</option>
+                  <option value="0">Start</option>
                   {markers.map((marker, index) => (
-                    <option key={index} value={marker.beat + 2}>
+                    <option key={index} value={marker.beat}>
                       {marker.label}
                     </option>
                   ))}
                 </select>
               </label>
               <label>
-                Loop To:&nbsp;
+                To:&nbsp;
                 <select value={loopEnd || 0} onChange={handleLoopEndChange}>
-                  <option value="0">None</option>
                   {markers.map((marker, index) => (
-                    <option key={index} value={marker.beat + 2}>
+                    <option key={index} value={marker.beat}>
                       {marker.label}
                     </option>
                   ))}
+                  <option value={duration}>End</option>
                 </select>
               </label>
             </div>

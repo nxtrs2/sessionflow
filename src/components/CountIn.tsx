@@ -18,9 +18,6 @@ const CountIn: React.FC<CountInProps> = ({
   onComplete,
   onBeat,
 }) => {
-  // const [count, setCount] = useState<number>(
-  //   atStart ? countIn - skipBeats : countIn
-  // );
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
@@ -36,11 +33,6 @@ const CountIn: React.FC<CountInProps> = ({
     if (count > 0 && onBeat) {
       onBeat(count);
     }
-
-    // if (count > countIn - (atStart ? skipBeats : 0)) {
-    //   if (onComplete) onComplete();
-    //   return;
-    // }
 
     const timer = setTimeout(() => {
       setCount((prevCount) => prevCount + 1);
