@@ -2,26 +2,26 @@ import React, { useState, useEffect } from "react";
 import "./CountIn.css";
 
 interface CountOutProps {
-  countIn?: number;
+  countOut?: number;
   message?: string;
   bpm: number;
   onComplete?: () => void;
 }
 
 const CountOut: React.FC<CountOutProps> = ({
-  countIn = 4,
+  countOut = 4,
   message,
   bpm,
   onComplete,
 }) => {
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(countOut);
 
   useEffect(() => {
     // Calculate beat duration in milliseconds based on BPM
-    const totalBeats = countIn;
+    // const totalBeats = countOut;
     const beatDuration = (60 / bpm) * 1000;
 
-    if (count > totalBeats) {
+    if (count < 1) {
       if (onComplete) onComplete();
       return;
     }
@@ -31,21 +31,23 @@ const CountOut: React.FC<CountOutProps> = ({
     // }
 
     const timer = setTimeout(() => {
-      setCount((prevCount) => prevCount + 1);
+      setCount((prevCount) => prevCount - 1);
     }, beatDuration);
 
     return () => clearTimeout(timer);
-  }, [count, bpm, countIn]);
+  }, [count, bpm, countOut]);
 
   return (
-    <div className="count-out">
-      {count > 0 && (
-        <div key={count}>
-          <div className="message">{message}</div>
-          <div className="message-count">{count}</div>
+    <>
+      {count <= countOut && (
+        <div className="count-out">
+          <div key={count}>
+            <div className="message">{message}</div>
+            <div className="message-count">{count}</div>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

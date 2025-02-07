@@ -5,40 +5,93 @@
     "url": "/songs/",
     "tempo": 144,
     "timesignature": "4/4",
+    "numerator": 4,
+    "denominator": 4,
     "countIn": 4,
     "skipBeatsBy": 4,
     "skipBeats": 0
   },
   "timeline": [
     {
-      "beat": 2,
+      "beat": 16,
+      "message": "SYNTH2 START",
+      "countOut": 0
+    },
+    {
+      "beat": 41,
       "message": "DRUM ROLL IN",
       "countOut": 4
     },
     {
-      "beat": 6,
-      "message": "Drums stop Now",
+      "beat": 48,
+      "message": "DRUM START",
       "countOut": 0
     },
     {
-      "beat": 12,
-      "message": "Drum roll in 1 half bar",
-      "countOut": 4
+      "beat": 61,
+      "message": "CRASH!",
+      "countOut": 0
     },
     {
-      "beat": 126,
-      "message": "DRUM ROLL",
-      "countOut": 4
+      "beat": 63,
+      "message": "CRASH!",
+      "countOut": 0
     },
     {
-      "beat": 128,
-      "message": "Drums start again",
-      "countOut": 4
+      "beat": 64,
+      "message": "CRASH!",
+      "countOut": 0
+    },
+    {
+      "beat": 78,
+      "message": "CRASH!",
+      "countOut": 0
+    },
+    {
+      "beat": 79,
+      "message": "CRASH",
+      "countOut": 0
+    },
+
+    {
+      "beat": 80,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 93,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 95,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 96,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 210,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 214,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 217,
+      "message": "CRASH",
+      "countOut": 0
     }
   ],
   "markers": [
     {
-      "beat": 4,
+      "beat": 36,
       "label": "Marker 1"
     },
     {

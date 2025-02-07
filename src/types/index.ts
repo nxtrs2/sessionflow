@@ -16,6 +16,8 @@ export interface SongData {
     url: string;
     tempo: number;
     timeSignature: string;
+    numerator: number;
+    denominator: number;
     countIn: number;
     skipBeatsBy: number;
     skipBeats: number;
@@ -31,11 +33,12 @@ export interface BeatData {
   hasMessage: boolean;
   message: string;
   countOut: number;
+  tempo: number;
 }
 
 export interface TimeSignature {
-  numerator: number;
-  denominator: number;
+  numerator: number | 4;
+  denominator: number | 4;
 }
 
 export interface TickData {

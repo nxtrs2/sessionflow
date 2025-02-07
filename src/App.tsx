@@ -6,7 +6,6 @@ import {
   Pause,
   SkipBack,
   Repeat2,
-  Stars,
 } from "lucide-react";
 
 import * as Tone from "tone";
@@ -53,7 +52,7 @@ const App: React.FC = () => {
 
   // Playback state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [songEnded, setSongEnded] = useState<boolean>(false);
+  // const [songEnded, setSongEnded] = useState<boolean>(false);
 
   const [loop, setLoop] = useState<boolean>(false);
   const [loopStart, setLoopStart] = useState<number>(0);
@@ -106,7 +105,22 @@ const App: React.FC = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
+  // useEffect(() => {
+  //   if (timeSignatureString && timeSignatureString.length > 0) {
+  //     setTimeSignature({
+  //       numerator: parseInt(timeSignatureString?.split("/")[0], 10),
+  //       denominator: parseInt(timeSignatureString?.split("/")[1], 10),
+  //     });
+  //   }
+  //   console.log("Time Signature changed", timeSignature, timeSignatureString);
+  // }, [timeSignatureString]);
+
   useEffect(() => {
+    console.log("Updated Time SSS Signature", songData?.track.timeSignature);
+  }, [songData?.track.timeSignature]);
+
+  useEffect(() => {
+    console.log("Song Data changed", songData);
     if (songData) {
       try {
         handleLoadSong(songData.track.url + songData.track.filename);
@@ -117,7 +131,10 @@ const App: React.FC = () => {
       setSongTimeLines(songData.timeline);
       setMarkers(songData.markers);
       setSkipBeats(songData.track.skipBeats);
-      setTimeSignatureString(songData.track.timeSignature);
+      setTimeSignature({
+        numerator: songData.track.numerator,
+        denominator: songData.track.denominator,
+      });
       setTempo(songData.track.tempo);
       setSkipBeatsBy(songData.track.skipBeatsBy);
       setCountIn(songData.track.countIn);
@@ -125,18 +142,8 @@ const App: React.FC = () => {
   }, [songData]);
 
   useEffect(() => {
-    if (timeSignatureString) {
-      setTimeSignature({
-        numerator: parseInt(timeSignatureString.split("/")[0], 10),
-        denominator: parseInt(timeSignatureString.split("/")[1], 10),
-      });
-    }
-
-    console.log("Time Signature changed", timeSignature);
-  }, [timeSignatureString]);
-
-  useEffect(() => {
     if (duration && tempo && timeSignature) {
+      console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
         tempo,
@@ -153,12 +160,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const tObject = Tone.getTransport();
     tObject.bpm.value = tempo;
-  }, [tempo]);
+    tObject.timeSignature = timeSignature.numerator;
+    console.log("Time Signature changed ---->", timeSignature);
+  }, [tempo, timeSignature]);
 
   useEffect(() => {
     // Schedule a repeat callback on every quarter note (assuming beat = quarter note)
     const tObject = Tone.getTransport();
-    const pulseId = tObject.scheduleRepeat((time) => {
+    const pulseId = tObject.scheduleRepeat(() => {
       setPulse(true);
       setTimeout(() => setPulse(false), 100);
     }, "4n");
@@ -194,11 +203,11 @@ const App: React.FC = () => {
   useEffect(() => {
     const transport = Tone.getTransport();
     const clickId = transport.scheduleRepeat((time) => {
-      // if (transport.seconds >= duration) {
-      //   transport.pause();
-      //   setSongEnded(true);
-      //   setIsPlaying(false);
-      // }
+      if (transport.seconds >= duration) {
+        transport.pause();
+        // setSongEnded(true);
+        setIsPlaying(false);
+      }
       for (let i = 0; i < beatData.length; i++) {
         if (approximatelyEqual(beatData[i].time, transport.seconds, 0.07)) {
           if (beatData[i].hasMessage) {
@@ -229,25 +238,19 @@ const App: React.FC = () => {
   // }, [loopStart, loopEnd]);
 
   const handleLoadSong = (file: string) => {
-    loadSongFromJson(
-      file,
-      setAudioSrc,
-      setDuration,
-      handleSongHasEnded,
-      playerRef
-    );
+    loadSongFromJson(file, setAudioSrc, setDuration, playerRef);
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleFileChange(e, setAudioSrc, setDuration, playerRef);
   };
 
-  const handleSongHasEnded = () => {
-    const tObject = Tone.getTransport();
-    tObject.stop();
-    setSongEnded(true);
-    setIsPlaying(false);
-  };
+  // const handleSongHasEnded = () => {
+  //   const tObject = Tone.getTransport();
+  //   tObject.stop();
+  //   setSongEnded(true);
+  //   setIsPlaying(false);
+  // };
 
   // Tempo input change
   const handleTempoChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -266,10 +269,10 @@ const App: React.FC = () => {
   // Time signature change
   const handleTimeSignatureChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setTimeSignatureString(e.target.value);
-    setTimeSignature({
-      numerator: parseInt(e.target.value.split("/")[0], 10),
-      denominator: parseInt(e.target.value.split("/")[1], 10),
-    });
+    // setTimeSignature({
+    //   numerator: parseInt(e.target.value.split("/")[0], 10),
+    //   denominator: parseInt(e.target.value.split("/")[1], 10),
+    // });
   };
 
   const handleLoopStartChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -321,7 +324,7 @@ const App: React.FC = () => {
   const timelineOffset = containerCenter - effectiveBeat * pixelsPerBeat;
 
   // Determine beats per bar from the time signature (e.g. "4/4" means 4 beats per bar)
-  const beatsPerBar = timeSignature.denominator; // parseInt(timeSignature?.split("/")[0], 10) || 3;
+  const beatsPerBar = timeSignature.numerator; // parseInt(timeSignature?.split("/")[0], 10) || 3;
 
   const currentBar = Math.floor(effectiveBeat / beatsPerBar) + 1;
 
@@ -330,11 +333,23 @@ const App: React.FC = () => {
   // Build ticks: an array where each tick is for one beat.
   const startTicks: TickData[] = Array.from(
     { length: totalBeats + 1 },
-    (_, beatIndex) => ({
+    (_, beatIndex): TickData => ({
       beatIndex,
       type: beatIndex % beatsPerBar === 0 ? "bar" : "beat",
     })
   );
+
+  // Add an extra item to the top of the ticks array for each skipBeats
+  const ticks: TickData[] = [
+    ...Array.from(
+      { length: skipBeats },
+      (_, beatIndex): TickData => ({
+        beatIndex: -skipBeats + beatIndex,
+        type: "skip",
+      })
+    ),
+    ...startTicks,
+  ];
 
   const handleBeat = (beat: number) => {
     // Trigger a click sound at the appropriate time.
@@ -344,16 +359,7 @@ const App: React.FC = () => {
     console.log("Beat:", beat);
   };
 
-  // Add an extra item to the top of the ticks array for each skipBeats
-  const ticks = [
-    ...Array.from({ length: skipBeats }, (_, beatIndex) => ({
-      beatIndex: -skipBeats + beatIndex,
-      type: "skip",
-    })),
-    ...startTicks,
-  ];
-
-  const handleLoadSongFile = async (file: string) => {
+  const handleLoadSongJSON = async (file: string) => {
     setLoading(true);
     const loaded = await loadSongFile(file, setSongData, setFileLoaded);
     if (!loaded) {
@@ -369,7 +375,7 @@ const App: React.FC = () => {
         <button
           disabled={isPlaying}
           onClick={() => {
-            handleLoadSongFile("/data/song2.json");
+            handleLoadSongJSON("/data/song2.json");
           }}
         >
           Signals
@@ -377,7 +383,7 @@ const App: React.FC = () => {
         <button
           disabled={isPlaying}
           onClick={() => {
-            handleLoadSongFile("/data/song.json");
+            handleLoadSongJSON("/data/song.json");
           }}
         >
           Untitled
@@ -392,7 +398,7 @@ const App: React.FC = () => {
             <div className="timeline-header">
               {fileLoaded && (
                 <>
-                  <div className="time-display"></div>
+                  <div className="time-display">{timeSignatureString}</div>
                   <div className="time-display" style={{ width: "100px" }}>
                     <div>
                       {`${Math.floor(currentBar)}`} :{" "}
@@ -414,7 +420,7 @@ const App: React.FC = () => {
             )}
             {isPlaying && showMessage && (
               <CountOut
-                countIn={messageCountOut}
+                countOut={messageCountOut}
                 message={message}
                 bpm={tempo}
                 onComplete={handleMessageCountOutComplete}
@@ -437,7 +443,8 @@ const App: React.FC = () => {
                     markers,
                     pixelsPerBeat,
                     beatsPerBar,
-                    skipBeats
+                    skipBeats,
+                    currentBeat
                     // renderTick(tick, index)
                   )
                 )}
@@ -646,8 +653,8 @@ const App: React.FC = () => {
                     value={timeSignatureString}
                     onChange={handleTimeSignatureChange}
                   >
-                    <option value="4/4">3/4</option>
-                    <option value="3/4">4/4</option>
+                    <option value="4/4">4/4</option>
+                    <option value="3/4">3/4</option>
                     <option value="6/8">6/8</option>
                   </select>
                 </label>

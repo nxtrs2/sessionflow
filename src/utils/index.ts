@@ -17,7 +17,7 @@ export function generateBeatData(
   const totalBeats = Math.floor(duration / beatDuration);
 
   // Extract beats per bar from the time signature (e.g., "4/4")
-  const beatsPerBar = timeSignature.denominator; // parseInt(timeSignature?.split("/")[0], 10) || 4;
+  const beatsPerBar = timeSignature.numerator; // parseInt(timeSignature?.split("/")[0], 10) || 4;
 
   const beats: BeatData[] = [];
 
@@ -31,6 +31,7 @@ export function generateBeatData(
         hasMessage: false,
         message: "",
         countOut: 0,
+        tempo: tempo,
       });
     }
   }
@@ -53,8 +54,10 @@ export function generateBeatData(
       ),
       message: TimeLineData.find((data) => data.beat === i)?.message || "",
       countOut: TimeLineData.find((data) => data.beat === i)?.countOut || 0,
+      tempo,
     });
   }
+
   return beats;
 }
 
@@ -62,20 +65,19 @@ export function approximatelyEqual(a: number, b: number, tolerance = 0.05) {
   return Math.abs(a - b) < tolerance;
 }
 
-export function loadSongFile(
+export async function loadSongFile(
   file: string,
   setSongData: (data: SongData) => void,
   setFileLoaded: (loaded: boolean) => void
 ): Promise<boolean> {
-  return fetch(file) // The path is relative to the public folder.
-    .then((res) => res.json())
-    .then((data) => {
-      setSongData(data);
-      setFileLoaded(true);
-      return true;
-    })
-    .catch((err) => {
-      console.error("Error loading song data", err);
-      return false;
-    });
+  try {
+    const res = await fetch(file);
+    const data = await res.json();
+    setSongData(data);
+    setFileLoaded(true);
+    return true;
+  } catch (err) {
+    console.error("Error loading song data", err);
+    return false;
+  }
 }

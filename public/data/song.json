@@ -5,40 +5,62 @@
     "url": "/songs/",
     "tempo": 144,
     "timesignature": "3/4",
+    "numerator": 3,
+    "denominator": 4,
     "countIn": 3,
     "skipBeatsBy": 1,
     "skipBeats": 0
   },
   "timeline": [
     {
-      "beat": 60,
-      "message": "Drums stop on next bar w/ roll"
+      "beat": 24,
+      "message": "Melody Starts",
+      "countOut": 0
     },
     {
-      "beat": 64,
-      "message": "Drums stop Now"
+      "beat": 72,
+      "message": "Pizzicato",
+      "countOut": 0
+    },
+    {
+      "beat": 96,
+      "message": "Stuccato",
+      "countOut": 0
+    },
+    {
+      "beat": 117,
+      "message": "CRASH COMING IN",
+      "countOut": 3
     },
     {
       "beat": 120,
-      "message": "Drum roll in 1 half bar"
+      "message": "CRASH!",
+      "countOut": 0
     },
     {
-      "beat": 126,
-      "message": "DRUM ROLL"
+      "beat": 144,
+      "message": "CRASH!",
+      "countOut": 0
     },
     {
-      "beat": 128,
-      "message": "Drums start again"
+      "beat": 156,
+      "message": "SLOW CRASH!",
+      "countOut": 0
+    },
+    {
+      "beat": 159,
+      "message": "DRUM ROLL IN",
+      "countOut": 6
     }
   ],
   "markers": [
     {
-      "beat": 4,
-      "label": "Marker 1"
+      "beat": 24,
+      "label": "Melody Mark"
     },
     {
-      "beat": 19,
-      "label": "Marker 2"
+      "beat": 72,
+      "label": "Pizzicato"
     },
     {
       "beat": 40,

@@ -1,12 +1,11 @@
 import * as Tone from "tone";
 import { ChangeEvent } from "react";
-import { SetAudioSrc, SetDuration, SetSongHasEnded } from "../types";
+import { SetAudioSrc, SetDuration } from "../types";
 
 export const loadSongFromJson = (
   file: string,
   setAudioSrc: SetAudioSrc,
   setDuration: SetDuration,
-  SetSongHasEnded: SetSongHasEnded,
   playerRef: React.MutableRefObject<Tone.Player | undefined>
 ) => {
   const songUrl = file;
@@ -29,15 +28,6 @@ export const loadSongFromJson = (
     },
   }).toDestination();
 
-  //   newPlayer.buffer.on = (event) => {
-  //     const progress = event.loaded / event.total;
-  //     console.log(`Player loading progress: ${(progress * 100).toFixed(2)}%`);
-  // };
-
-  //   newPlayer.onstop = () => {
-  //     SetSongHasEnded();
-  //   };
-  // Synchronize the player with Tone.Transport and start it at time 0
   newPlayer.sync().start(0);
   playerRef.current = newPlayer;
 };

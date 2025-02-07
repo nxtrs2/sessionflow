@@ -1,5 +1,4 @@
-import React, { CSSProperties } from "react";
-import { Stars } from "lucide-react";
+import { CSSProperties } from "react";
 import { TimeLineData, MarkerData, TickData } from "../types";
 
 // Rend
@@ -11,7 +10,8 @@ export const renderTick2 = (
   markers: MarkerData[],
   pixelsPerBeat: number,
   beatsPerBar: number,
-  skipBeats: number
+  skipBeats: number,
+  currentBeat: number
 ) => {
   const topPos = tick.beatIndex * pixelsPerBeat;
   const tickStyle: CSSProperties = {
@@ -44,21 +44,40 @@ export const renderTick2 = (
       )}
 
       {songTimeLines.some((timeline) => timeline.beat === tick.beatIndex) && (
-        <div className="tick-message">
+        <div
+          className={`tick-message ${
+            Math.floor(currentBeat) === tick.beatIndex &&
+            (
+              songTimeLines.find(
+                (timeline) =>
+                  timeline.beat === tick.beatIndex && timeline.countOut < 1
+              )?.message || ""
+            ).slice(-1) === "!"
+              ? "pop"
+              : ""
+          }`}
+          style={
+            Math.floor(currentBeat) < tick.beatIndex
+              ? { color: "white" }
+              : { color: "gray" }
+          }
+        >
           {
             songTimeLines.find(
               (timeline) =>
-                timeline.beat === tick.beatIndex && timeline.countOut === 0
+                timeline.beat === tick.beatIndex && timeline.countOut < 1
             )?.message
           }
         </div>
       )}
       {songTimeLines.some((timeline) => timeline.beat === tick.beatIndex) && (
         <div className="tick-message" style={{ color: "yellow" }}>
-          {songTimeLines.find(
-            (timeline) =>
-              timeline.beat === tick.beatIndex && timeline.countOut > 0
-          ) && <Stars />}
+          {
+            songTimeLines.find(
+              (timeline) =>
+                timeline.beat === tick.beatIndex && timeline.countOut > 0
+            )?.message
+          }
         </div>
       )}
       {markers.some((marker) => marker.beat === tick.beatIndex) && (

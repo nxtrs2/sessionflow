@@ -22,7 +22,7 @@
   align-items: center;
   color: rgb(128, 236, 21);
   pointer-events: none;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .message {
