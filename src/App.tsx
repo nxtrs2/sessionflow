@@ -203,11 +203,11 @@ const App: React.FC = () => {
   useEffect(() => {
     const transport = Tone.getTransport();
     const clickId = transport.scheduleRepeat((time) => {
-      if (transport.seconds >= duration) {
-        transport.pause();
-        // setSongEnded(true);
-        setIsPlaying(false);
-      }
+      // if (transport.seconds >= duration) {
+      //   transport.pause();
+      //   // setSongEnded(true);
+      //   setIsPlaying(false);
+      // }
       for (let i = 0; i < beatData.length; i++) {
         if (approximatelyEqual(beatData[i].time, transport.seconds, 0.07)) {
           if (beatData[i].hasMessage) {
