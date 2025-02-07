@@ -1,13 +1,13 @@
 {
   "track": {
-    "title": "Farewell",
-    "filename": "WBF.wav",
+    "title": "Seafarer",
+    "filename": "seafarer.mp3",
     "url": "/songs/",
-    "tempo": 140,
-    "timesignature": "4/4",
-    "countIn": 4,
+    "tempo": 144,
+    "timesignature": "3/4",
+    "countIn": 3,
     "skipBeatsBy": 1,
-    "skipBeats": 1
+    "skipBeats": 0
   },
   "timeline": [
     {

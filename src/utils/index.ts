@@ -1,10 +1,10 @@
-import { BeatData, TimeLineData } from "../types";
+import { BeatData, SongData, TimeLineData, TimeSignature } from "../types";
 import * as Tone from "tone";
 
 export function generateBeatData(
   duration: number,
   tempo: number,
-  timeSignature: string,
+  timeSignature: TimeSignature,
   skipBeats: number = 1,
   TimeLineData: TimeLineData[]
 ): BeatData[] {
@@ -17,7 +17,7 @@ export function generateBeatData(
   const totalBeats = Math.floor(duration / beatDuration);
 
   // Extract beats per bar from the time signature (e.g., "4/4")
-  const beatsPerBar = parseInt(timeSignature.split("/")[0], 10) || 4;
+  const beatsPerBar = timeSignature.denominator; // parseInt(timeSignature?.split("/")[0], 10) || 4;
 
   const beats: BeatData[] = [];
 
@@ -55,11 +55,27 @@ export function generateBeatData(
       countOut: TimeLineData.find((data) => data.beat === i)?.countOut || 0,
     });
   }
-
-  console.log(beats);
   return beats;
 }
 
 export function approximatelyEqual(a: number, b: number, tolerance = 0.05) {
   return Math.abs(a - b) < tolerance;
+}
+
+export function loadSongFile(
+  file: string,
+  setSongData: (data: SongData) => void,
+  setFileLoaded: (loaded: boolean) => void
+): Promise<boolean> {
+  return fetch(file) // The path is relative to the public folder.
+    .then((res) => res.json())
+    .then((data) => {
+      setSongData(data);
+      setFileLoaded(true);
+      return true;
+    })
+    .catch((err) => {
+      console.error("Error loading song data", err);
+      return false;
+    });
 }

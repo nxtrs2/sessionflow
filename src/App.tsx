@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  ChangeEvent,
-  CSSProperties,
-} from "react";
+import React, { useState, useRef, useEffect, ChangeEvent } from "react";
 import {
   Rewind,
   FastForward,
@@ -12,15 +6,24 @@ import {
   Pause,
   SkipBack,
   Repeat2,
+  Stars,
 } from "lucide-react";
 
 import * as Tone from "tone";
 import "./App.css";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
-import { SongData, TimeLineData, MarkerData, BeatData } from "./types";
+import { renderTick2 } from "./components/TimeLineRenderer";
+import {
+  SongData,
+  TimeLineData,
+  MarkerData,
+  BeatData,
+  TickData,
+  TimeSignature,
+} from "./types";
 import { loadSongFromJson, handleFileChange } from "./helpers/FileFunctions";
-import { generateBeatData, approximatelyEqual } from "./utils";
+import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
 import {
   togglePlayPause,
   togglePlayPauseWithLoop,
@@ -28,6 +31,7 @@ import {
   handleSkipForward,
   handleRestart,
 } from "./helpers/TransportFunctions";
+import Loader from "./components/Loader";
 
 const App: React.FC = () => {
   // Tone.Player reference
@@ -63,7 +67,12 @@ const App: React.FC = () => {
 
   // Global tempo and time signature state
   const [tempo, setTempo] = useState<number>(130); // BPM
-  const [timeSignature, setTimeSignature] = useState<string>("4/4");
+  const [timeSignature, setTimeSignature] = useState<TimeSignature>({
+    numerator: 4,
+    denominator: 4,
+  });
+
+  const [timeSignatureString, setTimeSignatureString] = useState<string>("");
 
   // Current transport time (using Tone.Transport.seconds)
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -81,6 +90,9 @@ const App: React.FC = () => {
   const [message, setMessage] = useState<string>("");
   const [messageCountOut, setMessageCountOut] = useState<number>(0);
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fileLoaded, setFileLoaded] = useState<boolean>(false);
+
   // High-frequency update using requestAnimationFrame
   useEffect(() => {
     // console.log("useEffect");
@@ -95,20 +107,9 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetch("/data/song2.json") // The path is relative to the public folder.
-      .then((res) => res.json())
-      .then((data) => setSongData(data))
-      .catch((err) => console.error("Error loading song data", err));
-  }, []);
-
-  useEffect(() => {
     if (songData) {
       try {
         handleLoadSong(songData.track.url + songData.track.filename);
-        console.log(
-          "Song loaded",
-          songData.track.url + songData.track.filename
-        );
       } catch (error) {
         console.error("Error loading song", error);
       }
@@ -116,15 +117,26 @@ const App: React.FC = () => {
       setSongTimeLines(songData.timeline);
       setMarkers(songData.markers);
       setSkipBeats(songData.track.skipBeats);
+      setTimeSignatureString(songData.track.timeSignature);
       setTempo(songData.track.tempo);
-      setTimeSignature("4/4");
       setSkipBeatsBy(songData.track.skipBeatsBy);
       setCountIn(songData.track.countIn);
     }
   }, [songData]);
 
   useEffect(() => {
-    if (duration) {
+    if (timeSignatureString) {
+      setTimeSignature({
+        numerator: parseInt(timeSignatureString.split("/")[0], 10),
+        denominator: parseInt(timeSignatureString.split("/")[1], 10),
+      });
+    }
+
+    console.log("Time Signature changed", timeSignature);
+  }, [timeSignatureString]);
+
+  useEffect(() => {
+    if (duration && tempo && timeSignature) {
       const newBeatData = generateBeatData(
         duration,
         tempo,
@@ -182,12 +194,11 @@ const App: React.FC = () => {
   useEffect(() => {
     const transport = Tone.getTransport();
     const clickId = transport.scheduleRepeat((time) => {
-      if (transport.seconds >= duration) {
-        transport.stop();
-        setSongEnded(true);
-        setIsPlaying(false);
-        return;
-      }
+      // if (transport.seconds >= duration) {
+      //   transport.pause();
+      //   setSongEnded(true);
+      //   setIsPlaying(false);
+      // }
       for (let i = 0; i < beatData.length; i++) {
         if (approximatelyEqual(beatData[i].time, transport.seconds, 0.07)) {
           if (beatData[i].hasMessage) {
@@ -213,9 +224,9 @@ const App: React.FC = () => {
     };
   }, [beatData]);
 
-  useEffect(() => {
-    console.log("Loop settings changed", loopStart, loopEnd);
-  }, [loopStart, loopEnd]);
+  // useEffect(() => {
+  //   console.log("Loop settings changed", loopStart, loopEnd);
+  // }, [loopStart, loopEnd]);
 
   const handleLoadSong = (file: string) => {
     loadSongFromJson(
@@ -254,7 +265,11 @@ const App: React.FC = () => {
 
   // Time signature change
   const handleTimeSignatureChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setTimeSignature(e.target.value);
+    setTimeSignatureString(e.target.value);
+    setTimeSignature({
+      numerator: parseInt(e.target.value.split("/")[0], 10),
+      denominator: parseInt(e.target.value.split("/")[1], 10),
+    });
   };
 
   const handleLoopStartChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -306,18 +321,20 @@ const App: React.FC = () => {
   const timelineOffset = containerCenter - effectiveBeat * pixelsPerBeat;
 
   // Determine beats per bar from the time signature (e.g. "4/4" means 4 beats per bar)
-  const beatsPerBar = parseInt(timeSignature.split("/")[0], 10) || 4;
+  const beatsPerBar = timeSignature.denominator; // parseInt(timeSignature?.split("/")[0], 10) || 3;
 
   const currentBar = Math.floor(effectiveBeat / beatsPerBar) + 1;
 
   const beatCount = (Math.floor(effectiveBeat) % beatsPerBar) + 1;
 
   // Build ticks: an array where each tick is for one beat.
-  const startTicks: { beatIndex: number; type: "bar" | "beat" | "skip" }[] =
-    Array.from({ length: totalBeats + 1 }, (_, beatIndex) => ({
+  const startTicks: TickData[] = Array.from(
+    { length: totalBeats + 1 },
+    (_, beatIndex) => ({
       beatIndex,
       type: beatIndex % beatsPerBar === 0 ? "bar" : "beat",
-    }));
+    })
+  );
 
   const handleBeat = (beat: number) => {
     // Trigger a click sound at the appropriate time.
@@ -336,312 +353,317 @@ const App: React.FC = () => {
     ...startTicks,
   ];
 
-  // Render a tick as a div positioned from the top.
-  const renderTick = (
-    tick: { beatIndex: number; type: "bar" | "beat" | "skip" },
-    index: number
-  ) => {
-    const topPos = tick.beatIndex * pixelsPerBeat;
-    const tickStyle: CSSProperties = {
-      position: "absolute",
-      top: `${topPos}px`,
-      left: "0",
-      color: "black",
-      backgroundColor: tick.type === "bar" ? "#ffc53f" : "white",
-    };
-
-    if (tick.type === "bar") {
-      tickStyle.width = "100px";
-      tickStyle.height = "1px";
-    } else {
-      tickStyle.width = "50px";
-      tickStyle.height = "1px";
+  const handleLoadSongFile = async (file: string) => {
+    setLoading(true);
+    const loaded = await loadSongFile(file, setSongData, setFileLoaded);
+    if (!loaded) {
+      alert("Error loading song file.");
     }
-
-    return (
-      <div key={index} style={tickStyle}>
-        {tick.type === "skip" && (
-          <div className="tick-label">
-            Skip {skipBeats} {skipBeats > 1 ? "beats" : "beat"}
-          </div>
-        )}
-        {tick.type === "bar" && (
-          <div className="tick-label">
-            Bar {Math.floor(tick.beatIndex / beatsPerBar) + 1}
-          </div>
-        )}
-
-        {songTimeLines.some((timeline) => timeline.beat === tick.beatIndex) && (
-          <div className="tick-message">
-            {
-              songTimeLines.find((timeline) => timeline.beat === tick.beatIndex)
-                ?.message
-            }
-          </div>
-        )}
-        {markers.some((marker) => marker.beat === tick.beatIndex) && (
-          <div className="marker-label">
-            {markers.find((marker) => marker.beat === tick.beatIndex)?.label}
-          </div>
-        )}
-        <span style={{ marginLeft: "5px", color: "white" }}>
-          {tick.beatIndex > -1 ? tick.beatIndex : ""}
-        </span>
-      </div>
-    );
+    setLoading(false);
   };
 
   return (
     <div className="app-container">
-      {/* Sidebar: Vertical timeline */}
-      <div className="timeline-sidebar">
-        <div className="timeline-container" style={{ height: containerHeight }}>
-          <div className="timeline-header">
-            <div className="time-display"></div>
-            <div className="time-display" style={{ width: "100px" }}>
-              <div>
-                {`${Math.floor(currentBar)}`} : {`${Math.floor(beatCount)}`}
+      {loading && <Loader />}
+      <div className="app-header">
+        <button
+          disabled={isPlaying}
+          onClick={() => {
+            handleLoadSongFile("/data/song2.json");
+          }}
+        >
+          Signals
+        </button>
+        <button
+          disabled={isPlaying}
+          onClick={() => {
+            handleLoadSongFile("/data/song.json");
+          }}
+        >
+          Untitled
+        </button>
+      </div>
+      <div className="app-content">
+        <div className="timeline-sidebar">
+          <div
+            className="timeline-container"
+            style={{ height: containerHeight }}
+          >
+            <div className="timeline-header">
+              {fileLoaded && (
+                <>
+                  <div className="time-display"></div>
+                  <div className="time-display" style={{ width: "100px" }}>
+                    <div>
+                      {`${Math.floor(currentBar)}`} :{" "}
+                      {`${Math.floor(beatCount)}`}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            {showCountIn && (
+              <CountIn
+                countIn={countIn}
+                skipBeats={skipBeats}
+                atStart={currentTime === 0}
+                bpm={tempo}
+                onComplete={handleCountInComplete}
+                onBeat={handleBeat}
+              />
+            )}
+            {isPlaying && showMessage && (
+              <CountOut
+                countIn={messageCountOut}
+                message={message}
+                bpm={tempo}
+                onComplete={handleMessageCountOutComplete}
+              />
+            )}
+            <div
+              className="timeline-inner"
+              style={{
+                height: timelineHeight,
+                transform: `translateY(${timelineOffset}px)`,
+              }}
+            >
+              {/* {ticks.map((tick, index) => renderTick(tick, index))} */}
+              {fileLoaded &&
+                ticks.map((tick, index) =>
+                  renderTick2(
+                    tick,
+                    index,
+                    songTimeLines,
+                    markers,
+                    pixelsPerBeat,
+                    beatsPerBar,
+                    skipBeats
+                    // renderTick(tick, index)
+                  )
+                )}
+              {!fileLoaded && <h3>NO SONG LOADED</h3>}
+            </div>
+            <div
+              className={`center-indicator ${pulse ? "pulse" : ""}`}
+              style={{ top: containerCenter }}
+            />
+          </div>
+        </div>
+
+        {/* Main content: controls and settings */}
+        <div className="main-content">
+          {fileLoaded && (
+            <div className="file-info">
+              <h2>{title ? title : "Track Title"}</h2>
+
+              <div className="file-loader">
+                <input type="file" accept="audio/*" onChange={onFileChange} />
               </div>
             </div>
-          </div>
-          {showCountIn && (
-            <CountIn
-              countIn={countIn}
-              skipBeats={skipBeats}
-              atStart={currentTime === 0}
-              bpm={tempo}
-              onComplete={handleCountInComplete}
-              onBeat={handleBeat}
-            />
           )}
-          {isPlaying && showMessage && (
-            <CountOut
-              countIn={messageCountOut}
-              message={message}
-              bpm={tempo}
-              onComplete={handleMessageCountOutComplete}
-            />
-          )}
-          <div
-            className="timeline-inner"
-            style={{
-              height: timelineHeight,
-              transform: `translateY(${timelineOffset}px)`,
-            }}
-          >
-            {ticks.map((tick, index) => renderTick(tick, index))}
-          </div>
-          <div
-            className={`center-indicator ${pulse ? "pulse" : ""}`}
-            style={{ top: containerCenter }}
-          />
-        </div>
-      </div>
-
-      {/* Main content: controls and settings */}
-      <div className="main-content">
-        <div className="file-info">
-          <h2>{title ? title : "Track Title"}</h2>
-
-          <div className="file-loader">
-            <input type="file" accept="audio/*" onChange={onFileChange} />
-          </div>
-        </div>
-        {audioSrc && (
-          <>
-            <div className="transport-system">
-              <div className="transport-controls">
-                <button
-                  onClick={() => {
-                    setIsPlaying(!isPlaying);
-
-                    if (loop) {
-                      togglePlayPauseWithLoop(
-                        isPlaying,
-                        beatData[loopStart].time,
-                        beatData[loopEnd].time,
-                        timeSignature,
-                        skipBeats,
-                        setIsPlaying
-                      );
-                    } else {
-                      togglePlayPause(
-                        isPlaying,
-                        countIn,
-                        timeSignature,
-                        skipBeats,
-                        setShowCountIn,
-                        setIsPlaying
-                      );
-                    }
-                  }}
-                >
-                  {isPlaying ? <Pause /> : <Play />}
-                </button>
-                <button
-                  onClick={() => handleRestart(setCurrentTime, setIsPlaying)}
-                >
-                  <SkipBack />
-                </button>
-                <button
-                  onClick={() =>
-                    handleSkipBackward(skipBeatsBy, setCurrentTime)
-                  }
-                >
-                  <Rewind />
-                </button>
-                <button
-                  onClick={() => handleSkipForward(skipBeatsBy, setCurrentTime)}
-                >
-                  <FastForward />
-                </button>
-              </div>
-              <div className="transport-tools">
-                <label>
-                  Skip by:
-                  <input
-                    type="number"
-                    value={skipBeatsBy}
-                    onChange={(e) =>
-                      setSkipBeatsBy(parseInt(e.target.value, 10))
-                    }
-                  />
-                </label>
-
-                <label>
+          {audioSrc && (
+            <>
+              <div className="transport-system">
+                <div className="transport-controls">
                   <button
-                    disabled={isPlaying}
                     onClick={() => {
-                      const tObject = Tone.getTransport();
-                      tObject.seconds = beatData[goToBeat + 2].time;
+                      setIsPlaying(!isPlaying);
+
+                      if (loop) {
+                        togglePlayPauseWithLoop(
+                          isPlaying,
+                          beatData[loopStart].time,
+                          beatData[loopEnd].time,
+                          timeSignature,
+                          skipBeats,
+                          setIsPlaying
+                        );
+                      } else {
+                        togglePlayPause(
+                          isPlaying,
+                          countIn,
+                          timeSignature,
+                          skipBeats,
+                          setShowCountIn,
+                          setIsPlaying
+                        );
+                      }
                     }}
                   >
-                    Go:
+                    {isPlaying ? <Pause /> : <Play />}
                   </button>
+                  <button
+                    onClick={() => handleRestart(setCurrentTime, setIsPlaying)}
+                  >
+                    <SkipBack />
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleSkipBackward(skipBeatsBy, setCurrentTime)
+                    }
+                  >
+                    <Rewind />
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleSkipForward(skipBeatsBy, setCurrentTime)
+                    }
+                  >
+                    <FastForward />
+                  </button>
+                </div>
+                <div className="transport-tools">
+                  <label>
+                    Skip by:
+                    <input
+                      type="number"
+                      value={skipBeatsBy}
+                      onChange={(e) =>
+                        setSkipBeatsBy(parseInt(e.target.value, 10))
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    <button
+                      disabled={isPlaying}
+                      onClick={() => {
+                        const tObject = Tone.getTransport();
+                        tObject.seconds = beatData[goToBeat + 2].time;
+                      }}
+                    >
+                      Go:
+                    </button>
+                    <input
+                      disabled={isPlaying}
+                      type="number"
+                      value={goToBeat}
+                      onChange={(e) => {
+                        setGoToBeat(
+                          parseInt(e.target.value, 10) < beatData.length
+                            ? parseInt(e.target.value, 10)
+                            : beatData.length - 2
+                        );
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="loop-settings">
+                <button
+                  disabled={loopEnd === loopStart || loopStart > loopEnd}
+                  onClick={() => {
+                    setLoop(!loop);
+                  }}
+                  style={{ color: loop ? "limegreen" : "" }}
+                >
+                  <Repeat2 />
+                </button>
+                <label>
+                  From:&nbsp;
+                  <select
+                    value={loopStart || 0}
+                    onChange={handleLoopStartChange}
+                  >
+                    <option value="0">Start</option>
+                    {markers.map((marker, index) => (
+                      <option key={index} value={marker.beat}>
+                        {marker.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  To:&nbsp;
+                  <select value={loopEnd || 0} onChange={handleLoopEndChange}>
+                    {markers.map((marker, index) => (
+                      <option key={index} value={marker.beat}>
+                        {marker.label}
+                      </option>
+                    ))}
+                    <option value={duration}>End</option>
+                  </select>
+                </label>
+              </div>
+              <div className="volume-controls">
+                <label>
+                  Song Volume:
                   <input
-                    disabled={isPlaying}
-                    type="number"
-                    value={goToBeat}
+                    type="range"
+                    min="-20"
+                    max="5"
+                    step="1"
+                    defaultValue="-6"
                     onChange={(e) => {
-                      setGoToBeat(
-                        parseInt(e.target.value, 10) < beatData.length
-                          ? parseInt(e.target.value, 10)
-                          : beatData.length - 2
-                      );
+                      if (playerRef.current) {
+                        playerRef.current.volume.value = parseInt(
+                          e.target.value
+                        );
+                      }
+                    }}
+                  />
+                </label>
+                <label>
+                  Click Volume:
+                  <input
+                    type="range"
+                    min="-20"
+                    max="5"
+                    step="1"
+                    defaultValue="-6"
+                    onChange={(e) => {
+                      if (clickSynthRef.current) {
+                        clickSynthRef.current.volume.value = parseInt(
+                          e.target.value
+                        );
+                      }
                     }}
                   />
                 </label>
               </div>
-            </div>
+              <div className="settings">
+                <label>
+                  Count-In:
+                  <input
+                    type="number"
+                    value={countIn}
+                    onChange={(e) => setCountIn(parseInt(e.target.value, 10))}
+                  />
+                </label>
+                <label>
+                  Tempo (BPM):&nbsp;
+                  <input
+                    type="number"
+                    value={tempo}
+                    onChange={handleTempoChange}
+                  />
+                </label>
 
-            <div className="loop-settings">
-              <button
-                disabled={loopEnd === loopStart || loopStart > loopEnd}
-                onClick={() => {
-                  setLoop(!loop);
-                }}
-                style={{ color: loop ? "limegreen" : "" }}
-              >
-                <Repeat2 />
-              </button>
-              <label>
-                From:&nbsp;
-                <select value={loopStart || 0} onChange={handleLoopStartChange}>
-                  <option value="0">Start</option>
-                  {markers.map((marker, index) => (
-                    <option key={index} value={marker.beat}>
-                      {marker.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                To:&nbsp;
-                <select value={loopEnd || 0} onChange={handleLoopEndChange}>
-                  {markers.map((marker, index) => (
-                    <option key={index} value={marker.beat}>
-                      {marker.label}
-                    </option>
-                  ))}
-                  <option value={duration}>End</option>
-                </select>
-              </label>
-            </div>
-            <div className="volume-controls">
-              <label>
-                Song Volume:
-                <input
-                  type="range"
-                  min="-20"
-                  max="5"
-                  step="1"
-                  defaultValue="-6"
-                  onChange={(e) => {
-                    if (playerRef.current) {
-                      playerRef.current.volume.value = parseInt(e.target.value);
-                    }
-                  }}
-                />
-              </label>
-              <label>
-                Click Volume:
-                <input
-                  type="range"
-                  min="-20"
-                  max="5"
-                  step="1"
-                  defaultValue="-6"
-                  onChange={(e) => {
-                    if (clickSynthRef.current) {
-                      clickSynthRef.current.volume.value = parseInt(
-                        e.target.value
-                      );
-                    }
-                  }}
-                />
-              </label>
-            </div>
-            <div className="settings">
-              <label>
-                Count-In:
-                <input
-                  type="number"
-                  value={countIn}
-                  onChange={(e) => setCountIn(parseInt(e.target.value, 10))}
-                />
-              </label>
-              <label>
-                Tempo (BPM):&nbsp;
-                <input
-                  type="number"
-                  value={tempo}
-                  onChange={handleTempoChange}
-                />
-              </label>
+                <label>
+                  Time Sig:&nbsp;
+                  <select
+                    value={timeSignatureString}
+                    onChange={handleTimeSignatureChange}
+                  >
+                    <option value="4/4">3/4</option>
+                    <option value="3/4">4/4</option>
+                    <option value="6/8">6/8</option>
+                  </select>
+                </label>
 
-              <label>
-                Time Sig:&nbsp;
-                <select
-                  value={timeSignature}
-                  onChange={handleTimeSignatureChange}
-                >
-                  <option value="4/4">4/4</option>
-                  <option value="3/4">3/4</option>
-                  <option value="6/8">6/8</option>
-                </select>
-              </label>
-
-              <label>
-                Skip Beats (at Start):&nbsp;
-                <input
-                  type="number"
-                  value={skipBeats}
-                  onChange={handleSkipBeatsChange}
-                />
-              </label>
-            </div>
-          </>
-        )}
+                <label>
+                  Skip Beats (at Start):&nbsp;
+                  <input
+                    type="number"
+                    value={skipBeats}
+                    onChange={handleSkipBeatsChange}
+                  />
+                </label>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

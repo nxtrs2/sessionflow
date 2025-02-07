@@ -33,6 +33,16 @@ export interface BeatData {
   countOut: number;
 }
 
+export interface TimeSignature {
+  numerator: number;
+  denominator: number;
+}
+
+export interface TickData {
+  beatIndex: number;
+  type: "bar" | "beat" | "skip";
+}
+
 export type SetAudioSrc = (src: string) => void;
 export type SetDuration = (duration: number) => void;
 export type SetIsPlaying = (isPlaying: boolean) => void;

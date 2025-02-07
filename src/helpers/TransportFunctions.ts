@@ -1,9 +1,14 @@
 // TransportFunctions.ts
 import * as Tone from "tone";
-import { SetCurrentTime, SetIsPlaying, SetShowCountIn } from "../types";
+import {
+  SetCurrentTime,
+  SetIsPlaying,
+  SetShowCountIn,
+  TimeSignature,
+} from "../types";
 
 export const handlePauseAtBar = (
-  timeSignature: string,
+  timeSignature: TimeSignature,
   skipBeats: number,
   setIsPlaying: SetIsPlaying
 ) => {
@@ -12,8 +17,8 @@ export const handlePauseAtBar = (
   const bpm = tObject.bpm.value;
 
   // Parse the time signature (assumes format "X/Y")
-  const [numeratorStr] = timeSignature.split("/");
-  const beatsPerBar = parseInt(numeratorStr, 10);
+  // const [numeratorStr] = timeSignature.split("/");
+  const beatsPerBar = timeSignature.numerator; // parseInt(numeratorStr, 10);
   const secondsPerBeat = 60 / bpm;
   const barDuration = beatsPerBar * secondsPerBeat;
 
@@ -29,7 +34,7 @@ export const handlePauseAtBar = (
 export const togglePlayPause = async (
   isPlaying: boolean,
   countIn: number,
-  timeSignature: string,
+  timeSignature: TimeSignature,
   skipBeats: number,
   setShowCountIn: SetShowCountIn,
   setIsPlaying: SetIsPlaying
@@ -56,7 +61,7 @@ export const togglePlayPauseWithLoop = async (
   isPlaying: boolean,
   loopStart: number,
   loopEnd: number,
-  timeSignature: string,
+  timeSignature: TimeSignature,
   skipBeats: number,
   setIsPlaying: SetIsPlaying
 ) => {

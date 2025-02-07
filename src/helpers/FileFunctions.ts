@@ -25,10 +25,14 @@ export const loadSongFromJson = (
     onload: () => {
       if (newPlayer.buffer) {
         setDuration(newPlayer.buffer.duration);
-        console.log("Song loaded. Duration:", newPlayer.buffer.duration);
       }
     },
   }).toDestination();
+
+  //   newPlayer.buffer.on = (event) => {
+  //     const progress = event.loaded / event.total;
+  //     console.log(`Player loading progress: ${(progress * 100).toFixed(2)}%`);
+  // };
 
   //   newPlayer.onstop = () => {
   //     SetSongHasEnded();

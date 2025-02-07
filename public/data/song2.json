@@ -1,7 +1,7 @@
 {
   "track": {
     "title": "Signals",
-    "filename": "signals.wav",
+    "filename": "signals.mp3",
     "url": "/songs/",
     "tempo": 144,
     "timesignature": "4/4",
@@ -16,12 +16,12 @@
       "countOut": 4
     },
     {
-      "beat": 64,
+      "beat": 6,
       "message": "Drums stop Now",
-      "countOut": 4
+      "countOut": 0
     },
     {
-      "beat": 120,
+      "beat": 12,
       "message": "Drum roll in 1 half bar",
       "countOut": 4
     },

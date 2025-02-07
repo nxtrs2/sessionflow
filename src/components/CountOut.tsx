@@ -42,7 +42,7 @@ const CountOut: React.FC<CountOutProps> = ({
       {count > 0 && (
         <div key={count}>
           <div className="message">{message}</div>
-          <div className="count-number">{count}</div>
+          <div className="message-count">{count}</div>
         </div>
       )}
     </div>
