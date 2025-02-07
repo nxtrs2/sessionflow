@@ -1,5 +1,14 @@
+export interface Structure {
+  fromBeat: number;
+  toBeat: number;
+  numerator: number;
+  denominator: number;
+  tempo: number;
+}
+
 export interface TimeLineData {
   beat: number;
+  instrument: string;
   message: string;
   countOut: number;
 }
@@ -22,14 +31,17 @@ export interface SongData {
     skipBeatsBy: number;
     skipBeats: number;
   };
+  structure: Structure[];
   timeline: TimeLineData[];
   markers: MarkerData[];
 }
+
 export interface BeatData {
   beat: number;
   bar: number;
   isBarStart: boolean;
   time: number;
+  instrument: string;
   hasMessage: boolean;
   message: string;
   countOut: number;

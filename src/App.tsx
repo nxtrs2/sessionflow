@@ -20,6 +20,7 @@ import {
   BeatData,
   TickData,
   TimeSignature,
+  Structure,
 } from "./types";
 import { loadSongFromJson, handleFileChange } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
@@ -82,6 +83,7 @@ const App: React.FC = () => {
   const containerCenter = containerHeight / 2; // vertical center
 
   const [songData, setSongData] = useState<SongData | null>(null);
+  const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
 
@@ -115,19 +117,21 @@ const App: React.FC = () => {
   //   console.log("Time Signature changed", timeSignature, timeSignatureString);
   // }, [timeSignatureString]);
 
-  useEffect(() => {
-    console.log("Updated Time SSS Signature", songData?.track.timeSignature);
-  }, [songData?.track.timeSignature]);
+  // useEffect(() => {
+  //   // console.log("Updated Time SSS Signature", songData?.track.timeSignature);
+  // }, [songData?.track.timeSignature]);
 
   useEffect(() => {
-    console.log("Song Data changed", songData);
+    // console.log("Song Data changed", songData);
     if (songData) {
+      console.log("Song Data changed", songData);
       try {
         handleLoadSong(songData.track.url + songData.track.filename);
       } catch (error) {
         console.error("Error loading song", error);
       }
       setTitle(songData.track.title);
+      setStructure(songData.structure);
       setSongTimeLines(songData.timeline);
       setMarkers(songData.markers);
       setSkipBeats(songData.track.skipBeats);
@@ -143,12 +147,13 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (duration && tempo && timeSignature) {
-      console.log("Time Signature changed ----> -----?", timeSignature);
+      // console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
         tempo,
         timeSignature,
         skipBeats,
+        structure,
         songTimeLines
       );
       setLoopEnd(duration);
@@ -161,7 +166,7 @@ const App: React.FC = () => {
     const tObject = Tone.getTransport();
     tObject.bpm.value = tempo;
     tObject.timeSignature = timeSignature.numerator;
-    console.log("Time Signature changed ---->", timeSignature);
+    // console.log("Time Signature changed ---->", timeSignature);
   }, [tempo, timeSignature]);
 
   useEffect(() => {

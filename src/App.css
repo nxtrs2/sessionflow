@@ -1,4 +1,73 @@
 @import url("https://fonts.googleapis.com/css2?family=Rationale&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Rationale&family=Tomorrow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"); */
+/* 1. Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  /* 3. Add accessible line-height */
+  line-height: 1.5;
+  /* 4. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* 8. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root,
+#__next {
+  isolation: isolate;
+}
 
 :root {
   --gradient-background: linear-gradient(135deg, #2e2a4b, #000);
@@ -6,19 +75,16 @@
 
 body {
   font-family: "Rationale", serif;
-  font-weight: 400;
-  font-style: normal;
-
-  /* font-family: "Roboto", sans-serif; */
+  font-weight: 300;
 }
 
 /* Flex layout for the two main columns */
 .app-container {
-  width: 1220px;
+  max-width: 1220px;
   margin: 0 auto;
   padding-bottom: 20px;
   justify-content: space-between;
-  border: 1px solid white;
+
   align-items: flex-start;
 }
 
@@ -41,7 +107,7 @@ body {
 /* Sidebar for the timeline */
 .timeline-sidebar {
   border-radius: 20px;
-  flex: 0 0 450px; /* fixed width sidebar */
+  flex: 0 0 550px; /* fixed width sidebar */
   /* background-color: #000000; */
 
   display: flex;
@@ -146,14 +212,6 @@ body {
   font-size: 0.8rem;
   width: 70px;
   transition: border-color 0.2s;
-}
-
-.transport-tools button {
-  margin: 5px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-
-  background: linear-gradient(135deg, #000000, #263368);
 }
 
 .transport-controls {
@@ -275,7 +333,7 @@ select {
   flex-direction: row;
   justify-content: left;
   color: rgb(0, 255, 34);
-  font-size: 3rem;
+  font-size: 2rem;
   pointer-events: none;
 }
 
