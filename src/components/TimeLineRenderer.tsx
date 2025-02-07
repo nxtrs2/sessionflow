@@ -12,6 +12,7 @@ export const renderTick2 = (
   beatsPerBar: number,
   skipBeats: number,
   currentBeat: number
+  // selectedInstrument: string
 ) => {
   const topPos = tick.beatIndex * pixelsPerBeat;
   const tickStyle: CSSProperties = {

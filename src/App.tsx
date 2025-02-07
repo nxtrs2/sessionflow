@@ -86,6 +86,7 @@ const App: React.FC = () => {
   const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
+  const [selectedInstrument, setSelectedInstrument] = useState<string>("");
 
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -121,10 +122,23 @@ const App: React.FC = () => {
   //   // console.log("Updated Time SSS Signature", songData?.track.timeSignature);
   // }, [songData?.track.timeSignature]);
 
+  // {
+  //   "fromBeat": 8,
+  //   "toBeat": 32,
+  //   "numerator": 3,
+  //   "denominator": 4,
+  //   "tempo": 130
+  // },
+  // {
+  //   "fromBeat": 32,
+  //   "toBeat": 64,
+  //   "numerator": 4,
+  //   "denominator": 4,
+  //   "tempo": 144
+  // }
+
   useEffect(() => {
-    // console.log("Song Data changed", songData);
     if (songData) {
-      console.log("Song Data changed", songData);
       try {
         handleLoadSong(songData.track.url + songData.track.filename);
       } catch (error) {
@@ -450,6 +464,7 @@ const App: React.FC = () => {
                     beatsPerBar,
                     skipBeats,
                     currentBeat
+                    // selectedInstrument
                     // renderTick(tick, index)
                   )
                 )}
@@ -459,6 +474,22 @@ const App: React.FC = () => {
               className={`center-indicator ${pulse ? "pulse" : ""}`}
               style={{ top: containerCenter }}
             />
+            <div className="timeline-footer">
+              {songTimeLines.length > 0 &&
+                Array.from(
+                  new Set(songTimeLines.map((line) => line.instrument))
+                ).map((instrument, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      console.log(selectedInstrument);
+                      setSelectedInstrument(instrument);
+                    }}
+                  >
+                    {instrument}
+                  </button>
+                ))}
+            </div>
           </div>
         </div>
 
@@ -482,6 +513,7 @@ const App: React.FC = () => {
                       setIsPlaying(!isPlaying);
 
                       if (loop) {
+                        console.log("Looping");
                         togglePlayPauseWithLoop(
                           isPlaying,
                           beatData[loopStart].time,
@@ -491,6 +523,7 @@ const App: React.FC = () => {
                           setIsPlaying
                         );
                       } else {
+                        console.log("Not Looping");
                         togglePlayPause(
                           isPlaying,
                           countIn,

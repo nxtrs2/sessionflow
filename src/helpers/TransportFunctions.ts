@@ -47,6 +47,7 @@ export const togglePlayPause = async (
     // Pause at the calculated bar
     handlePauseAtBar(timeSignature, skipBeats, setIsPlaying);
   } else {
+    tObject.loop = false;
     if (countIn > 0) {
       // Show the CountIn overlay
       setShowCountIn(true);

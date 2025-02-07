@@ -11,22 +11,7 @@
     "skipBeatsBy": 4,
     "skipBeats": 0
   },
-  "structure": [
-    {
-      "fromBeat": 8,
-      "toBeat": 32,
-      "numerator": 3,
-      "denominator": 4,
-      "tempo": 130
-    },
-    {
-      "fromBeat": 32,
-      "toBeat": 64,
-      "numerator": 4,
-      "denominator": 4,
-      "tempo": 144
-    }
-  ],
+  "structure": [],
   "timeline": [
     {
       "beat": 16,
