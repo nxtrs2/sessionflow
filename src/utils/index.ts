@@ -5,7 +5,7 @@ import {
   TimeLineData,
   TimeSignature,
 } from "../types";
-import * as Tone from "tone";
+// import * as Tone from "tone";
 
 export function generateBeatData(
   duration: number,
@@ -107,63 +107,63 @@ export function generateBeatData(
   return beats;
 }
 
-export function generateBeatData2(
-  duration: number,
-  tempo: number,
-  timeSignature: TimeSignature,
-  skipBeats: number = 1,
-  structure: Structure[],
-  TimeLineData: TimeLineData[]
-): BeatData[] {
-  const beatDuration = Tone.Time("4n").toSeconds();
-  const totalBeats = Math.floor(duration / beatDuration);
+// export function generateBeatData2(
+//   duration: number,
+//   tempo: number,
+//   timeSignature: TimeSignature,
+//   skipBeats: number = 1,
+//   structure: Structure[],
+//   TimeLineData: TimeLineData[]
+// ): BeatData[] {
+//   const beatDuration = Tone.Time("4n").toSeconds();
+//   const totalBeats = Math.floor(duration / beatDuration);
 
-  const beatsPerBar = timeSignature.numerator; // parseInt(timeSignature?.split("/")[0], 10) || 4;
+//   const beatsPerBar = timeSignature.numerator; // parseInt(timeSignature?.split("/")[0], 10) || 4;
 
-  const beats: BeatData[] = [];
+//   const beats: BeatData[] = [];
 
-  if (skipBeats > 0) {
-    for (let i = 1; i <= skipBeats + 1; i++) {
-      beats.push({
-        beat: 0,
-        bar: 0,
-        isBarStart: false,
-        time: 0,
-        hasMessage: false,
-        message: "",
-        countOut: 0,
-        tempo: tempo,
-        instrument: "",
-      });
-    }
-  }
+//   if (skipBeats > 0) {
+//     for (let i = 1; i <= skipBeats + 1; i++) {
+//       beats.push({
+//         beat: 0,
+//         bar: 0,
+//         isBarStart: false,
+//         time: 0,
+//         hasMessage: false,
+//         message: "",
+//         countOut: 0,
+//         tempo: tempo,
+//         instrument: "",
+//       });
+//     }
+//   }
 
-  // 1-based beat numbering: beat 1 occurs at time = offsetTime, beat 2 = offsetTime + beatDuration, etc.
-  for (let i = 1; i <= totalBeats; i++) {
-    // Calculate time using Tone’s conversion (if needed, although multiplication should be fine)
-    const time = (i - 1) * beatDuration;
+//   // 1-based beat numbering: beat 1 occurs at time = offsetTime, beat 2 = offsetTime + beatDuration, etc.
+//   for (let i = 1; i <= totalBeats; i++) {
+//     // Calculate time using Tone’s conversion (if needed, although multiplication should be fine)
+//     const time = (i - 1) * beatDuration;
 
-    const bar = Math.floor((i - 1) / beatsPerBar) + 1;
-    const isBarStart = (i - 1) % beatsPerBar === 0;
+//     const bar = Math.floor((i - 1) / beatsPerBar) + 1;
+//     const isBarStart = (i - 1) % beatsPerBar === 0;
 
-    beats.push({
-      beat: i,
-      bar,
-      isBarStart,
-      time,
-      hasMessage: TimeLineData.some(
-        (data) => data.beat === i && data.message.length > 0
-      ),
-      message: TimeLineData.find((data) => data.beat === i)?.message || "",
-      countOut: TimeLineData.find((data) => data.beat === i)?.countOut || 0,
-      instrument:
-        TimeLineData.find((data) => data.beat === i)?.instrument || "",
-      tempo,
-    });
-  }
+//     beats.push({
+//       beat: i,
+//       bar,
+//       isBarStart,
+//       time,
+//       hasMessage: TimeLineData.some(
+//         (data) => data.beat === i && data.message.length > 0
+//       ),
+//       message: TimeLineData.find((data) => data.beat === i)?.message || "",
+//       countOut: TimeLineData.find((data) => data.beat === i)?.countOut || 0,
+//       instrument:
+//         TimeLineData.find((data) => data.beat === i)?.instrument || "",
+//       tempo,
+//     });
+//   }
 
-  return beats;
-}
+//   return beats;
+// }
 
 export function approximatelyEqual(a: number, b: number, tolerance = 0.05) {
   return Math.abs(a - b) < tolerance;
