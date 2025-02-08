@@ -6,14 +6,20 @@ import { TimeLineData, MarkerData, TickData } from "../types";
 export const renderTick2 = (
   tick: TickData,
   index: number,
-  songTimeLines: TimeLineData[],
+  timelines: TimeLineData[],
   markers: MarkerData[],
   pixelsPerBeat: number,
   beatsPerBar: number,
   skipBeats: number,
-  currentBeat: number
-  // selectedInstrument: string
+  currentBeat: number,
+  selectedInstrument: string | "ALL"
 ) => {
+  const filteredTimelines =
+    selectedInstrument === "ALL"
+      ? timelines
+      : timelines.filter(
+          (timeline) => timeline.instrument === selectedInstrument
+        );
   const topPos = tick.beatIndex * pixelsPerBeat;
   const tickStyle: CSSProperties = {
     position: "absolute",
@@ -44,12 +50,14 @@ export const renderTick2 = (
         </div>
       )}
 
-      {songTimeLines.some((timeline) => timeline.beat === tick.beatIndex) && (
+      {filteredTimelines.some(
+        (timeline) => timeline.beat === tick.beatIndex
+      ) && (
         <div
           className={`tick-message ${
             Math.floor(currentBeat) === tick.beatIndex &&
             (
-              songTimeLines.find(
+              timelines.find(
                 (timeline) =>
                   timeline.beat === tick.beatIndex && timeline.countOut < 1
               )?.message || ""
@@ -64,17 +72,19 @@ export const renderTick2 = (
           }
         >
           {
-            songTimeLines.find(
+            timelines.find(
               (timeline) =>
                 timeline.beat === tick.beatIndex && timeline.countOut < 1
             )?.message
           }
         </div>
       )}
-      {songTimeLines.some((timeline) => timeline.beat === tick.beatIndex) && (
+      {filteredTimelines.some(
+        (timeline) => timeline.beat === tick.beatIndex
+      ) && (
         <div className="tick-message" style={{ color: "yellow" }}>
           {
-            songTimeLines.find(
+            timelines.find(
               (timeline) =>
                 timeline.beat === tick.beatIndex && timeline.countOut > 0
             )?.message

@@ -86,7 +86,7 @@ const App: React.FC = () => {
   const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
-  const [selectedInstrument, setSelectedInstrument] = useState<string>("");
+  const [selectedInstrument, setSelectedInstrument] = useState<string>("ALL");
 
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -463,18 +463,19 @@ const App: React.FC = () => {
                     pixelsPerBeat,
                     beatsPerBar,
                     skipBeats,
-                    currentBeat
-                    // selectedInstrument
+                    currentBeat,
+                    selectedInstrument
                     // renderTick(tick, index)
                   )
                 )}
-              {!fileLoaded && <h3>NO SONG LOADED</h3>}
+              {!fileLoaded && <h3>To load a song, select from above</h3>}
             </div>
             <div
               className={`center-indicator ${pulse ? "pulse" : ""}`}
               style={{ top: containerCenter }}
             />
             <div className="timeline-footer">
+              <button onClick={() => setSelectedInstrument("ALL")}>ALL</button>
               {songTimeLines.length > 0 &&
                 Array.from(
                   new Set(songTimeLines.map((line) => line.instrument))
@@ -488,7 +489,7 @@ const App: React.FC = () => {
                   >
                     {instrument}
                   </button>
-                ))}
+                ))}{" "}
             </div>
           </div>
         </div>

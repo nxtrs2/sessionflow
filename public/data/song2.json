@@ -16,7 +16,7 @@
     {
       "beat": 16,
       "instrument": "SYNTH1",
-      "message": "SYNTH2 START",
+      "message": "SYNTH1 START",
       "countOut": 0
     },
     {
@@ -24,6 +24,12 @@
       "instrument": "DRUMS",
       "message": "DRUM ROLL IN",
       "countOut": 4
+    },
+    {
+      "beat": 46,
+      "instrument": "BASS",
+      "message": "BASS RUN",
+      "countOut": 0
     },
     {
       "beat": 48,
@@ -58,20 +64,20 @@
     {
       "beat": 79,
       "instrument": "DRUMS",
-      "message": "CRASH",
+      "message": "CRASH!",
       "countOut": 0
     },
 
     {
       "beat": 80,
       "instrument": "DRUMS",
-      "message": "CRASH",
+      "message": "CRASH!",
       "countOut": 0
     },
     {
       "beat": 93,
 
-      "instrument": "SYNTH2",
+      "instrument": "SYNTH1",
       "message": "CRASH",
       "countOut": 0
     },
@@ -101,6 +107,24 @@
     },
     {
       "beat": 217,
+      "instrument": "DRUMS",
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 110,
+      "instrument": "DRUMS",
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 111,
+      "instrument": "DRUMS",
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 112,
       "instrument": "DRUMS",
       "message": "CRASH",
       "countOut": 0
