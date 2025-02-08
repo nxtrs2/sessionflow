@@ -468,14 +468,18 @@ const App: React.FC = () => {
                     // renderTick(tick, index)
                   )
                 )}
-              {!fileLoaded && <h3>To load a song, select from above</h3>}
+              {!fileLoaded && <h3>Select a song from above</h3>}
             </div>
             <div
               className={`center-indicator ${pulse ? "pulse" : ""}`}
               style={{ top: containerCenter }}
             />
             <div className="timeline-footer">
-              <button onClick={() => setSelectedInstrument("ALL")}>ALL</button>
+              {fileLoaded && (
+                <button onClick={() => setSelectedInstrument("ALL")}>
+                  ALL
+                </button>
+              )}
               {songTimeLines.length > 0 &&
                 Array.from(
                   new Set(songTimeLines.map((line) => line.instrument))
