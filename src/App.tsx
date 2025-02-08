@@ -568,13 +568,12 @@ const App: React.FC = () => {
                       }
                     />
                   </label>
-
                   <label>
                     <button
                       disabled={isPlaying}
                       onClick={() => {
                         const tObject = Tone.getTransport();
-                        tObject.seconds = beatData[goToBeat + 2].time;
+                        tObject.seconds = beatData[goToBeat].time;
                       }}
                     >
                       Go:
@@ -590,7 +589,21 @@ const App: React.FC = () => {
                             : beatData.length - 2
                         );
                       }}
-                    />
+                    />{" "}
+                    <select
+                      value={goToBeat}
+                      onChange={(e) =>
+                        setGoToBeat(parseInt(e.target.value, 10))
+                      }
+                    >
+                      <option value={0}>Start</option>
+                      {markers.map((marker, index) => (
+                        <option key={index} value={marker.beat}>
+                          {marker.label}
+                        </option>
+                      ))}
+                      <option value={beatData.length - 1}>End</option>
+                    </select>
                   </label>
                 </div>
               </div>
