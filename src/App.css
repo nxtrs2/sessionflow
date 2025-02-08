@@ -506,3 +506,14 @@ select {
 .pop {
   animation: turnRedAndGrow 0.3s ease-out forwards;
 }
+
+@media (max-width: 768px) {
+  @keyframes turnRedAndGrow {
+    0% {
+      background-color: initial;
+    }
+    100% {
+      color: yellow;
+    }
+  }
+}
