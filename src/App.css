@@ -342,7 +342,7 @@ select {
 .timeline-footer {
   z-index: 100;
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
   height: 80px;
   width: 100%;
@@ -449,6 +449,11 @@ select {
   .timeline-header {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+  }
+
+  .timeline-footer {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
   .file-info {
