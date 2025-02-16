@@ -1,8 +1,7 @@
 import { CSSProperties } from "react";
 import { TimeLineData, MarkerData, TickData } from "../types";
 
-// Rend
-// er a tick as a div positioned from the top.
+// Render a tick as a div positioned from the top.
 export const renderTick2 = (
   tick: TickData,
   index: number,
@@ -12,7 +11,8 @@ export const renderTick2 = (
   beatsPerBar: number,
   skipBeats: number,
   currentBeat: number,
-  selectedInstrument: string | "ALL"
+  selectedInstrument: string | "ALL",
+  isPlaying: boolean
 ) => {
   const filteredTimelines =
     selectedInstrument === "ALL"
@@ -99,6 +99,12 @@ export const renderTick2 = (
       <span style={{ marginLeft: "5px", color: "white" }}>
         {tick.beatIndex > -1 ? tick.beatIndex : ""}
       </span>
+      {!isPlaying && (
+        <div className="hoverDiv">
+          <button onClick={() => console.log(tick)}>+ Marker</button>
+          <button onClick={() => console.log(tick)}>+ Msssarker</button>
+        </div>
+      )}
     </div>
   );
 };

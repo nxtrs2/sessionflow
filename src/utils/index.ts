@@ -169,6 +169,7 @@ export function approximatelyEqual(a: number, b: number, tolerance = 0.05) {
   return Math.abs(a - b) < tolerance;
 }
 
+/* Maybe this function needs to be helpers/FileFunctions */
 export async function loadSongFile(
   file: string,
   setSongData: (data: SongData) => void,
