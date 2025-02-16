@@ -600,11 +600,39 @@ select {
     padding: 10px;
   }
   .marker-label {
-    width: 100vw;
+    width: 100px;
   }
 
   .hoverDiv {
     width: 100vw;
     padding-right: 20px;
   }
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dialog {
+  background: var(--gradient-background);
+  border: 1px solid slategray;
+  padding: 20px;
+  border-radius: 4px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 20px;
+}
+.dialog-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
 }

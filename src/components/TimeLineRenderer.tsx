@@ -12,8 +12,11 @@ export const renderTick2 = (
   skipBeats: number,
   currentBeat: number,
   selectedInstrument: string | "ALL",
-  isPlaying: boolean
+  eneableEditing: boolean,
+  editMarker: (tick: TickData, deleteMarker: boolean) => void,
+  editEvent: (tick: TickData, deleteEvent: boolean) => void
 ) => {
+  const isMarker = markers.some((marker) => marker.beat === tick.beatIndex);
   const filteredTimelines =
     selectedInstrument === "ALL"
       ? timelines
@@ -99,10 +102,13 @@ export const renderTick2 = (
       <span style={{ marginLeft: "5px", color: "white" }}>
         {tick.beatIndex > -1 ? tick.beatIndex : ""}
       </span>
-      {!isPlaying && (
+      {eneableEditing && (
         <div className="hoverDiv">
-          <button onClick={() => console.log(tick)}>+ Marker</button>
-          <button onClick={() => console.log(tick)}>+ Msssarker</button>
+          <button onClick={() => editMarker(tick, false)}>+ Marker</button>
+          {isMarker && (
+            <button onClick={() => editMarker(tick, true)}>- Marker</button>
+          )}
+          <button onClick={() => editEvent(tick, false)}>+ Event</button>
         </div>
       )}
     </div>

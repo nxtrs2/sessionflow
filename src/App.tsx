@@ -32,6 +32,7 @@ import {
   handleRestart,
 } from "./helpers/TransportFunctions";
 import Loader from "./components/Loader";
+import EventDialog from "./components/EventDialog";
 
 const App: React.FC = () => {
   // Tone.Player reference
@@ -54,6 +55,8 @@ const App: React.FC = () => {
 
   // Playback state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [editEvent, setEditEvent] = useState<boolean>(false);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
   // const [songEnded, setSongEnded] = useState<boolean>(false);
 
   const [loop, setLoop] = useState<boolean>(false);
@@ -157,6 +160,7 @@ const App: React.FC = () => {
       setTempo(songData.track.tempo);
       setSkipBeatsBy(songData.track.skipBeatsBy);
       setCountIn(songData.track.countIn);
+      setCanEdit(true);
     }
   }, [songData]);
 
@@ -388,6 +392,90 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
+  const handleAddEditMarker = (tick: TickData, deleteMarker: boolean) => {
+    const existingMarker = markers.find(
+      (marker) => marker.beat === tick.beatIndex
+    );
+    if (deleteMarker) {
+      if (existingMarker) {
+        const confirmDelete = window.confirm(
+          `Are you sure you want to delete the marker "${existingMarker.label}"?`
+        );
+        if (confirmDelete) {
+          setMarkers((prevMarkers) =>
+            prevMarkers.filter((marker) => marker.beat !== tick.beatIndex)
+          );
+        }
+      } else {
+        alert("No marker found at this position to delete.");
+      }
+    } else {
+      if (existingMarker) {
+        const newLabel = prompt("Edit marker label:", existingMarker.label);
+        if (newLabel) {
+          setMarkers((prevMarkers) =>
+            prevMarkers.map((marker) =>
+              marker.beat === tick.beatIndex
+                ? { ...marker, label: newLabel }
+                : marker
+            )
+          );
+        }
+      } else {
+        const label = prompt("Enter marker label:");
+        if (label) {
+          setMarkers((prevMarkers) => [
+            ...prevMarkers,
+            { label, beat: tick.beatIndex },
+          ]);
+        }
+      }
+    }
+  };
+
+  const handleEditEvent = (tick: TickData, deleteEvent: boolean) => {
+    setEditEvent(true);
+    console.log("Edit Event", tick, deleteEvent);
+    // const existingEvent = songTimeLines.find(
+    //   (line) => line.beat === tick.beatIndex
+    // );
+    // if (deleteEvent) {
+    //   if (existingEvent) {
+    //     const confirmDelete = window.confirm(
+    //       `Are you sure you want to delete the event for instrument "${existingEvent.instrument}"?`
+    //     );
+    //     if (confirmDelete) {
+    //       setSongTimeLines((prevEvents) =>
+    //         prevEvents.filter((event) => event.beat !== tick.beatIndex)
+    //       );
+    //     }
+    //   } else {
+    //     alert("No event found at this position to delete.");
+    //   }
+    // } else {
+    //   if (existingEvent) {
+    //     // Edit event
+    //     // const newLabel = prompt("Edit marker label:", existingMarker.label);
+    //     // if (newLabel) {
+    //     //   setMarkers((prevMarkers) =>
+    //     //     prevMarkers.map((marker) =>
+    //     //       marker.beat === tick.beatIndex
+    //     //         ? { ...marker, label: newLabel }
+    //     //         : marker
+    //     //     )
+    //     //   );
+    //   } else {
+    //     // Create new event
+    //     // const label = prompt("Enter marker label:");
+    //     // if (label) {
+    //     //   setMarkers((prevMarkers) => [
+    //     //     ...prevMarkers,
+    //     //     { label, beat: tick.beatIndex },
+    //     //   ]);
+    //   }
+    // }
+  };
+
   return (
     <div className="app-container">
       {loading && <Loader />}
@@ -466,7 +554,9 @@ const App: React.FC = () => {
                     skipBeats,
                     currentBeat,
                     selectedInstrument,
-                    isPlaying
+                    !isPlaying && canEdit,
+                    handleAddEditMarker,
+                    handleEditEvent
                     // renderTick(tick, index)
                   )
                 )}
@@ -806,6 +896,31 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
+      {/* interface EventDialogProps {
+        mode: Mode;
+        tickData: TickData;
+        eventData?: EventData; // for edit mode, the current event data
+        instruments: Instrument[];
+        onConfirm: (data?: EventData) => void;
+        onCancel: () => void;
+      } */}
+      {editEvent && (
+        <EventDialog
+          mode="new"
+          tickData={{ beatIndex: 0, type: "beat" }}
+          instruments={[
+            { name: "Kick" },
+            { name: "Snare" },
+            { name: "Hi-Hat" },
+          ]}
+          onConfirm={(data) => {
+            console.log("New Event", data);
+          }}
+          onCancel={() => {
+            setEditEvent(false);
+          }}
+        />
+      )}
     </div>
   );
 };

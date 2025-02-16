@@ -58,6 +58,19 @@ export interface TickData {
   type: "bar" | "beat" | "skip";
 }
 
+export interface EventData {
+  beat: number;
+  instrument: string;
+  message: string;
+  countOut: number;
+}
+
+export interface Instrument {
+  name: string;
+}
+
+export type Mode = "edit" | "new" | "delete";
+
 export type SetAudioSrc = (src: string) => void;
 export type SetDuration = (duration: number) => void;
 export type SetIsPlaying = (isPlaying: boolean) => void;
