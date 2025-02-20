@@ -648,6 +648,13 @@ select {
   gap: 10px;
 }
 
+.dialog-actions button {
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: 1px solid slategray;
+  background: none;
+}
+
 .instrument-row {
   display: flex;
   align-items: center;

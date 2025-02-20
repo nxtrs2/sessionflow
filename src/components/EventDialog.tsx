@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { TickData, EventData, Instrument, Mode } from "../types";
-import { Delete, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 
 interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
   eventData?: EventData; // for edit mode, the current event data
   instruments: Instrument[];
-  setInstruments: (instruments: Instrument[]) => void;
+  handleInstrumentsUpdate: (
+    instrument: string,
+    deleteInstrument: boolean
+  ) => void;
   onConfirm: (data?: EventData) => void;
   onCancel: () => void;
 }
@@ -17,7 +20,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
   tickData,
   eventData,
   instruments,
-  setInstruments,
+  handleInstrumentsUpdate,
   onConfirm,
   onCancel,
 }) => {
@@ -65,8 +68,9 @@ const EventDialog: React.FC<EventDialogProps> = ({
 
   const handleAddNewInstrument = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value.trim()) {
-      setInstruments([...instruments, { name: e.currentTarget.value.trim() }]);
-      setInstrument(e.currentTarget.value.trim());
+      handleInstrumentsUpdate(e.currentTarget.value.trim(), false);
+      //   setInstruments([...instruments, { name: e.currentTarget.value.trim() }]);
+      //   setInstrument(e.currentTarget.value.trim());
       e.currentTarget.value = "";
       e.preventDefault();
     }
@@ -78,8 +82,9 @@ const EventDialog: React.FC<EventDialogProps> = ({
         `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${instrument}"?`
       )
     ) {
-      setInstruments(instruments.filter((inst) => inst.name !== instrument));
-      setInstrument(instruments[0]?.name || "");
+      handleInstrumentsUpdate(instrument, true);
+      //   setInstruments(instruments.filter((inst) => inst.name !== instrument));
+      //   setInstrument(instruments[0]?.name || "");
     }
   };
 
@@ -87,7 +92,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
     <div className="dialog-overlay">
       <div className="dialog">
         <h2>
-          {mode === "new" && "Create New Event"}
+          {mode === "new" && "Create New Event at beat " + tickData.beatIndex}
           {mode === "edit" && "Edit Event"}
           {mode === "delete" && "Delete Event"}
         </h2>
@@ -105,11 +110,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
         ) : (
           <div className="event-form">
             <form onSubmit={handleSubmit}>
-              <div>
-                <label>
-                  Beat: <strong>{tickData.beatIndex}</strong>
-                </label>
-              </div>
               <div className="instrument-row">
                 <label>
                   Instrument:
@@ -136,12 +136,14 @@ const EventDialog: React.FC<EventDialogProps> = ({
                 </div>
                 <div>
                   <button
+                    style={{ border: "none" }}
+                    disabled={instrument === ""}
                     type="button"
                     onClick={() => {
                       handleDeleteInstrument();
                     }}
                   >
-                    <Trash size={15} />
+                    <Trash size={18} style={{ color: "orange" }} />
                   </button>
                 </div>
               </div>

@@ -93,6 +93,8 @@ const App: React.FC = () => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
 
+  const [currentTickData, setCurrentTickData] = useState<TickData | null>(null);
+
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [selectedInstrument, setSelectedInstrument] = useState<string>("ALL");
 
@@ -444,6 +446,7 @@ const App: React.FC = () => {
   };
 
   const handleEditEvent = (tick: TickData, deleteEvent: boolean) => {
+    setCurrentTickData(tick);
     setShowEditEventDialog(true);
     console.log("Edit Event", tick, deleteEvent);
     // const existingEvent = songTimeLines.find(
@@ -484,6 +487,25 @@ const App: React.FC = () => {
     //     //   ]);
     //   }
     // }
+  };
+
+  const handleInstrumentsUpdate = (
+    instrument: string,
+    deleteInstrument: boolean
+  ) => {
+    if (deleteInstrument) {
+      setSongTimeLines((prevTimeLines) =>
+        prevTimeLines.filter((line) => line.instrument !== instrument)
+      );
+      setInstruments((prevInstruments) =>
+        prevInstruments.filter((inst) => inst.name !== instrument)
+      );
+    } else {
+      setInstruments((prevInstruments) => [
+        ...prevInstruments,
+        { name: instrument },
+      ]);
+    }
   };
 
   return (
@@ -918,12 +940,13 @@ const App: React.FC = () => {
         onConfirm: (data?: EventData) => void;
         onCancel: () => void;
       } */}
-      {showEditEventDialog && (
+      {showEditEventDialog && currentTickData && (
         <EventDialog
           mode="new"
-          tickData={{ beatIndex: 0, type: "beat" }}
+          tickData={currentTickData}
           instruments={instruments}
-          setInstruments={setInstruments}
+          // setInstruments={setInstruments}
+          handleInstrumentsUpdate={handleInstrumentsUpdate}
           onConfirm={(data) => {
             console.log("New Event", data);
           }}
