@@ -63,6 +63,7 @@ export interface EventData {
   instrument: string;
   message: string;
   countOut: number;
+  color: string;
 }
 
 export interface Instrument {

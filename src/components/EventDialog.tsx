@@ -34,6 +34,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
   const [countOut, setCountOut] = useState<number>(
     eventData ? eventData.countOut : 0
   );
+  const [color, setColor] = useState<string>(eventData?.color || "#000000");
   //   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
   // Reset form when eventData or mode changes
@@ -69,8 +70,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
   const handleAddNewInstrument = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value.trim()) {
       handleInstrumentsUpdate(e.currentTarget.value.trim(), false);
-      //   setInstruments([...instruments, { name: e.currentTarget.value.trim() }]);
-      //   setInstrument(e.currentTarget.value.trim());
       e.currentTarget.value = "";
       e.preventDefault();
     }
@@ -83,8 +82,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
       )
     ) {
       handleInstrumentsUpdate(instrument, true);
-      //   setInstruments(instruments.filter((inst) => inst.name !== instrument));
-      //   setInstrument(instruments[0]?.name || "");
     }
   };
 
@@ -146,6 +143,18 @@ const EventDialog: React.FC<EventDialogProps> = ({
                     <Trash size={18} style={{ color: "orange" }} />
                   </button>
                 </div>
+                <div>
+                  <div>
+                    <input
+                      type="color"
+                      value={color}
+                      onChange={(e) => {
+                        const newColor = e.target.value;
+                        setColor(newColor);
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="instrument-row">
@@ -175,11 +184,11 @@ const EventDialog: React.FC<EventDialogProps> = ({
                 </label>
               </div>
               <div className="dialog-actions">
-                <button type="submit">
-                  {mode === "new" ? "Create Event" : "Save Changes"}
-                </button>
                 <button type="button" onClick={onCancel}>
                   Cancel
+                </button>{" "}
+                <button disabled={message.trim() === ""} type="submit">
+                  {mode === "new" ? "Create Event" : "Save Changes"}
                 </button>
               </div>
             </form>

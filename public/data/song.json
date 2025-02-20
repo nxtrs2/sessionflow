@@ -17,49 +17,57 @@
       "beat": 24,
       "instrument": "SYNTH1",
       "message": "Melody Starts",
-      "countOut": 0
+      "countOut": 0,
+      "color": "#ff0000"
     },
     {
       "beat": 72,
       "instrument": "SYNTH2",
       "message": "Pizzicato",
-      "countOut": 0
+      "countOut": 0,
+      "color": "#00ff00"
     },
     {
       "beat": 96,
       "instrument": "SYNTH2",
       "message": "Stuccato",
-      "countOut": 0
+      "countOut": 0,
+      "color": "#00ff00"
     },
     {
       "beat": 117,
       "instrument": "DRUMS",
       "message": "CRASH COMING IN",
-      "countOut": 3
+      "countOut": 3,
+      "color": "#0000ff"
     },
     {
       "beat": 120,
       "instrument": "DRUMS",
       "message": "CRASH!",
-      "countOut": 0
+      "countOut": 0,
+      "color": "#0000ff"
     },
     {
       "beat": 144,
       "instrument": "DRUMS",
       "message": "CRASH!",
-      "countOut": 0
+      "countOut": 0,
+      "color": "#0000ff"
     },
     {
       "beat": 156,
       "instrument": "DRUMS",
       "message": "SLOW CRASH!",
-      "countOut": 0
+      "countOut": 0,
+      "color": "#0000ff"
     },
     {
       "beat": 159,
       "instrument": "DRUMS",
       "message": "DRUM ROLL IN",
-      "countOut": 6
+      "countOut": 6,
+      "color": "#0000ff"
     }
   ],
   "markers": [

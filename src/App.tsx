@@ -1,13 +1,4 @@
 import React, { useState, useRef, useEffect, ChangeEvent } from "react";
-import {
-  Rewind,
-  FastForward,
-  Play,
-  Pause,
-  SkipBack,
-  Repeat2,
-} from "lucide-react";
-
 import * as Tone from "tone";
 import "./App.css";
 import CountIn from "./components/CountIn";
@@ -22,7 +13,16 @@ import {
   TimeSignature,
   Structure,
   Instrument,
+  EventData,
 } from "./types";
+import {
+  Rewind,
+  FastForward,
+  Play,
+  Pause,
+  SkipBack,
+  Repeat2,
+} from "lucide-react";
 import { loadSongFromJson, handleFileChange } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
 import {
@@ -117,35 +117,6 @@ const App: React.FC = () => {
     animationFrameId = requestAnimationFrame(updateTime);
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
-
-  // useEffect(() => {
-  //   if (timeSignatureString && timeSignatureString.length > 0) {
-  //     setTimeSignature({
-  //       numerator: parseInt(timeSignatureString?.split("/")[0], 10),
-  //       denominator: parseInt(timeSignatureString?.split("/")[1], 10),
-  //     });
-  //   }
-  //   console.log("Time Signature changed", timeSignature, timeSignatureString);
-  // }, [timeSignatureString]);
-
-  // useEffect(() => {
-  //   // console.log("Updated Time SSS Signature", songData?.track.timeSignature);
-  // }, [songData?.track.timeSignature]);
-
-  // {
-  //   "fromBeat": 8,
-  //   "toBeat": 32,
-  //   "numerator": 3,
-  //   "denominator": 4,
-  //   "tempo": 130
-  // },
-  // {
-  //   "fromBeat": 32,
-  //   "toBeat": 64,
-  //   "numerator": 4,
-  //   "denominator": 4,
-  //   "tempo": 144
-  // }
 
   useEffect(() => {
     if (songData) {
@@ -446,47 +417,21 @@ const App: React.FC = () => {
   };
 
   const handleEditEvent = (tick: TickData, deleteEvent: boolean) => {
-    setCurrentTickData(tick);
-    setShowEditEventDialog(true);
-    console.log("Edit Event", tick, deleteEvent);
-    // const existingEvent = songTimeLines.find(
-    //   (line) => line.beat === tick.beatIndex
-    // );
-    // if (deleteEvent) {
-    //   if (existingEvent) {
-    //     const confirmDelete = window.confirm(
-    //       `Are you sure you want to delete the event for instrument "${existingEvent.instrument}"?`
-    //     );
-    //     if (confirmDelete) {
-    //       setSongTimeLines((prevEvents) =>
-    //         prevEvents.filter((event) => event.beat !== tick.beatIndex)
-    //       );
-    //     }
-    //   } else {
-    //     alert("No event found at this position to delete.");
-    //   }
-    // } else {
-    //   if (existingEvent) {
-    //     // Edit event
-    //     // const newLabel = prompt("Edit marker label:", existingMarker.label);
-    //     // if (newLabel) {
-    //     //   setMarkers((prevMarkers) =>
-    //     //     prevMarkers.map((marker) =>
-    //     //       marker.beat === tick.beatIndex
-    //     //         ? { ...marker, label: newLabel }
-    //     //         : marker
-    //     //     )
-    //     //   );
-    //   } else {
-    //     // Create new event
-    //     // const label = prompt("Enter marker label:");
-    //     // if (label) {
-    //     //   setMarkers((prevMarkers) => [
-    //     //     ...prevMarkers,
-    //     //     { label, beat: tick.beatIndex },
-    //     //   ]);
-    //   }
-    // }
+    if (deleteEvent) {
+      const confirmDelete = window.confirm(
+        `Are you sure you want to delete the event at beat ${tick.beatIndex}?`
+      );
+      if (confirmDelete) {
+        setSongTimeLines((prevTimeLines) =>
+          prevTimeLines.filter((line) => line.beat !== tick.beatIndex)
+        );
+        console.log("Event deleted at beat", tick.beatIndex);
+      }
+    } else {
+      setCurrentTickData(tick);
+      setShowEditEventDialog(true);
+      console.log("Edit Event", tick, deleteEvent);
+    }
   };
 
   const handleInstrumentsUpdate = (
@@ -506,6 +451,10 @@ const App: React.FC = () => {
         { name: instrument },
       ]);
     }
+  };
+
+  const handleAddEvent = (eventData: EventData) => {
+    setSongTimeLines((prevTimeLines) => [...prevTimeLines, eventData]);
   };
 
   return (
@@ -602,10 +551,10 @@ const App: React.FC = () => {
               {fileLoaded && (
                 <button
                   onClick={() => {
-                    setSelectedInstrument("All");
+                    setSelectedInstrument("ALL");
                   }}
                 >
-                  All
+                  ALL
                 </button>
               )}
 
@@ -932,14 +881,7 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
-      {/* interface EventDialogProps {
-        mode: Mode;
-        tickData: TickData;
-        eventData?: EventData; // for edit mode, the current event data
-        instruments: Instrument[];
-        onConfirm: (data?: EventData) => void;
-        onCancel: () => void;
-      } */}
+
       {showEditEventDialog && currentTickData && (
         <EventDialog
           mode="new"
@@ -948,6 +890,8 @@ const App: React.FC = () => {
           // setInstruments={setInstruments}
           handleInstrumentsUpdate={handleInstrumentsUpdate}
           onConfirm={(data) => {
+            handleAddEvent(data);
+            setShowEditEventDialog(false);
             console.log("New Event", data);
           }}
           onCancel={() => {
