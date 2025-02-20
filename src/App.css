@@ -610,6 +610,7 @@ select {
 }
 
 .dialog-overlay {
+  z-index: 199;
   position: fixed;
   top: 0;
   left: 0;
@@ -621,18 +622,51 @@ select {
   justify-content: center;
 }
 .dialog {
+  z-index: 210;
   background: var(--gradient-background);
   border: 1px solid slategray;
   padding: 20px;
   border-radius: 4px;
-  min-width: 300px;
+  min-width: 400px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
   gap: 20px;
 }
+.dialog input,
+select {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid slategray;
+}
+
 .dialog-actions {
   margin-top: 20px;
   display: flex;
+  justify-content: flex-end;
   gap: 10px;
+}
+
+.instrument-row {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  flex-wrap: wrap;
+}
+
+.instrument-row label {
+  margin: 0;
+  font-weight: bold;
+}
+
+.instrument-row select,
+.instrument-row input[type="text"],
+.instrument-row button {
+  font-size: 1rem;
+  padding: 5px;
+}
+
+.instrument-row input[type="text"] {
+  width: 120px;
 }

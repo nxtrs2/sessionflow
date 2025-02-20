@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { TickData, EventData, Instrument, Mode } from "../types";
+import { Delete, Trash } from "lucide-react";
 
 interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
   eventData?: EventData; // for edit mode, the current event data
   instruments: Instrument[];
+  setInstruments: (instruments: Instrument[]) => void;
   onConfirm: (data?: EventData) => void;
   onCancel: () => void;
 }
@@ -15,6 +17,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
   tickData,
   eventData,
   instruments,
+  setInstruments,
   onConfirm,
   onCancel,
 }) => {
@@ -60,6 +63,26 @@ const EventDialog: React.FC<EventDialogProps> = ({
     onConfirm();
   };
 
+  const handleAddNewInstrument = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && e.currentTarget.value.trim()) {
+      setInstruments([...instruments, { name: e.currentTarget.value.trim() }]);
+      setInstrument(e.currentTarget.value.trim());
+      e.currentTarget.value = "";
+      e.preventDefault();
+    }
+  };
+
+  const handleDeleteInstrument = () => {
+    if (
+      window.confirm(
+        `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${instrument}"?`
+      )
+    ) {
+      setInstruments(instruments.filter((inst) => inst.name !== instrument));
+      setInstrument(instruments[0]?.name || "");
+    }
+  };
+
   return (
     <div className="dialog-overlay">
       <div className="dialog">
@@ -80,57 +103,85 @@ const EventDialog: React.FC<EventDialogProps> = ({
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label>
-                Beat: <strong>{tickData.beatIndex}</strong>
-              </label>
-            </div>
-            <div>
-              <label>
-                Instrument:
-                <select
-                  value={instrument}
-                  onChange={(e) => setInstrument(e.target.value)}
-                >
-                  {instruments.map((inst, idx) => (
-                    <option key={idx} value={inst.name}>
-                      {inst.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <div>
-              <label>
-                Message:
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Enter message"
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Count-Out:
-                <input
-                  type="number"
-                  value={countOut}
-                  onChange={(e) => setCountOut(parseInt(e.target.value, 10))}
-                />
-              </label>
-            </div>
-            <div className="dialog-actions">
-              <button type="submit">
-                {mode === "new" ? "Create Event" : "Save Changes"}
-              </button>
-              <button type="button" onClick={onCancel}>
-                Cancel
-              </button>
-            </div>
-          </form>
+          <div className="event-form">
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label>
+                  Beat: <strong>{tickData.beatIndex}</strong>
+                </label>
+              </div>
+              <div className="instrument-row">
+                <label>
+                  Instrument:
+                  <select
+                    value={instrument}
+                    onChange={(e) => setInstrument(e.target.value)}
+                  >
+                    <option value="">None</option>
+                    {instruments.map((inst, idx) => (
+                      <option key={idx} value={inst.name}>
+                        {inst.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Add new instrument"
+                    onKeyDown={(e) => {
+                      handleAddNewInstrument(e);
+                    }}
+                  />
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDeleteInstrument();
+                    }}
+                  >
+                    <Trash size={15} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="instrument-row">
+                <label>Message:</label>
+                <div>
+                  <input
+                    style={{ width: "100%" }}
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Enter message"
+                  />
+                </div>
+              </div>
+              <div>
+                <label>
+                  Count-Out:
+                  <input
+                    style={{ width: "50px" }}
+                    type="number"
+                    value={countOut}
+                    onChange={(e) => {
+                      const value = Math.max(0, parseInt(e.target.value, 10));
+                      setCountOut(value);
+                    }}
+                  />
+                </label>
+              </div>
+              <div className="dialog-actions">
+                <button type="submit">
+                  {mode === "new" ? "Create Event" : "Save Changes"}
+                </button>
+                <button type="button" onClick={onCancel}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         )}
       </div>
     </div>

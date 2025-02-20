@@ -21,6 +21,7 @@ import {
   TickData,
   TimeSignature,
   Structure,
+  Instrument,
 } from "./types";
 import { loadSongFromJson, handleFileChange } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
@@ -55,7 +56,8 @@ const App: React.FC = () => {
 
   // Playback state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [editEvent, setEditEvent] = useState<boolean>(false);
+  const [showEditEventDialog, setShowEditEventDialog] =
+    useState<boolean>(false);
   const [canEdit, setCanEdit] = useState<boolean>(false);
   // const [songEnded, setSongEnded] = useState<boolean>(false);
 
@@ -90,6 +92,8 @@ const App: React.FC = () => {
   const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
+
+  const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [selectedInstrument, setSelectedInstrument] = useState<string>("ALL");
 
   const [showMessage, setShowMessage] = useState<boolean>(false);
@@ -160,12 +164,18 @@ const App: React.FC = () => {
       setTempo(songData.track.tempo);
       setSkipBeatsBy(songData.track.skipBeatsBy);
       setCountIn(songData.track.countIn);
-      setCanEdit(true);
+      setCanEdit(true); /* change this when user is logged in */
+      setInstruments(
+        Array.from(
+          new Set(songData.timeline.map((line) => line.instrument))
+        ).map((instrument) => ({ name: instrument }))
+      );
     }
   }, [songData]);
 
   useEffect(() => {
     if (duration && tempo && timeSignature) {
+      console.log("Instruments changed", instruments);
       // console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
@@ -178,7 +188,7 @@ const App: React.FC = () => {
       setLoopEnd(duration);
       setBeatData(newBeatData);
     }
-  }, [duration, tempo, timeSignature]);
+  }, [duration, tempo, timeSignature, instruments]);
 
   // When tempo changes, update Tone.Transport BPM.
   useEffect(() => {
@@ -434,7 +444,7 @@ const App: React.FC = () => {
   };
 
   const handleEditEvent = (tick: TickData, deleteEvent: boolean) => {
-    setEditEvent(true);
+    setShowEditEventDialog(true);
     console.log("Edit Event", tick, deleteEvent);
     // const existingEvent = songTimeLines.find(
     //   (line) => line.beat === tick.beatIndex
@@ -568,24 +578,28 @@ const App: React.FC = () => {
             />
             <div className="timeline-footer">
               {fileLoaded && (
-                <button onClick={() => setSelectedInstrument("ALL")}>
-                  ALL
+                <button
+                  onClick={() => {
+                    setSelectedInstrument("All");
+                  }}
+                >
+                  All
                 </button>
               )}
-              {songTimeLines.length > 0 &&
-                Array.from(
-                  new Set(songTimeLines.map((line) => line.instrument))
-                ).map((instrument, index) => (
+
+              {fileLoaded &&
+                instruments.length > 0 &&
+                instruments.map((instrument, index) => (
                   <button
                     key={index}
                     onClick={() => {
                       console.log(selectedInstrument);
-                      setSelectedInstrument(instrument);
+                      setSelectedInstrument(instrument.name);
                     }}
                   >
-                    {instrument}
+                    {instrument.name}
                   </button>
-                ))}{" "}
+                ))}
             </div>
           </div>
         </div>
@@ -635,7 +649,7 @@ const App: React.FC = () => {
                           setIsPlaying(!isPlaying);
 
                           if (loop) {
-                            console.log("Looping");
+                            //console.log("Looping");
                             togglePlayPauseWithLoop(
                               isPlaying,
                               beatData[loopStart].time,
@@ -645,7 +659,7 @@ const App: React.FC = () => {
                               setIsPlaying
                             );
                           } else {
-                            console.log("Not Looping");
+                            //console.log("Not Looping");
                             togglePlayPause(
                               isPlaying,
                               countIn,
@@ -904,20 +918,17 @@ const App: React.FC = () => {
         onConfirm: (data?: EventData) => void;
         onCancel: () => void;
       } */}
-      {editEvent && (
+      {showEditEventDialog && (
         <EventDialog
           mode="new"
           tickData={{ beatIndex: 0, type: "beat" }}
-          instruments={[
-            { name: "Kick" },
-            { name: "Snare" },
-            { name: "Hi-Hat" },
-          ]}
+          instruments={instruments}
+          setInstruments={setInstruments}
           onConfirm={(data) => {
             console.log("New Event", data);
           }}
           onCancel={() => {
-            setEditEvent(false);
+            setShowEditEventDialog(false);
           }}
         />
       )}
