@@ -140,6 +140,7 @@ const App: React.FC = () => {
       setCountIn(songData.track.countIn);
       setCanEdit(true); /* change this when user is logged in */
       setInstruments(songData.instruments);
+      handleRestart(setCurrentTime, setIsPlaying);
     }
   }, [songData]);
 
@@ -155,7 +156,8 @@ const App: React.FC = () => {
         structure,
         songTimeLines
       );
-      setLoopEnd(duration);
+      // setLoopEnd(duration);
+      setLoopEnd(newBeatData.length - 1);
       setBeatData(newBeatData);
     }
   }, [duration, tempo, timeSignature, instruments]);
@@ -609,14 +611,14 @@ const App: React.FC = () => {
             >
               Markers
             </button>
-            <button
+            {/* <button
               onClick={() => setActiveTab("settings")}
               style={{
                 color: activeTab === "events" ? "yellow" : "lightgray",
               }}
             >
               Events
-            </button>
+            </button> */}
           </div>
           {activeTab === "track" && (
             <div className="main-content">
@@ -761,7 +763,7 @@ const App: React.FC = () => {
                             {marker.label}
                           </option>
                         ))}
-                        <option value={duration}>End</option>
+                        <option value={loopEnd}>End</option>
                       </select>
                     </label>
                   </div>
