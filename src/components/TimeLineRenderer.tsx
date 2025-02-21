@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { TimeLineData, MarkerData, TickData } from "../types";
+import { TimeLineData, MarkerData, TickData, Instrument } from "../types";
 
 // Render a tick as a div positioned from the top.
 export const renderTick2 = (
@@ -11,7 +11,8 @@ export const renderTick2 = (
   beatsPerBar: number,
   skipBeats: number,
   currentBeat: number,
-  selectedInstrument: string | "ALL",
+  instruments: Instrument[],
+  selectedInstrument: Instrument | null,
   eneableEditing: boolean,
   editMarker: (tick: TickData, deleteMarker: boolean) => void,
   editEvent: (tick: TickData, deleteEvent: boolean) => void
@@ -21,10 +22,10 @@ export const renderTick2 = (
     (timeline) => timeline.beat === tick.beatIndex
   );
   const filteredTimelines =
-    selectedInstrument === "ALL"
+    selectedInstrument === null
       ? timelines
       : timelines.filter(
-          (timeline) => timeline.instrument === selectedInstrument
+          (timeline) => timeline.instrument === selectedInstrument.name
         );
   const topPos = tick.beatIndex * pixelsPerBeat;
   const tickStyle: CSSProperties = {
@@ -42,6 +43,21 @@ export const renderTick2 = (
     tickStyle.width = "50px";
     tickStyle.height = "1px";
   }
+
+  const color =
+    instruments.find(
+      (instrument) =>
+        instrument.name ===
+        timelines.find((timeline) => timeline.beat === tick.beatIndex)
+          ?.instrument
+    )?.color || "white";
+  const bgcolor =
+    instruments.find(
+      (instrument) =>
+        instrument.name ===
+        timelines.find((timeline) => timeline.beat === tick.beatIndex)
+          ?.instrument
+    )?.bgcolor || "black";
 
   return (
     <div key={index} style={tickStyle}>
@@ -73,7 +89,10 @@ export const renderTick2 = (
           }`}
           style={
             Math.floor(currentBeat) < tick.beatIndex
-              ? { color: "white" }
+              ? {
+                  color: color || "white",
+                  backgroundColor: bgcolor || "black",
+                }
               : { color: "gray" }
           }
         >

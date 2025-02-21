@@ -8,7 +8,7 @@ interface EventDialogProps {
   eventData?: EventData; // for edit mode, the current event data
   instruments: Instrument[];
   handleInstrumentsUpdate: (
-    instrument: string,
+    instrument: Instrument,
     deleteInstrument: boolean
   ) => void;
   onConfirm: (data?: EventData) => void;
@@ -34,7 +34,12 @@ const EventDialog: React.FC<EventDialogProps> = ({
   const [countOut, setCountOut] = useState<number>(
     eventData ? eventData.countOut : 0
   );
-  const [color, setColor] = useState<string>(eventData?.color || "#000000");
+  const [color, setColor] = useState<string>(
+    instruments.length > 0 ? instruments[0].color || "#000000" : "#000000"
+  );
+  const [bgcolor, setBgColor] = useState<string>(
+    instruments.length > 0 ? instruments[0].bgcolor || "#FFFFFF" : "#FFFFFF"
+  );
   //   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
   // Reset form when eventData or mode changes
@@ -67,11 +72,37 @@ const EventDialog: React.FC<EventDialogProps> = ({
     onConfirm();
   };
 
+  const handleSetInstrument = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedInstrument = instruments.find(
+      (inst) => inst.name === e.target.value
+    );
+    if (selectedInstrument) {
+      setInstrument(selectedInstrument.name);
+      setColor(selectedInstrument.color);
+      setBgColor(selectedInstrument.bgcolor);
+    }
+  };
+
+  const handleUpdateInstrument = (newInstrument: Instrument) => {
+    handleInstrumentsUpdate(newInstrument, false);
+    setInstrument(newInstrument.name);
+    setColor(newInstrument.color);
+    setBgColor(newInstrument.bgcolor);
+  };
+
   const handleAddNewInstrument = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.currentTarget.value.trim()) {
-      handleInstrumentsUpdate(e.currentTarget.value.trim(), false);
-      e.currentTarget.value = "";
-      e.preventDefault();
+    if (e.key === "Enter") {
+      const newInstrument = e.currentTarget.value.trim();
+      if (newInstrument !== "") {
+        const newInst: Instrument = {
+          name: newInstrument,
+          color: color || "#000000",
+          bgcolor: bgcolor || "#FFFFFF",
+        };
+        handleInstrumentsUpdate(newInst, false);
+        setInstrument(newInstrument);
+        e.currentTarget.value = "";
+      }
     }
   };
 
@@ -81,7 +112,12 @@ const EventDialog: React.FC<EventDialogProps> = ({
         `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${instrument}"?`
       )
     ) {
-      handleInstrumentsUpdate(instrument, true);
+      const instrumentToDelete = instruments.find(
+        (inst) => inst.name === instrument
+      );
+      if (instrumentToDelete) {
+        handleInstrumentsUpdate(instrumentToDelete, true);
+      }
     }
   };
 
@@ -112,9 +148,8 @@ const EventDialog: React.FC<EventDialogProps> = ({
                   Instrument:
                   <select
                     value={instrument}
-                    onChange={(e) => setInstrument(e.target.value)}
+                    onChange={(e) => handleSetInstrument(e)}
                   >
-                    <option value="">None</option>
                     {instruments.map((inst, idx) => (
                       <option key={idx} value={inst.name}>
                         {inst.name}
@@ -143,17 +178,33 @@ const EventDialog: React.FC<EventDialogProps> = ({
                     <Trash size={18} style={{ color: "orange" }} />
                   </button>
                 </div>
+              </div>
+              <div className="instrument-row">
                 <div>
-                  <div>
-                    <input
-                      type="color"
-                      value={color}
-                      onChange={(e) => {
-                        const newColor = e.target.value;
-                        setColor(newColor);
-                      }}
-                    />
-                  </div>
+                  <label>Text Colour:</label>
+                  <input
+                    type="color"
+                    value={color}
+                    onChange={(e) => {
+                      const newColor = e.target.value;
+                      handleUpdateInstrument({
+                        name: instrument,
+                        color: newColor,
+                        bgcolor,
+                      });
+                    }}
+                  />
+                </div>
+                <div>
+                  <label>Bg Colour:</label>
+                  <input
+                    type="color"
+                    value={bgcolor}
+                    onChange={(e) => {
+                      const newColor = e.target.value;
+                      setBgColor(newColor);
+                    }}
+                  />
                 </div>
               </div>
 

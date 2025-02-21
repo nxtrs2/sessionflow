@@ -154,8 +154,11 @@ body {
 
 .tick-message {
   position: absolute;
-  width: 450px;
+  width: max-content;
+  /* width: 550px; */
+  /* width: 50vw; */
   top: -15px;
+  left: 20vw;
   text-align: center;
   font-size: 25px;
   color: #ffffff;
@@ -163,9 +166,10 @@ body {
 
 .marker-label {
   position: absolute;
+  padding-right: 25px;
   height: 1px;
-  left: 50px;
-  width: 100px;
+  left: 0;
+  width: 50vw;
   text-align: right;
   color: #0bf681;
   border-bottom: 2px dotted #0ea057;
@@ -599,13 +603,22 @@ select {
     flex: 1;
     padding: 10px;
   }
+
   .marker-label {
-    width: 100px;
+    position: absolute;
+    padding-right: 5px;
+    height: 1px;
+    width: 100vw;
+    left: 0;
   }
 
   .hoverDiv {
     width: 100vw;
     padding-right: 20px;
+  }
+
+  .tick-message {
+    left: 35vw;
   }
 }
 
@@ -660,6 +673,7 @@ select {
   align-items: center;
   gap: 0px;
   flex-wrap: wrap;
+  /* border: 1px solid #fff; */
 }
 
 .instrument-row label {

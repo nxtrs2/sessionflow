@@ -96,7 +96,8 @@ const App: React.FC = () => {
   const [currentTickData, setCurrentTickData] = useState<TickData | null>(null);
 
   const [instruments, setInstruments] = useState<Instrument[]>([]);
-  const [selectedInstrument, setSelectedInstrument] = useState<string>("ALL");
+  const [selectedInstrument, setSelectedInstrument] =
+    useState<Instrument | null>(null);
 
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -138,11 +139,7 @@ const App: React.FC = () => {
       setSkipBeatsBy(songData.track.skipBeatsBy);
       setCountIn(songData.track.countIn);
       setCanEdit(true); /* change this when user is logged in */
-      setInstruments(
-        Array.from(
-          new Set(songData.timeline.map((line) => line.instrument))
-        ).map((instrument) => ({ name: instrument }))
-      );
+      setInstruments(songData.instruments);
     }
   }, [songData]);
 
@@ -435,25 +432,25 @@ const App: React.FC = () => {
   };
 
   const handleInstrumentsUpdate = (
-    instrument: string,
+    instrument: Instrument,
     deleteInstrument: boolean
   ) => {
     if (deleteInstrument) {
       setSongTimeLines((prevTimeLines) =>
-        prevTimeLines.filter((line) => line.instrument !== instrument)
+        prevTimeLines.filter((line) => line.instrument !== instrument.name)
       );
       setInstruments((prevInstruments) =>
-        prevInstruments.filter((inst) => inst.name !== instrument)
+        prevInstruments.filter((inst) => inst.name !== instrument.name)
       );
     } else {
-      setInstruments((prevInstruments) => [
-        ...prevInstruments,
-        { name: instrument },
-      ]);
+      setInstruments((prevInstruments) => [...prevInstruments, instrument]);
     }
   };
 
-  const handleAddEvent = (eventData: EventData) => {
+  const handleAddEvent = (eventData: EventData | undefined) => {
+    if (!eventData) {
+      return;
+    }
     setSongTimeLines((prevTimeLines) => [...prevTimeLines, eventData]);
   };
 
@@ -534,6 +531,7 @@ const App: React.FC = () => {
                     beatsPerBar,
                     skipBeats,
                     currentBeat,
+                    instruments,
                     selectedInstrument,
                     !isPlaying && canEdit,
                     handleAddEditMarker,
@@ -551,7 +549,7 @@ const App: React.FC = () => {
               {fileLoaded && (
                 <button
                   onClick={() => {
-                    setSelectedInstrument("ALL");
+                    setSelectedInstrument(null);
                   }}
                 >
                   ALL
@@ -564,8 +562,8 @@ const App: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => {
-                      console.log(selectedInstrument);
-                      setSelectedInstrument(instrument.name);
+                      console.log(":->", instrument);
+                      setSelectedInstrument(instrument);
                     }}
                   >
                     {instrument.name}
@@ -887,7 +885,6 @@ const App: React.FC = () => {
           mode="new"
           tickData={currentTickData}
           instruments={instruments}
-          // setInstruments={setInstruments}
           handleInstrumentsUpdate={handleInstrumentsUpdate}
           onConfirm={(data) => {
             handleAddEvent(data);

@@ -32,6 +32,7 @@ export interface SongData {
     skipBeats: number;
   };
   structure: Structure[];
+  instruments: Instrument[];
   timeline: TimeLineData[];
   markers: MarkerData[];
 }
@@ -63,11 +64,12 @@ export interface EventData {
   instrument: string;
   message: string;
   countOut: number;
-  color: string;
 }
 
 export interface Instrument {
   name: string;
+  color: string;
+  bgcolor: string;
 }
 
 export type Mode = "edit" | "new" | "delete";

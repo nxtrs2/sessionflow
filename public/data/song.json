@@ -12,62 +12,59 @@
     "skipBeats": 0
   },
   "structure": [],
+  "instruments": [
+    { "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },
+    { "name": "DRUMS", "color": "#000000", "bgcolor": "#00ff00" },
+    { "name": "SYNTH2", "color": "#000000", "bgcolor": "#00ffff" }
+  ],
   "timeline": [
     {
       "beat": 24,
       "instrument": "SYNTH1",
       "message": "Melody Starts",
-      "countOut": 0,
-      "color": "#ff0000"
+      "countOut": 0
     },
     {
       "beat": 72,
       "instrument": "SYNTH2",
       "message": "Pizzicato",
-      "countOut": 0,
-      "color": "#00ff00"
+      "countOut": 0
     },
     {
       "beat": 96,
       "instrument": "SYNTH2",
       "message": "Stuccato",
-      "countOut": 0,
-      "color": "#00ff00"
+      "countOut": 0
     },
     {
       "beat": 117,
       "instrument": "DRUMS",
       "message": "CRASH COMING IN",
-      "countOut": 3,
-      "color": "#0000ff"
+      "countOut": 3
     },
     {
       "beat": 120,
       "instrument": "DRUMS",
       "message": "CRASH!",
-      "countOut": 0,
-      "color": "#0000ff"
+      "countOut": 0
     },
     {
       "beat": 144,
       "instrument": "DRUMS",
       "message": "CRASH!",
-      "countOut": 0,
-      "color": "#0000ff"
+      "countOut": 0
     },
     {
       "beat": 156,
       "instrument": "DRUMS",
       "message": "SLOW CRASH!",
-      "countOut": 0,
-      "color": "#0000ff"
+      "countOut": 0
     },
     {
       "beat": 159,
       "instrument": "DRUMS",
       "message": "DRUM ROLL IN",
-      "countOut": 6,
-      "color": "#0000ff"
+      "countOut": 6
     }
   ],
   "markers": [
