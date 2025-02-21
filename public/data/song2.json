@@ -12,6 +12,11 @@
     "skipBeats": 0
   },
   "structure": [],
+  "instruments": [
+    { "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },
+    { "name": "DRUMS", "color": "#000000", "bgcolor": "#00ff00" },
+    { "name": "BASS", "color": "#000000", "bgcolor": "#00ffff" }
+  ],
   "timeline": [
     {
       "beat": 16,
@@ -40,38 +45,38 @@
     {
       "beat": 61,
       "instrument": "SYNTH1",
-      "message": "CRASH!",
+      "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 63,
       "instrument": "SYNTH1",
-      "message": "CRASH!",
+      "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 64,
       "instrument": "SYNTH1",
-      "message": "CRASH!",
+      "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 78,
       "instrument": "DRUMS",
-      "message": "CRASH!",
+      "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 79,
       "instrument": "DRUMS",
-      "message": "CRASH!",
+      "message": "CYM CRASH!",
       "countOut": 0
     },
 
     {
       "beat": 80,
       "instrument": "DRUMS",
-      "message": "CRASH!",
+      "message": "CYM CRASH!",
       "countOut": 0
     },
     {

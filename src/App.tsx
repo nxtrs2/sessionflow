@@ -145,7 +145,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (duration && tempo && timeSignature) {
-      console.log("Instruments changed", instruments);
+      //console.log("Instruments changed", instruments);
       // console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
@@ -443,7 +443,18 @@ const App: React.FC = () => {
         prevInstruments.filter((inst) => inst.name !== instrument.name)
       );
     } else {
-      setInstruments((prevInstruments) => [...prevInstruments, instrument]);
+      setInstruments((prevInstruments) => {
+        const existingInstrumentIndex = prevInstruments.findIndex(
+          (inst) => inst.name === instrument.name
+        );
+        if (existingInstrumentIndex !== -1) {
+          const updatedInstruments = [...prevInstruments];
+          updatedInstruments[existingInstrumentIndex] = instrument;
+          return updatedInstruments;
+        } else {
+          return [...prevInstruments, instrument];
+        }
+      });
     }
   };
 

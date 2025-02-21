@@ -202,7 +202,11 @@ const EventDialog: React.FC<EventDialogProps> = ({
                     value={bgcolor}
                     onChange={(e) => {
                       const newColor = e.target.value;
-                      setBgColor(newColor);
+                      handleUpdateInstrument({
+                        name: instrument,
+                        color,
+                        bgcolor: newColor,
+                      });
                     }}
                   />
                 </div>
