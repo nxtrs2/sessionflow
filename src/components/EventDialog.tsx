@@ -61,6 +61,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
     const newEvent: EventData = {
       beat: tickData.beatIndex,
       instrument,
+      instrumentId: null,
       message,
       countOut,
     };
@@ -95,6 +96,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
       const newInstrument = e.currentTarget.value.trim();
       if (newInstrument !== "") {
         const newInst: Instrument = {
+          id: 0,
           name: newInstrument,
           color: color || "#000000",
           bgcolor: bgcolor || "#FFFFFF",
@@ -187,7 +189,11 @@ const EventDialog: React.FC<EventDialogProps> = ({
                     value={color}
                     onChange={(e) => {
                       const newColor = e.target.value;
+                      const instrumentToUpdate = instruments.find(
+                        (inst) => inst.name === instrument
+                      );
                       handleUpdateInstrument({
+                        id: instrumentToUpdate?.id || 0,
                         name: instrument,
                         color: newColor,
                         bgcolor,
@@ -202,7 +208,11 @@ const EventDialog: React.FC<EventDialogProps> = ({
                     value={bgcolor}
                     onChange={(e) => {
                       const newColor = e.target.value;
+                      const instrumentToUpdate = instruments.find(
+                        (inst) => inst.name === instrument
+                      );
                       handleUpdateInstrument({
+                        id: instrumentToUpdate?.id || 0,
                         name: instrument,
                         color,
                         bgcolor: newColor,

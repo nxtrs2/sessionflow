@@ -70,7 +70,8 @@ h6 {
 }
 
 :root {
-  --gradient-background: linear-gradient(135deg, #2e2a4b, #000);
+  --gradient-background: linear-gradient(135deg, #332f53, #000);
+  --gradient-background-reverse: linear-gradient(90deg, #211e35, #2e2a4b);
   --gradient-background-light: linear-gradient(135deg, #4c4c4c, #252525);
   background-size: 10px 10px;
 }
@@ -284,16 +285,37 @@ button {
 /* Settings.css */
 .settings {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 10px;
   width: 100%;
   justify-content: flex-start;
-  align-items: center;
+
   background: var(--gradient-background);
   padding: 1rem;
   border-radius: 20px;
   border: 1px solid black;
+  margin-bottom: 10px;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  /* align-items: start; */
+  align-items: center;
+  background: var(--gradient-background-reverse);
+  padding: 1rem;
+  border-radius: 10px;
+  border: none;
+}
+
+.settings h2 {
+  font-size: larger;
+  text-transform: uppercase;
+  color: black;
+  font-weight: bold;
 }
 
 .settings label {
@@ -304,7 +326,7 @@ button {
 .settings input[type="number"] {
   margin-left: 0.5rem;
   padding: 0.3rem 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid #454545;
   border-radius: 4px;
   font-size: 1rem;
   width: 100px;

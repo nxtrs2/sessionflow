@@ -9,6 +9,7 @@ export interface Structure {
 export interface TimeLineData {
   beat: number;
   instrument: string;
+  instrumentId: number;
   message: string;
   countOut: number;
 }
@@ -62,11 +63,13 @@ export interface TickData {
 export interface EventData {
   beat: number;
   instrument: string;
+  instrumentId: number | null;
   message: string;
   countOut: number;
 }
 
 export interface Instrument {
+  id: number;
   name: string;
   color: string;
   bgcolor: string;

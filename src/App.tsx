@@ -34,6 +34,7 @@ import {
 } from "./helpers/TransportFunctions";
 import Loader from "./components/Loader";
 import EventDialog from "./components/EventDialog";
+import Settings from "./components/Settings";
 
 const App: React.FC = () => {
   // Tone.Player reference
@@ -146,7 +147,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (duration && tempo && timeSignature) {
-      //console.log("Instruments changed", instruments);
+      console.log("Instruments changed", instruments);
       // console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
@@ -439,10 +440,10 @@ const App: React.FC = () => {
   ) => {
     if (deleteInstrument) {
       setSongTimeLines((prevTimeLines) =>
-        prevTimeLines.filter((line) => line.instrument !== instrument.name)
+        prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
       );
       setInstruments((prevInstruments) =>
-        prevInstruments.filter((inst) => inst.name !== instrument.name)
+        prevInstruments.filter((inst) => inst.id !== instrument.id)
       );
     } else {
       setInstruments((prevInstruments) => {
@@ -825,46 +826,54 @@ const App: React.FC = () => {
               {audioSrc && (
                 <>
                   <div className="settings">
-                    <label>
-                      Count-In:
-                      <input
-                        type="number"
-                        value={countIn}
-                        onChange={(e) =>
-                          setCountIn(parseInt(e.target.value, 10))
-                        }
-                      />
-                    </label>
-                    <label>
-                      Tempo (BPM):&nbsp;
-                      <input
-                        type="number"
-                        value={tempo}
-                        onChange={handleTempoChange}
-                      />
-                    </label>
+                    <h2>Global</h2>
+                    <div className="settings-section">
+                      <label>
+                        Tempo (BPM):&nbsp;
+                        <input
+                          type="number"
+                          value={tempo}
+                          onChange={handleTempoChange}
+                        />
+                      </label>
 
-                    <label>
-                      Time Sig:&nbsp;
-                      <select
-                        value={timeSignatureString}
-                        onChange={handleTimeSignatureChange}
-                      >
-                        <option value="4/4">4/4</option>
-                        <option value="3/4">3/4</option>
-                        <option value="6/8">6/8</option>
-                      </select>
-                    </label>
-
-                    <label>
-                      Skip Beats (at Start):&nbsp;
-                      <input
-                        type="number"
-                        value={skipBeats}
-                        onChange={handleSkipBeatsChange}
-                      />
-                    </label>
+                      <label>
+                        Time Sig:&nbsp;
+                        <select
+                          value={timeSignatureString}
+                          onChange={handleTimeSignatureChange}
+                        >
+                          <option value="4/4">4/4</option>
+                          <option value="3/4">3/4</option>
+                          <option value="6/8">6/8</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div className="settings-section">
+                      <label>
+                        Count-In:
+                        <input
+                          type="number"
+                          value={countIn}
+                          onChange={(e) =>
+                            setCountIn(parseInt(e.target.value, 10))
+                          }
+                        />
+                      </label>
+                      <label>
+                        Skip Beats (at Start):&nbsp;
+                        <input
+                          type="number"
+                          value={skipBeats}
+                          onChange={handleSkipBeatsChange}
+                        />
+                      </label>
+                    </div>
                   </div>
+                  <Settings
+                    instruments={instruments}
+                    handleInstrumentsUpdate={handleInstrumentsUpdate}
+                  />
                 </>
               )}
             </div>
