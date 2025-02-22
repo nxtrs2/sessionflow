@@ -907,7 +907,6 @@ const App: React.FC = () => {
           mode="new"
           tickData={currentTickData}
           instruments={instruments}
-          handleInstrumentsUpdate={handleInstrumentsUpdate}
           onConfirm={(data) => {
             handleAddEvent(data);
             setShowEditEventDialog(false);

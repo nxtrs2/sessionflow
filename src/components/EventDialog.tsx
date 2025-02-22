@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { TickData, EventData, Instrument, Mode } from "../types";
-import { Trash } from "lucide-react";
 
 interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
   eventData?: EventData; // for edit mode, the current event data
   instruments: Instrument[];
-  handleInstrumentsUpdate: (
-    instrument: Instrument,
-    deleteInstrument: boolean
-  ) => void;
   onConfirm: (data?: EventData) => void;
   onCancel: () => void;
 }
@@ -20,7 +15,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
   tickData,
   eventData,
   instruments,
-  handleInstrumentsUpdate,
   onConfirm,
   onCancel,
 }) => {
@@ -84,45 +78,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
     }
   };
 
-  const handleUpdateInstrument = (newInstrument: Instrument) => {
-    handleInstrumentsUpdate(newInstrument, false);
-    setInstrument(newInstrument.name);
-    setColor(newInstrument.color);
-    setBgColor(newInstrument.bgcolor);
-  };
-
-  const handleAddNewInstrument = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      const newInstrument = e.currentTarget.value.trim();
-      if (newInstrument !== "") {
-        const newInst: Instrument = {
-          id: 0,
-          name: newInstrument,
-          color: color || "#000000",
-          bgcolor: bgcolor || "#FFFFFF",
-        };
-        handleInstrumentsUpdate(newInst, false);
-        setInstrument(newInstrument);
-        e.currentTarget.value = "";
-      }
-    }
-  };
-
-  const handleDeleteInstrument = () => {
-    if (
-      window.confirm(
-        `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${instrument}"?`
-      )
-    ) {
-      const instrumentToDelete = instruments.find(
-        (inst) => inst.name === instrument
-      );
-      if (instrumentToDelete) {
-        handleInstrumentsUpdate(instrumentToDelete, true);
-      }
-    }
-  };
-
   return (
     <div className="dialog-overlay">
       <div className="dialog">
@@ -159,66 +114,19 @@ const EventDialog: React.FC<EventDialogProps> = ({
                     ))}
                   </select>
                 </label>
+
                 <div>
-                  <input
-                    type="text"
-                    placeholder="Add new instrument"
-                    onKeyDown={(e) => {
-                      handleAddNewInstrument(e);
-                    }}
-                  />
-                </div>
-                <div>
-                  <button
-                    style={{ border: "none" }}
-                    disabled={instrument === ""}
-                    type="button"
-                    onClick={() => {
-                      handleDeleteInstrument();
+                  <p
+                    style={{
+                      marginLeft: "1em",
+                      color: color,
+                      backgroundColor: bgcolor,
+                      padding: "0.2em",
+                      borderRadius: "5px",
                     }}
                   >
-                    <Trash size={18} style={{ color: "orange" }} />
-                  </button>
-                </div>
-              </div>
-              <div className="instrument-row">
-                <div>
-                  <label>Text Colour:</label>
-                  <input
-                    type="color"
-                    value={color}
-                    onChange={(e) => {
-                      const newColor = e.target.value;
-                      const instrumentToUpdate = instruments.find(
-                        (inst) => inst.name === instrument
-                      );
-                      handleUpdateInstrument({
-                        id: instrumentToUpdate?.id || 0,
-                        name: instrument,
-                        color: newColor,
-                        bgcolor,
-                      });
-                    }}
-                  />
-                </div>
-                <div>
-                  <label>Bg Colour:</label>
-                  <input
-                    type="color"
-                    value={bgcolor}
-                    onChange={(e) => {
-                      const newColor = e.target.value;
-                      const instrumentToUpdate = instruments.find(
-                        (inst) => inst.name === instrument
-                      );
-                      handleUpdateInstrument({
-                        id: instrumentToUpdate?.id || 0,
-                        name: instrument,
-                        color,
-                        bgcolor: newColor,
-                      });
-                    }}
-                  />
+                    SAMPLE TEXT
+                  </p>
                 </div>
               </div>
 
