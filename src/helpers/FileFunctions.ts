@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 import { ChangeEvent } from "react";
-import { SetAudioSrc, SetDuration, SongData } from "../types";
+import { SetAudioSrc, SetDuration } from "../types";
 
 export const loadSongFromJson = (
   file: string,

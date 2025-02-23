@@ -29,7 +29,7 @@ export function generateBeatData(
         message: "",
         countOut: 0,
         tempo: defaultTempo,
-        instrument: "",
+        instrumentId: null,
       });
     }
   }
@@ -95,7 +95,7 @@ export function generateBeatData(
       hasMessage: timelineEntry ? timelineEntry.message.length > 0 : false,
       message: timelineEntry ? timelineEntry.message : "",
       countOut: timelineEntry ? timelineEntry.countOut : 0,
-      instrument: timelineEntry ? timelineEntry.instrument : "",
+      instrumentId: timelineEntry ? timelineEntry.instrumentId : null,
       tempo: currentTempo,
     });
 

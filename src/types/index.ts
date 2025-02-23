@@ -51,7 +51,7 @@ export interface BeatData {
   bar: number;
   isBarStart: boolean;
   time: number;
-  instrument: string;
+  instrumentId: number | null;
   hasMessage: boolean;
   message: string;
   countOut: number;
