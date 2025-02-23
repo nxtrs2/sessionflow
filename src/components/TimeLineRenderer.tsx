@@ -25,7 +25,7 @@ export const renderTick2 = (
     selectedInstrument === null
       ? timelines
       : timelines.filter(
-          (timeline) => timeline.instrument === selectedInstrument.name
+          (timeline) => timeline.instrumentId === selectedInstrument.id
         );
   const topPos = tick.beatIndex * pixelsPerBeat;
   const tickStyle: CSSProperties = {
@@ -126,11 +126,15 @@ export const renderTick2 = (
       </span>
       {eneableEditing && (
         <div className="hoverDiv">
-          <button onClick={() => editMarker(tick, false)}>+ Marker</button>
+          {!isMarker && (
+            <button onClick={() => editMarker(tick, false)}>+ Marker</button>
+          )}
           {isMarker && (
             <button onClick={() => editMarker(tick, true)}>- Marker</button>
           )}
-          <button onClick={() => editEvent(tick, false)}>+ Event</button>
+          {selectedInstrument && (
+            <button onClick={() => editEvent(tick, false)}>+ Event</button>
+          )}
           {isTimelineEvent && (
             <button onClick={() => editEvent(tick, true)}>- Event</button>
           )}

@@ -61,7 +61,7 @@ const App: React.FC = () => {
   const [canEdit, setCanEdit] = useState<boolean>(false);
   // const [songEnded, setSongEnded] = useState<boolean>(false);
 
-  const [loop, setLoop] = useState<boolean>(false);
+  const [loop, setLoop] = useState<boolean>(true);
   const [loopStart, setLoopStart] = useState<number>(0);
   const [loopEnd, setLoopEnd] = useState<number>(0);
 
@@ -145,8 +145,9 @@ const App: React.FC = () => {
   }, [songData]);
 
   useEffect(() => {
+    console.log("Song TimeLines changed", songTimeLines);
     if (duration && tempo && timeSignature) {
-      console.log("Instruments changed", instruments);
+      //console.log("Instruments changed", instruments);
       // console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
@@ -160,7 +161,7 @@ const App: React.FC = () => {
       setLoopEnd(newBeatData.length - 1);
       setBeatData(newBeatData);
     }
-  }, [duration, tempo, timeSignature, instruments]);
+  }, [duration, tempo, timeSignature, instruments, songTimeLines]);
 
   // When tempo changes, update Tone.Transport BPM.
   useEffect(() => {
@@ -575,7 +576,7 @@ const App: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => {
-                      console.log(":->", instrument);
+                      //console.log(":->", instrument);
                       setSelectedInstrument(instrument);
                     }}
                   >
@@ -905,7 +906,8 @@ const App: React.FC = () => {
         <EventDialog
           mode="new"
           tickData={currentTickData}
-          instruments={instruments}
+          // instruments={instruments}
+          selectedInstrument={selectedInstrument}
           setSongTimeLines={setSongTimeLines}
           setShowEventDialog={setShowEditEventDialog}
         />

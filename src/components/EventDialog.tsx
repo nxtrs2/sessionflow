@@ -5,7 +5,8 @@ interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
   eventData?: EventData; // for edit mode, the current event data
-  instruments: Instrument[];
+  //   instruments: Instrument[];
+  selectedInstrument: Instrument | null;
   setSongTimeLines: React.Dispatch<React.SetStateAction<EventData[]>>;
   setShowEventDialog: (show: boolean) => void;
 }
@@ -14,71 +15,74 @@ const EventDialog: React.FC<EventDialogProps> = ({
   mode,
   tickData,
   eventData,
-  instruments,
+  //   instruments,
+  selectedInstrument,
   setSongTimeLines,
   setShowEventDialog,
 }) => {
   // Set initial form values (for new or edit modes)
-  const [instrument, setInstrument] = useState<string>(
-    eventData ? eventData.instrument : instruments[0]?.name || ""
-  );
-  const [instId, setInstId] = useState<number | null>(
-    eventData ? eventData.instrumentId : null
-  );
+  //   const [instrument, setInstrument] = useState<string>(
+  //     eventData ? eventData.instrument : instruments[0]?.name || ""
+  //   );
+  //   const [instId, setInstId] = useState<number | null>(
+  //     eventData ? eventData.instrumentId : null
+  //   );
+
   const [message, setMessage] = useState<string>(
     eventData ? eventData.message : ""
   );
   const [countOut, setCountOut] = useState<number>(
     eventData ? eventData.countOut : 0
   );
-  const [color, setColor] = useState<string>(
-    instruments.length > 0 ? instruments[0].color || "#000000" : "#000000"
-  );
-  const [bgcolor, setBgColor] = useState<string>(
-    instruments.length > 0 ? instruments[0].bgcolor || "#FFFFFF" : "#FFFFFF"
-  );
+  //   const [color, setColor] = useState<string>(
+  //     instruments.length > 0 ? instruments[0].color || "#000000" : "#000000"
+  //   );
+  //   const [bgcolor, setBgColor] = useState<string>(
+  //     instruments.length > 0 ? instruments[0].bgcolor || "#FFFFFF" : "#FFFFFF"
+  //   );
   //   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
   // Reset form when eventData or mode changes
   useEffect(() => {
     if (eventData) {
-      setInstrument(eventData.instrument);
-      setInstId(eventData.instrumentId);
+      //   setInstrument(eventData.instrument);
+      //   setInstId(eventData.instrumentId);
       setMessage(eventData.message);
       setCountOut(eventData.countOut);
     } else {
-      setInstrument(instruments[0]?.name || "");
+      //   setInstrument(instruments[0]?.name || "");
       setMessage("");
       setCountOut(0);
     }
-  }, [eventData, instruments, mode]);
+  }, [eventData, mode]);
 
-  useEffect(() => {
-    if (instruments.length > 0) {
-      setInstId(instruments[0].id);
-    }
+  //   useEffect(() => {
+  //     if (instruments.length > 0) {
+  //       setInstId(instruments[0].id);
+  //     }
 
-    return () => {
-      setInstId(null);
-    };
-  }, []);
+  //     return () => {
+  //       setInstId(null);
+  //     };
+  //   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Create the event data object with the beat from tickData
     const newEvent: EventData = {
       beat: tickData.beatIndex,
-      instrument,
-      instrumentId:
-        instId === null
-          ? instruments.find((inst) => inst.name === instrument)?.id || null
-          : instId,
+      instrument: selectedInstrument?.name || "",
+      instrumentId: selectedInstrument?.id || null,
+      // instId === null
+      //   ? instruments.find((inst) => inst.name === instrument)?.id || null
+      //   : instId,
       message,
       countOut,
     };
-    if (!newEvent) {
-      return;
-    }
+    console.log("New Event:", newEvent);
+    // if (!newEvent) {
+    //   return;
+    // }
     setSongTimeLines((prevTimeLines) => [...prevTimeLines, newEvent]);
     // setSongTimeLines([...songTimeLines, newEvent]);
 
@@ -92,23 +96,27 @@ const EventDialog: React.FC<EventDialogProps> = ({
     // onConfirm();
   };
 
-  const handleSetInstrument = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedInstrument = instruments.find(
-      (inst) => inst.name === e.target.value
-    );
-    if (selectedInstrument) {
-      setInstrument(selectedInstrument.name);
-      setInstId(selectedInstrument.id);
-      setColor(selectedInstrument.color);
-      setBgColor(selectedInstrument.bgcolor);
-    }
-  };
+  //   const handleSetInstrument = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //     const selectedInstrument = instruments.find(
+  //       (inst) => inst.name === e.target.value
+  //     );
+  //     if (selectedInstrument) {
+  //       setInstrument(selectedInstrument.name);
+  //       setInstId(selectedInstrument.id);
+  //       setColor(selectedInstrument.color);
+  //       setBgColor(selectedInstrument.bgcolor);
+  //     }
+  //   };
 
   return (
     <div className="dialog-overlay">
       <div className="dialog">
         <h2>
-          {mode === "new" && "Create New Event at beat " + tickData.beatIndex}
+          {mode === "new" &&
+            "Create New Event for " +
+              selectedInstrument?.name +
+              " at beat " +
+              tickData.beatIndex}
           {mode === "edit" && "Edit Event"}
           {mode === "delete" && "Delete Event"}
         </h2>
@@ -127,7 +135,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
           <div className="event-form">
             <form onSubmit={handleSubmit}>
               <div className="instrument-row">
-                <label>
+                {/* <label>
                   Instrument:
                   <select
                     value={instrument}
@@ -139,49 +147,52 @@ const EventDialog: React.FC<EventDialogProps> = ({
                       </option>
                     ))}
                   </select>
-                </label>
+                </label> */}
 
                 <div>
                   <p
                     style={{
                       fontFamily: "Roboto",
                       fontWeight: "bold",
-                      marginLeft: "1em",
-                      color: color,
-                      backgroundColor: bgcolor,
-                      padding: "0.2em",
+                      textAlign: "center",
+                      margin: "0",
+                      color: selectedInstrument?.color,
+                      backgroundColor: selectedInstrument?.bgcolor,
+                      padding: "0.5em",
                     }}
                   >
-                    SAMPLE TEXT
+                    {message ? message : "PREVIEW"}
+                  </p>
+                  <p style={{ marginBottom: "1em" }}>
+                    Change colours in Settings
                   </p>
                 </div>
               </div>
 
               <div className="instrument-row">
-                <label>Message:</label>
-                <div>
-                  <input
-                    style={{ width: "100%" }}
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Enter message"
-                  />
-                </div>
+                <input
+                  style={{ width: "100%" }}
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Enter message"
+                />
               </div>
               <div>
-                <label>
-                  Count-Out:
-                  <input
-                    style={{ width: "50px" }}
-                    type="number"
-                    value={countOut}
-                    onChange={(e) => {
-                      const value = Math.max(0, parseInt(e.target.value, 10));
-                      setCountOut(value);
-                    }}
-                  />
-                </label>
+                <label>Count-Out Beats:</label>
+
+                <input
+                  style={{ width: "50px" }}
+                  type="number"
+                  value={countOut}
+                  onChange={(e) => {
+                    const value = Math.max(0, parseInt(e.target.value, 10));
+                    setCountOut(value);
+                  }}
+                />
+                <p style={{ fontSize: "1em", color: "#fff" }}>
+                  * Message will show for this many beats with a countdown
+                </p>
               </div>
               <div className="dialog-actions">
                 <button type="button" onClick={() => setShowEventDialog(false)}>
