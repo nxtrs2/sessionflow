@@ -73,12 +73,11 @@ const App: React.FC = () => {
 
   // Global tempo and time signature state
   const [tempo, setTempo] = useState<number>(130); // BPM
+  const [timeSignatureString, setTimeSignatureString] = useState<string>("4/4");
   const [timeSignature, setTimeSignature] = useState<TimeSignature>({
     numerator: 4,
     denominator: 4,
   });
-
-  const [timeSignatureString, setTimeSignatureString] = useState<string>("");
 
   // Current transport time (using Tone.Transport.seconds)
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -147,6 +146,7 @@ const App: React.FC = () => {
   }, [songData]);
 
   useEffect(() => {
+    console.log("timesignature changed", timeSignature);
     if (duration && tempo && timeSignature) {
       const newBeatData = generateBeatData(
         duration,
@@ -275,12 +275,24 @@ const App: React.FC = () => {
   };
 
   // Time signature change
-  const handleTimeSignatureChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setTimeSignatureString(e.target.value);
-    // setTimeSignature({
-    //   numerator: parseInt(e.target.value.split("/")[0], 10),
-    //   denominator: parseInt(e.target.value.split("/")[1], 10),
-    // });
+  const handleTimeSignatureNumeratorChange = (
+    e: ChangeEvent<HTMLSelectElement>
+  ) => {
+    // setTimeSignatureString(e.target.value);
+    setTimeSignature({
+      numerator: parseInt(e.target.value),
+      denominator: timeSignature.denominator,
+    });
+  };
+
+  const handleTimeSignatureDenominatorChange = (
+    e: ChangeEvent<HTMLSelectElement>
+  ) => {
+    // setTimeSignatureString(e.target.value);
+    setTimeSignature({
+      numerator: timeSignature.numerator,
+      denominator: parseInt(e.target.value),
+    });
   };
 
   const handleLoopStartChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -532,7 +544,9 @@ const App: React.FC = () => {
             <div className="timeline-header">
               {fileLoaded && (
                 <>
-                  <div className="time-display">{timeSignatureString}</div>
+                  <div className="time-display">
+                    {timeSignature.numerator + "/" + timeSignature.denominator}
+                  </div>
                   <div className="time-display" style={{ width: "100px" }}>
                     <div>
                       {`${Math.floor(currentBar)}`} :{" "}
@@ -604,7 +618,7 @@ const App: React.FC = () => {
                   ALL
                 </button>
               )}
-              {instruments.length < 1 && (
+              {fileLoaded && instruments.length < 1 && (
                 <button onClick={() => setActiveTab("settings")}>
                   Add an Instrument
                 </button>
@@ -887,12 +901,21 @@ const App: React.FC = () => {
                       <label>
                         Time Sig:&nbsp;
                         <select
-                          value={timeSignatureString}
-                          onChange={handleTimeSignatureChange}
+                          value={timeSignature.numerator}
+                          onChange={handleTimeSignatureNumeratorChange}
                         >
-                          <option value="4/4">4/4</option>
-                          <option value="3/4">3/4</option>
-                          <option value="6/8">6/8</option>
+                          <option value="4">4</option>
+                          <option value="3">3</option>
+                          <option value="6">6</option>
+                        </select>{" "}
+                        {"/"}
+                        <select
+                          value={timeSignature.denominator}
+                          onChange={handleTimeSignatureDenominatorChange}
+                        >
+                          <option value="4">4</option>
+                          <option value="4">4</option>
+                          <option value="8">8</option>
                         </select>
                       </label>
                     </div>

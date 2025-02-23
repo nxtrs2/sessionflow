@@ -432,6 +432,16 @@ select {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.timeline-header button {
+  margin: 5px;
+  border: none;
+  font-size: 1rem;
+  padding: 0;
+  height: 50px;
+  background: none;
 }
 
 .timeline-footer {
@@ -444,7 +454,8 @@ select {
   display: flex;
   flex-direction: row;
   /* Change alignment so items start at the left (if desired) */
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   flex-wrap: nowrap; /* Prevent items from wrapping */
   overflow-x: auto; /* Enable horizontal scrolling */
   -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
@@ -475,12 +486,11 @@ select {
 
 .timeline-footer button {
   margin: 5px;
-  /* border: 1px solid slategray; */
   border: none;
   font-size: 1rem;
-  border-radius: 8px;
   background: none;
   letter-spacing: 0.1em;
+  height: 40px;
 
   /* background: linear-gradient(135deg, #000000, #266168); */
 }
