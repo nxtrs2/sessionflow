@@ -25,7 +25,7 @@ export const renderTick2 = (
     selectedInstrument === null
       ? timelines
       : timelines.filter(
-          (timeline) => timeline.instrumentId === selectedInstrument.id
+          (event) => event.instrumentId === selectedInstrument.id
         );
   const topPos = tick.beatIndex * pixelsPerBeat;
   const tickStyle: CSSProperties = {
@@ -44,20 +44,20 @@ export const renderTick2 = (
     tickStyle.height = "1px";
   }
 
-  const color =
-    instruments.find(
-      (instrument) =>
-        instrument.name ===
-        timelines.find((timeline) => timeline.beat === tick.beatIndex)
-          ?.instrument
-    )?.color || "white";
-  const bgcolor =
-    instruments.find(
-      (instrument) =>
-        instrument.name ===
-        timelines.find((timeline) => timeline.beat === tick.beatIndex)
-          ?.instrument
-    )?.bgcolor || "black";
+  // const color =
+  //   instruments.find(
+  //     (instrument) =>
+  //       instrument.name ===
+  //       timelines.find((timeline) => timeline.beat === tick.beatIndex)
+  //         ?.instrument
+  //   )?.color || "white";
+  // const bgcolor =
+  //   instruments.find(
+  //     (instrument) =>
+  //       instrument.name ===
+  //       timelines.find((timeline) => timeline.beat === tick.beatIndex)
+  //         ?.instrument
+  //   )?.bgcolor || "black";
 
   return (
     <div key={index} style={tickStyle}>
@@ -73,6 +73,77 @@ export const renderTick2 = (
       )}
 
       {filteredTimelines.some(
+        (timeline) => timeline.beat === tick.beatIndex
+      ) && (
+        <div className="tick-message-div">
+          {filteredTimelines
+            .filter(
+              (timeline) =>
+                timeline.beat === tick.beatIndex && timeline.countOut < 1
+            )
+            .map((event, index) => {
+              const instrumentData = instruments.find(
+                (inst) => inst.name === event.instrument
+              );
+              const color = instrumentData?.color || "white";
+              const bgcolor = instrumentData?.bgcolor || "black";
+
+              return (
+                <div
+                  key={index}
+                  className={`tick-message ${
+                    Math.floor(currentBeat) === tick.beatIndex &&
+                    event.message.slice(-1) === "!"
+                      ? "pop"
+                      : ""
+                  }`}
+                  style={
+                    Math.floor(currentBeat) < tick.beatIndex
+                      ? { color, backgroundColor: bgcolor }
+                      : { color: "gray" }
+                  }
+                >
+                  {event.message}
+                </div>
+              );
+            })}
+        </div>
+      )}
+
+      {/* {filteredTimelines.some(
+        (timeline) => timeline.beat === tick.beatIndex
+      ) && (
+        <div>
+          {timelines
+            .filter(
+              (timeline) =>
+                timeline.beat === tick.beatIndex && timeline.countOut < 1
+            )
+            .map((event, index) => (
+              <div
+                key={index}
+                className={`tick-message ${
+                  Math.floor(currentBeat) === tick.beatIndex &&
+                  event.message.slice(-1) === "!"
+                    ? "pop"
+                    : ""
+                }`}
+                style={
+                  Math.floor(currentBeat) < tick.beatIndex
+                    ? {
+                        color: color || "white",
+                        backgroundColor: bgcolor || "black",
+                      }
+                    : { color: "gray" }
+                }
+              >
+                {event.message}
+              </div>
+            ))}
+        </div>
+      )} */}
+
+      {/* {filteredTimelines.some(
         (timeline) => timeline.beat === tick.beatIndex
       ) && (
         <div
@@ -103,19 +174,21 @@ export const renderTick2 = (
             )?.message
           }
         </div>
-      )}
-      {filteredTimelines.some(
-        (timeline) => timeline.beat === tick.beatIndex
-      ) && (
-        <div className="tick-message" style={{ color: "yellow" }}>
-          {
-            timelines.find(
-              (timeline) =>
-                timeline.beat === tick.beatIndex && timeline.countOut > 0
-            )?.message
-          }
-        </div>
-      )}
+      )} */}
+      <div className="tick-message-div">
+        {filteredTimelines.some(
+          (timeline) => timeline.beat === tick.beatIndex
+        ) && (
+          <div className="tick-message" style={{ color: "yellow" }}>
+            {
+              timelines.find(
+                (timeline) =>
+                  timeline.beat === tick.beatIndex && timeline.countOut > 0
+              )?.message
+            }
+          </div>
+        )}
+      </div>
       {markers.some((marker) => marker.beat === tick.beatIndex) && (
         <div className="marker-label">
           {markers.find((marker) => marker.beat === tick.beatIndex)?.label}

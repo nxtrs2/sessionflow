@@ -562,6 +562,7 @@ const App: React.FC = () => {
             <div className="timeline-footer">
               {fileLoaded && (
                 <button
+                  className={selectedInstrument === null ? "selected" : ""}
                   onClick={() => {
                     setSelectedInstrument(null);
                   }}
@@ -574,9 +575,12 @@ const App: React.FC = () => {
                 instruments.length > 0 &&
                 instruments.map((instrument, index) => (
                   <button
+                    className={
+                      selectedInstrument?.id === instrument.id ? "selected" : ""
+                    }
                     key={index}
                     onClick={() => {
-                      //console.log(":->", instrument);
+                      console.log(":->", instrument);
                       setSelectedInstrument(instrument);
                     }}
                   >
@@ -902,7 +906,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {showEditEventDialog && currentTickData && (
+      {showEditEventDialog && currentTickData && selectedInstrument && (
         <EventDialog
           mode="new"
           tickData={currentTickData}

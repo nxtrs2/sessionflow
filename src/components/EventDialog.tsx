@@ -5,8 +5,7 @@ interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
   eventData?: EventData; // for edit mode, the current event data
-  //   instruments: Instrument[];
-  selectedInstrument: Instrument | null;
+  selectedInstrument: Instrument;
   setSongTimeLines: React.Dispatch<React.SetStateAction<EventData[]>>;
   setShowEventDialog: (show: boolean) => void;
 }
@@ -15,7 +14,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
   mode,
   tickData,
   eventData,
-  //   instruments,
   selectedInstrument,
   setSongTimeLines,
   setShowEventDialog,
@@ -71,8 +69,8 @@ const EventDialog: React.FC<EventDialogProps> = ({
     // Create the event data object with the beat from tickData
     const newEvent: EventData = {
       beat: tickData.beatIndex,
-      instrument: selectedInstrument?.name || "",
-      instrumentId: selectedInstrument?.id || null,
+      instrument: selectedInstrument.name,
+      instrumentId: selectedInstrument.id,
       // instId === null
       //   ? instruments.find((inst) => inst.name === instrument)?.id || null
       //   : instId,

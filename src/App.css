@@ -161,10 +161,21 @@ body {
   color: #ffc53f;
 }
 
+.tick-message-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 550px;
+
+  height: 10px;
+  gap: 5px;
+}
+
 .tick-message {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  position: absolute;
+
   width: max-content;
   /* width: 550px; */
   /* width: 50vw; */
@@ -181,9 +192,10 @@ body {
   font-family: "Roboto", sans-serif;
   position: absolute;
   padding-right: 25px;
+  top: 0;
   height: 1px;
   left: 0;
-  width: 50vw;
+  width: 550px;
   text-align: right;
   color: #0bf681;
   border-bottom: 2px dotted #0ea057;
@@ -468,7 +480,12 @@ select {
   border-radius: 8px;
   background: none;
   letter-spacing: 0.1em;
+
   /* background: linear-gradient(135deg, #000000, #266168); */
+}
+
+.timeline-footer > .selected {
+  color: #0bf681;
 }
 
 .timeline-footer button:hover {
@@ -661,6 +678,15 @@ select {
 
   .tick-message {
     left: 35vw;
+  }
+
+  .tick-message-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    gap: 5px;
   }
 }
 
