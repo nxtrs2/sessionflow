@@ -61,7 +61,7 @@ const App: React.FC = () => {
   const [canEdit, setCanEdit] = useState<boolean>(false);
   // const [songEnded, setSongEnded] = useState<boolean>(false);
 
-  const [loop, setLoop] = useState<boolean>(true);
+  const [loop, setLoop] = useState<boolean>(false);
   const [loopStart, setLoopStart] = useState<number>(0);
   const [loopEnd, setLoopEnd] = useState<number>(0);
 
@@ -89,6 +89,7 @@ const App: React.FC = () => {
   const containerCenter = containerHeight / 2; // vertical center
 
   const [songData, setSongData] = useState<SongData | null>(null);
+  const [notes, setNotes] = useState<string>("");
   const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<EventData[]>([]);
@@ -127,6 +128,7 @@ const App: React.FC = () => {
         console.error("Error loading song", error);
       }
       setTitle(songData.track.title);
+      setNotes(songData.notes);
       setStructure(songData.structure);
       setSongTimeLines(songData.timeline);
       setMarkers(songData.markers);
@@ -145,10 +147,7 @@ const App: React.FC = () => {
   }, [songData]);
 
   useEffect(() => {
-    console.log("Song TimeLines changed", songTimeLines);
     if (duration && tempo && timeSignature) {
-      //console.log("Instruments changed", instruments);
-      // console.log("Time Signature changed ----> -----?", timeSignature);
       const newBeatData = generateBeatData(
         duration,
         tempo,
@@ -161,7 +160,7 @@ const App: React.FC = () => {
       setLoopEnd(newBeatData.length - 1);
       setBeatData(newBeatData);
     }
-  }, [duration, tempo, timeSignature, instruments, songTimeLines]);
+  }, [duration, tempo, timeSignature, instruments]);
 
   // When tempo changes, update Tone.Transport BPM.
   useEffect(() => {
@@ -250,6 +249,8 @@ const App: React.FC = () => {
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleFileChange(e, setAudioSrc, setDuration, playerRef);
+    setFileLoaded(true);
+    setCanEdit(true);
   };
 
   // const handleSongHasEnded = () => {
@@ -461,12 +462,35 @@ const App: React.FC = () => {
     }
   };
 
-  // const handleAddEvent = (eventData: EventData | undefined) => {
-  //   if (!eventData) {
-  //     return;
-  //   }
-  //   setSongTimeLines((prevTimeLines) => [...prevTimeLines, eventData]);
-  // };
+  const exportSongData = () => {
+    const songData: SongData = {
+      track: {
+        title,
+        url: "/data",
+        filename: "song.json",
+        skipBeats,
+        skipBeatsBy,
+        countIn,
+        numerator: timeSignature.numerator,
+        denominator: timeSignature.denominator,
+        tempo,
+      },
+      notes,
+      structure,
+      timeline: songTimeLines,
+      markers,
+      instruments,
+    };
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(songData, null, 2));
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "song.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
 
   return (
     <div className="app-container">
@@ -487,6 +511,16 @@ const App: React.FC = () => {
           }}
         >
           Untitled
+        </button>
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={onFileChange}
+          style={{ display: "none" }}
+          id="fileInput"
+        />
+        <button onClick={() => document.getElementById("fileInput")?.click()}>
+          Load Audio File
         </button>
       </div>
       <div className="app-content">
@@ -570,7 +604,11 @@ const App: React.FC = () => {
                   ALL
                 </button>
               )}
-
+              {instruments.length < 1 && (
+                <button onClick={() => setActiveTab("settings")}>
+                  Add an Instrument
+                </button>
+              )}
               {fileLoaded &&
                 instruments.length > 0 &&
                 instruments.map((instrument, index) => (
@@ -580,7 +618,7 @@ const App: React.FC = () => {
                     }
                     key={index}
                     onClick={() => {
-                      console.log(":->", instrument);
+                      //console.log(":->", instrument);
                       setSelectedInstrument(instrument);
                     }}
                   >
@@ -609,13 +647,22 @@ const App: React.FC = () => {
               Settings
             </button>
             <button
+              onClick={() => setActiveTab("notes")}
+              style={{
+                color: activeTab === "notes" ? "yellow" : "lightgray",
+              }}
+            >
+              Notes
+            </button>
+
+            {/* <button
               onClick={() => setActiveTab("markers")}
               style={{
                 color: activeTab === "markers" ? "yellow" : "lightgray",
               }}
             >
               Markers
-            </button>
+            </button> */}
             {/* <button
               onClick={() => setActiveTab("settings")}
               style={{
@@ -816,15 +863,11 @@ const App: React.FC = () => {
             <div className="main-content">
               {fileLoaded && (
                 <div className="file-info">
-                  <h2>{title ? title : "Track Title"}</h2>
+                  <h2 style={{ color: "white" }}>
+                    {title ? title : "Track Title"}
+                  </h2>
 
-                  <div className="file-loader">
-                    <input
-                      type="file"
-                      accept="audio/*"
-                      onChange={onFileChange}
-                    />
-                  </div>
+                  <button onClick={exportSongData}>Export Song Data</button>
                 </div>
               )}
               {audioSrc && (
@@ -882,21 +925,22 @@ const App: React.FC = () => {
               )}
             </div>
           )}
-          {activeTab === "markers" && (
+          {activeTab === "notes" && (
             <div className="main-content">
               {audioSrc && (
                 <>
                   <div className="settings">
-                    <div className="marker-list">
-                      <h3>Markers</h3>
-                      <ul>
-                        {markers.map((marker, index) => (
-                          <li key={index}>
-                            <strong>{marker.label}</strong> at beat{" "}
-                            {marker.beat}
-                          </li>
-                        ))}
-                      </ul>
+                    <h2>Notes</h2>
+                    <div className="settings-section">
+                      <textarea
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          fontFamily: "Roboto",
+                        }}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                      />
                     </div>
                   </div>
                 </>

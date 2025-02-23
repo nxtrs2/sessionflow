@@ -11,64 +11,81 @@
     "skipBeatsBy": 4,
     "skipBeats": 0
   },
+  "notes": "This is a song about signals. It's a song about something.",
   "structure": [],
   "instruments": [
-    { "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },
-    { "name": "DRUMS", "color": "#000000", "bgcolor": "#00ff00" },
-    { "name": "BASS", "color": "#000000", "bgcolor": "#00ffff" }
+    { "id": 0, "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },
+    { "id": 1, "name": "DRUMS", "color": "#000000", "bgcolor": "#00ff00" },
+    { "id": 2, "name": "BASS", "color": "#000000", "bgcolor": "#00ffff" }
   ],
   "timeline": [
     {
       "beat": 16,
       "instrument": "SYNTH1",
+      "instrumentId": 0,
+      "message": "SYNTH1 START",
+      "countOut": 0
+    },
+    {
+      "beat": 16,
+      "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "SYNTH1 START",
       "countOut": 0
     },
     {
       "beat": 41,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "DRUM ROLL IN",
       "countOut": 4
     },
     {
       "beat": 46,
       "instrument": "BASS",
+      "instrumentId": 2,
       "message": "BASS RUN",
       "countOut": 0
     },
     {
       "beat": 48,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "DRUM START",
       "countOut": 0
     },
     {
       "beat": 61,
       "instrument": "SYNTH1",
+      "instrumentId": 0,
       "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 63,
       "instrument": "SYNTH1",
+      "instrumentId": 0,
       "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 64,
       "instrument": "SYNTH1",
+      "instrumentId": 0,
       "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 78,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CYM CRASH!",
       "countOut": 0
     },
     {
       "beat": 79,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CYM CRASH!",
       "countOut": 0
     },
@@ -76,6 +93,7 @@
     {
       "beat": 80,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CYM CRASH!",
       "countOut": 0
     },
@@ -83,54 +101,63 @@
       "beat": 93,
 
       "instrument": "SYNTH1",
+      "instrumentId": 0,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 95,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 96,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 210,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 214,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 217,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 110,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 111,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 112,
       "instrument": "DRUMS",
+      "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     }

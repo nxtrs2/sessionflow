@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 import { ChangeEvent } from "react";
-import { SetAudioSrc, SetDuration } from "../types";
+import { SetAudioSrc, SetDuration, SongData } from "../types";
 
 export const loadSongFromJson = (
   file: string,
@@ -62,5 +62,6 @@ export const handleFileChange = (
     // Synchronize the player with Tone.Transport and start it at time 0
     newPlayer.sync().start(0);
     playerRef.current = newPlayer;
+    return true;
   }
 };

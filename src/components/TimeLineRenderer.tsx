@@ -72,44 +72,6 @@ export const renderTick2 = (
         </div>
       )}
 
-      {filteredTimelines.some(
-        (timeline) => timeline.beat === tick.beatIndex
-      ) && (
-        <div className="tick-message-div">
-          {filteredTimelines
-            .filter(
-              (timeline) =>
-                timeline.beat === tick.beatIndex && timeline.countOut < 1
-            )
-            .map((event, index) => {
-              const instrumentData = instruments.find(
-                (inst) => inst.name === event.instrument
-              );
-              const color = instrumentData?.color || "white";
-              const bgcolor = instrumentData?.bgcolor || "black";
-
-              return (
-                <div
-                  key={index}
-                  className={`tick-message ${
-                    Math.floor(currentBeat) === tick.beatIndex &&
-                    event.message.slice(-1) === "!"
-                      ? "pop"
-                      : ""
-                  }`}
-                  style={
-                    Math.floor(currentBeat) < tick.beatIndex
-                      ? { color, backgroundColor: bgcolor }
-                      : { color: "gray" }
-                  }
-                >
-                  {event.message}
-                </div>
-              );
-            })}
-        </div>
-      )}
-
       {/* {filteredTimelines.some(
         (timeline) => timeline.beat === tick.beatIndex
       ) && (
@@ -197,6 +159,43 @@ export const renderTick2 = (
       <span style={{ marginLeft: "5px", color: "white" }}>
         {tick.beatIndex > -1 ? tick.beatIndex : ""}
       </span>
+      {filteredTimelines.some(
+        (timeline) => timeline.beat === tick.beatIndex
+      ) && (
+        <div className="tick-message-div">
+          {filteredTimelines
+            .filter(
+              (timeline) =>
+                timeline.beat === tick.beatIndex && timeline.countOut < 1
+            )
+            .map((event, index) => {
+              const instrumentData = instruments.find(
+                (inst) => inst.id === event.instrumentId
+              );
+              const color = instrumentData?.color || "white";
+              const bgcolor = instrumentData?.bgcolor || "black";
+
+              return (
+                <div
+                  key={index}
+                  className={`tick-message ${
+                    Math.floor(currentBeat) === tick.beatIndex &&
+                    event.message.slice(-1) === "!"
+                      ? "pop"
+                      : ""
+                  }`}
+                  style={
+                    Math.floor(currentBeat) < tick.beatIndex
+                      ? { color, backgroundColor: bgcolor }
+                      : { color: "gray" }
+                  }
+                >
+                  {event.message}
+                </div>
+              );
+            })}
+        </div>
+      )}
       {eneableEditing && (
         <div className="hoverDiv">
           {!isMarker && (
@@ -208,7 +207,7 @@ export const renderTick2 = (
           {selectedInstrument && (
             <button onClick={() => editEvent(tick, false)}>+ Event</button>
           )}
-          {isTimelineEvent && (
+          {selectedInstrument && isTimelineEvent && (
             <button onClick={() => editEvent(tick, true)}>- Event</button>
           )}
         </div>

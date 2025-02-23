@@ -16,7 +16,6 @@ export interface Structure {
 
 export interface EventData {
   beat: number;
-  instrument: string;
   instrumentId: number | null;
   message: string;
   countOut: number;
@@ -33,13 +32,14 @@ export interface SongData {
     filename: string;
     url: string;
     tempo: number;
-    timeSignature: string;
+    // timeSignature: string;
     numerator: number;
     denominator: number;
     countIn: number;
     skipBeatsBy: number;
     skipBeats: number;
   };
+  notes: string;
   structure: Structure[];
   instruments: Instrument[];
   timeline: EventData[];

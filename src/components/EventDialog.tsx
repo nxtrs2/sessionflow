@@ -69,7 +69,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
     // Create the event data object with the beat from tickData
     const newEvent: EventData = {
       beat: tickData.beatIndex,
-      instrument: selectedInstrument.name,
       instrumentId: selectedInstrument.id,
       // instId === null
       //   ? instruments.find((inst) => inst.name === instrument)?.id || null

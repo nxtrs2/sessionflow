@@ -11,6 +11,7 @@
     "skipBeatsBy": 1,
     "skipBeats": 0
   },
+  "notes": "This is a song about the sea? Maybe. It's a song about something.",
   "structure": [],
   "instruments": [
     { "id": 0, "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },

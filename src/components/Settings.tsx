@@ -119,7 +119,7 @@ const Settings: React.FC<SettingsProps> = ({
           />
         </div>
         <div>
-          <label>Back: </label>
+          <label>Bg: </label>
           <input
             type="color"
             value={newBgColor}
@@ -130,78 +130,80 @@ const Settings: React.FC<SettingsProps> = ({
           />
         </div>
       </div>
-      <div className="settings-section">
-        <label>
-          Instrument:
-          <select value={instrument} onChange={(e) => handleSetInstrument(e)}>
-            {instruments.map((inst, idx) => (
-              <option key={idx} value={inst.name}>
-                {inst.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div>
-          <input
-            type="text"
-            value={instrument}
-            onChange={(e) => {
-              const newName = e.target.value;
-              setInstrument(newName);
-              handleUpdateInstrument({
-                id: instId || 0,
-                name: newName,
-                color,
-                bgcolor,
-              });
-            }}
-          />
+      {instruments.length > 0 && (
+        <div className="settings-section">
+          <label>
+            Instrument:
+            <select value={instrument} onChange={(e) => handleSetInstrument(e)}>
+              {instruments.map((inst, idx) => (
+                <option key={idx} value={inst.name}>
+                  {inst.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div>
+            <input
+              type="text"
+              value={instrument}
+              onChange={(e) => {
+                const newName = e.target.value;
+                setInstrument(newName);
+                handleUpdateInstrument({
+                  id: instId || 0,
+                  name: newName,
+                  color,
+                  bgcolor,
+                });
+              }}
+            />
+          </div>
+          <div>
+            <button
+              style={{ border: "none" }}
+              disabled={instrument === ""}
+              type="button"
+              onClick={() => {
+                handleDeleteInstrument();
+              }}
+            >
+              <Trash size={18} style={{ color: "orange" }} />
+            </button>
+          </div>
+          <div>
+            <label>Text: </label>
+            <input
+              type="color"
+              value={color}
+              onChange={(e) => {
+                const newColor = e.target.value;
+                handleUpdateInstrument({
+                  id: instId || 0,
+                  name: instrument,
+                  color: newColor,
+                  bgcolor,
+                });
+              }}
+            />
+          </div>
+          <div>
+            <label>Bg: </label>
+            <input
+              type="color"
+              value={bgcolor}
+              onChange={(e) => {
+                const newColor = e.target.value;
+                handleUpdateInstrument({
+                  id: instId || 0,
+                  name: instrument,
+                  color,
+                  bgcolor: newColor,
+                });
+              }}
+            />
+          </div>
         </div>
-        <div>
-          <button
-            style={{ border: "none" }}
-            disabled={instrument === ""}
-            type="button"
-            onClick={() => {
-              handleDeleteInstrument();
-            }}
-          >
-            <Trash size={18} style={{ color: "orange" }} />
-          </button>
-        </div>
-        <div>
-          <label>Text Colour:</label>
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => {
-              const newColor = e.target.value;
-              handleUpdateInstrument({
-                id: instId || 0,
-                name: instrument,
-                color: newColor,
-                bgcolor,
-              });
-            }}
-          />
-        </div>
-        <div>
-          <label>Bg Colour:</label>
-          <input
-            type="color"
-            value={bgcolor}
-            onChange={(e) => {
-              const newColor = e.target.value;
-              handleUpdateInstrument({
-                id: instId || 0,
-                name: instrument,
-                color,
-                bgcolor: newColor,
-              });
-            }}
-          />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

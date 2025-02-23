@@ -162,12 +162,13 @@ body {
 }
 
 .tick-message-div {
+  position: absolute;
+  top: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   width: 550px;
-
   height: 10px;
   gap: 5px;
 }
@@ -508,9 +509,10 @@ select {
 
 .file-info {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 1rem;
-  align-items: start;
+  align-items: center;
   background: var(--gradient-background);
   padding: 1rem;
   border-radius: 20px;
