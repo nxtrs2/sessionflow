@@ -6,14 +6,13 @@ import CountOut from "./components/CountOut";
 import { renderTick2 } from "./components/TimeLineRenderer";
 import {
   SongData,
-  TimeLineData,
+  EventData,
   MarkerData,
   BeatData,
   TickData,
   TimeSignature,
   Structure,
   Instrument,
-  EventData,
 } from "./types";
 import {
   Rewind,
@@ -92,7 +91,7 @@ const App: React.FC = () => {
   const [songData, setSongData] = useState<SongData | null>(null);
   const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
-  const [songTimeLines, setSongTimeLines] = useState<TimeLineData[]>([]);
+  const [songTimeLines, setSongTimeLines] = useState<EventData[]>([]);
 
   const [currentTickData, setCurrentTickData] = useState<TickData | null>(null);
 
@@ -448,7 +447,7 @@ const App: React.FC = () => {
     } else {
       setInstruments((prevInstruments) => {
         const existingInstrumentIndex = prevInstruments.findIndex(
-          (inst) => inst.name === instrument.name
+          (inst) => inst.id === instrument.id
         );
         if (existingInstrumentIndex !== -1) {
           const updatedInstruments = [...prevInstruments];
@@ -461,12 +460,12 @@ const App: React.FC = () => {
     }
   };
 
-  const handleAddEvent = (eventData: EventData | undefined) => {
-    if (!eventData) {
-      return;
-    }
-    setSongTimeLines((prevTimeLines) => [...prevTimeLines, eventData]);
-  };
+  // const handleAddEvent = (eventData: EventData | undefined) => {
+  //   if (!eventData) {
+  //     return;
+  //   }
+  //   setSongTimeLines((prevTimeLines) => [...prevTimeLines, eventData]);
+  // };
 
   return (
     <div className="app-container">
@@ -770,7 +769,7 @@ const App: React.FC = () => {
                   </div>
                   <div className="volume-controls">
                     <label>
-                      Song Volume:
+                      Song:
                       <input
                         type="range"
                         min="-20"
@@ -787,7 +786,7 @@ const App: React.FC = () => {
                       />
                     </label>
                     <label>
-                      Click Volume:
+                      Click:
                       <input
                         type="range"
                         min="-20"
@@ -907,14 +906,8 @@ const App: React.FC = () => {
           mode="new"
           tickData={currentTickData}
           instruments={instruments}
-          onConfirm={(data) => {
-            handleAddEvent(data);
-            setShowEditEventDialog(false);
-            console.log("New Event", data);
-          }}
-          onCancel={() => {
-            setShowEditEventDialog(false);
-          }}
+          setSongTimeLines={setSongTimeLines}
+          setShowEventDialog={setShowEditEventDialog}
         />
       )}
     </div>

@@ -1,11 +1,11 @@
 import { CSSProperties } from "react";
-import { TimeLineData, MarkerData, TickData, Instrument } from "../types";
+import { EventData, MarkerData, TickData, Instrument } from "../types";
 
 // Render a tick as a div positioned from the top.
 export const renderTick2 = (
   tick: TickData,
   index: number,
-  timelines: TimeLineData[],
+  timelines: EventData[],
   markers: MarkerData[],
   pixelsPerBeat: number,
   beatsPerBar: number,

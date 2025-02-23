@@ -6,10 +6,18 @@ export interface Structure {
   tempo: number;
 }
 
-export interface TimeLineData {
+// export interface TimeLineData {
+//   beat: number;
+//   instrument: string;
+//   instrumentId: number | null;
+//   message: string;
+//   countOut: number;
+// }
+
+export interface EventData {
   beat: number;
   instrument: string;
-  instrumentId: number;
+  instrumentId: number | null;
   message: string;
   countOut: number;
 }
@@ -34,7 +42,7 @@ export interface SongData {
   };
   structure: Structure[];
   instruments: Instrument[];
-  timeline: TimeLineData[];
+  timeline: EventData[];
   markers: MarkerData[];
 }
 
@@ -58,14 +66,6 @@ export interface TimeSignature {
 export interface TickData {
   beatIndex: number;
   type: "bar" | "beat" | "skip";
-}
-
-export interface EventData {
-  beat: number;
-  instrument: string;
-  instrumentId: number | null;
-  message: string;
-  countOut: number;
 }
 
 export interface Instrument {

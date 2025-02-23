@@ -243,6 +243,13 @@ body {
   padding: 10px;
 }
 
+.main-content h2 {
+  font-size: larger;
+  text-transform: uppercase;
+  color: black;
+  font-weight: bold;
+}
+
 .transport-system {
   flex-direction: row;
   display: flex;

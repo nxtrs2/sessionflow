@@ -16,6 +16,9 @@ const Settings: React.FC<SettingsProps> = ({
 }) => {
   // Set initial form values (for new or edit modes)
   const [instrument, setInstrument] = useState<string>("");
+  const [instId, setInstId] = useState<number | null>(null);
+  const [newColor, setNewColor] = useState<string>("#000000");
+  const [newBgColor, setNewBgColor] = useState<string>("#FFFFFF");
   const [color, setColor] = useState<string>(
     instruments.length > 0 ? instruments[0].color || "#000000" : "#000000"
   );
@@ -43,6 +46,7 @@ const Settings: React.FC<SettingsProps> = ({
     );
     if (selectedInstrument) {
       setInstrument(selectedInstrument.name);
+      setInstId(selectedInstrument.id);
       setColor(selectedInstrument.color);
       setBgColor(selectedInstrument.bgcolor);
     }
@@ -60,12 +64,15 @@ const Settings: React.FC<SettingsProps> = ({
       const newInstrument = e.currentTarget.value.trim();
       if (newInstrument !== "") {
         const newInst: Instrument = {
+          id: instruments.length,
           name: newInstrument,
-          color: color || "#000000",
-          bgcolor: bgcolor || "#FFFFFF",
+          color: newColor || "#000000",
+          bgcolor: newBgColor || "#FFFFFF",
         };
         handleInstrumentsUpdate(newInst, false);
         setInstrument(newInstrument);
+        setColor(newColor);
+        setBgColor(newBgColor);
         e.currentTarget.value = "";
       }
     }
@@ -101,32 +108,24 @@ const Settings: React.FC<SettingsProps> = ({
           />
         </div>
         <div>
-          <label>Text Colour:</label>
+          <label>Text: </label>
           <input
             type="color"
-            value={color}
+            value={newColor}
             onChange={(e) => {
               const newColor = e.target.value;
-              handleUpdateInstrument({
-                name: instrument,
-                color: newColor,
-                bgcolor,
-              });
+              setNewColor(newColor);
             }}
           />
         </div>
         <div>
-          <label>Bg Colour:</label>
+          <label>Back: </label>
           <input
             type="color"
-            value={bgcolor}
+            value={newBgColor}
             onChange={(e) => {
               const newColor = e.target.value;
-              handleUpdateInstrument({
-                name: instrument,
-                color,
-                bgcolor: newColor,
-              });
+              setNewBgColor(newColor);
             }}
           />
         </div>
@@ -150,6 +149,7 @@ const Settings: React.FC<SettingsProps> = ({
               const newName = e.target.value;
               setInstrument(newName);
               handleUpdateInstrument({
+                id: instId || 0,
                 name: newName,
                 color,
                 bgcolor,
@@ -177,6 +177,7 @@ const Settings: React.FC<SettingsProps> = ({
             onChange={(e) => {
               const newColor = e.target.value;
               handleUpdateInstrument({
+                id: instId || 0,
                 name: instrument,
                 color: newColor,
                 bgcolor,
@@ -192,6 +193,7 @@ const Settings: React.FC<SettingsProps> = ({
             onChange={(e) => {
               const newColor = e.target.value;
               handleUpdateInstrument({
+                id: instId || 0,
                 name: instrument,
                 color,
                 bgcolor: newColor,

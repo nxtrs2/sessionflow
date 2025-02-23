@@ -6,8 +6,8 @@ interface EventDialogProps {
   tickData: TickData;
   eventData?: EventData; // for edit mode, the current event data
   instruments: Instrument[];
-  onConfirm: (data?: EventData) => void;
-  onCancel: () => void;
+  setSongTimeLines: React.Dispatch<React.SetStateAction<EventData[]>>;
+  setShowEventDialog: (show: boolean) => void;
 }
 
 const EventDialog: React.FC<EventDialogProps> = ({
@@ -15,12 +15,15 @@ const EventDialog: React.FC<EventDialogProps> = ({
   tickData,
   eventData,
   instruments,
-  onConfirm,
-  onCancel,
+  setSongTimeLines,
+  setShowEventDialog,
 }) => {
   // Set initial form values (for new or edit modes)
   const [instrument, setInstrument] = useState<string>(
     eventData ? eventData.instrument : instruments[0]?.name || ""
+  );
+  const [instId, setInstId] = useState<number | null>(
+    eventData ? eventData.instrumentId : null
   );
   const [message, setMessage] = useState<string>(
     eventData ? eventData.message : ""
@@ -40,6 +43,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
   useEffect(() => {
     if (eventData) {
       setInstrument(eventData.instrument);
+      setInstId(eventData.instrumentId);
       setMessage(eventData.message);
       setCountOut(eventData.countOut);
     } else {
@@ -49,22 +53,43 @@ const EventDialog: React.FC<EventDialogProps> = ({
     }
   }, [eventData, instruments, mode]);
 
+  useEffect(() => {
+    if (instruments.length > 0) {
+      setInstId(instruments[0].id);
+    }
+
+    return () => {
+      setInstId(null);
+    };
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Create the event data object with the beat from tickData
     const newEvent: EventData = {
       beat: tickData.beatIndex,
       instrument,
-      instrumentId: null,
+      instrumentId:
+        instId === null
+          ? instruments.find((inst) => inst.name === instrument)?.id || null
+          : instId,
       message,
       countOut,
     };
-    onConfirm(newEvent);
+    if (!newEvent) {
+      return;
+    }
+    setSongTimeLines((prevTimeLines) => [...prevTimeLines, newEvent]);
+    // setSongTimeLines([...songTimeLines, newEvent]);
+
+    setShowEventDialog(false);
+
+    // onConfirm(newEvent);
   };
 
   const handleDelete = () => {
     // When delete is confirmed, call onConfirm with no event data.
-    onConfirm();
+    // onConfirm();
   };
 
   const handleSetInstrument = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,6 +98,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
     );
     if (selectedInstrument) {
       setInstrument(selectedInstrument.name);
+      setInstId(selectedInstrument.id);
       setColor(selectedInstrument.color);
       setBgColor(selectedInstrument.bgcolor);
     }
@@ -94,7 +120,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
             </p>
             <div className="dialog-actions">
               <button onClick={handleDelete}>Yes, Delete</button>
-              <button onClick={onCancel}>Cancel</button>
+              <button onClick={() => setShowEventDialog(true)}>Cancel</button>
             </div>
           </div>
         ) : (
@@ -118,11 +144,12 @@ const EventDialog: React.FC<EventDialogProps> = ({
                 <div>
                   <p
                     style={{
+                      fontFamily: "Roboto",
+                      fontWeight: "bold",
                       marginLeft: "1em",
                       color: color,
                       backgroundColor: bgcolor,
                       padding: "0.2em",
-                      borderRadius: "5px",
                     }}
                   >
                     SAMPLE TEXT
@@ -157,7 +184,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
                 </label>
               </div>
               <div className="dialog-actions">
-                <button type="button" onClick={onCancel}>
+                <button type="button" onClick={() => setShowEventDialog(false)}>
                   Cancel
                 </button>{" "}
                 <button disabled={message.trim() === ""} type="submit">

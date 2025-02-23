@@ -1,8 +1,8 @@
 import {
   BeatData,
+  EventData,
   SongData,
   Structure,
-  TimeLineData,
   TimeSignature,
 } from "../types";
 // import * as Tone from "tone";
@@ -13,7 +13,7 @@ export function generateBeatData(
   defaultTimeSignature: TimeSignature,
   skipBeats: number = 1,
   structure: Structure[],
-  timeline: TimeLineData[]
+  timeline: EventData[]
 ): BeatData[] {
   const beats: BeatData[] = [];
 
