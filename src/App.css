@@ -103,7 +103,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 10px;
+  padding: 10px 20px;
   background: linear-gradient(135deg, #2e2a4b, #000);
   border-bottom: 1px solid #000;
 }
@@ -640,6 +640,10 @@ select {
     top: 0;
     width: 100%;
     z-index: 1000;
+  }
+
+  .app-header h1 {
+    font-size: 1.6rem;
   }
 
   .timeline-sidebar {

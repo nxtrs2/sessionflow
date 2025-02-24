@@ -34,6 +34,8 @@ import {
 import Loader from "./components/Loader";
 import EventDialog from "./components/EventDialog";
 import Settings from "./components/Settings";
+import Tabs from "./components/Tabs";
+import TracksList from "./components/TracksList";
 
 const App: React.FC = () => {
   // Tone.Player reference
@@ -508,32 +510,7 @@ const App: React.FC = () => {
     <div className="app-container">
       {loading && <Loader />}
       <div className="app-header">
-        <button
-          disabled={isPlaying}
-          onClick={() => {
-            handleLoadSongJSON("/data/song2.json");
-          }}
-        >
-          Signals
-        </button>
-        <button
-          disabled={isPlaying}
-          onClick={() => {
-            handleLoadSongJSON("/data/song.json");
-          }}
-        >
-          Untitled
-        </button>
-        <input
-          type="file"
-          accept="audio/*"
-          onChange={onFileChange}
-          style={{ display: "none" }}
-          id="fileInput"
-        />
-        <button onClick={() => document.getElementById("fileInput")?.click()}>
-          Load Audio File
-        </button>
+        <h1>Session Flow</h1>
       </div>
       <div className="app-content">
         <div className="timeline-sidebar">
@@ -645,47 +622,7 @@ const App: React.FC = () => {
 
         {/* Main content: controls and settings */}
         <div className="main-tabs">
-          <div className="tab-links">
-            <button
-              onClick={() => setActiveTab("track")}
-              style={{ color: activeTab === "track" ? "yellow" : "lightgray" }}
-            >
-              Playback
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              style={{
-                color: activeTab === "settings" ? "yellow" : "lightgray",
-              }}
-            >
-              Settings
-            </button>
-            <button
-              onClick={() => setActiveTab("notes")}
-              style={{
-                color: activeTab === "notes" ? "yellow" : "lightgray",
-              }}
-            >
-              Notes
-            </button>
-
-            {/* <button
-              onClick={() => setActiveTab("markers")}
-              style={{
-                color: activeTab === "markers" ? "yellow" : "lightgray",
-              }}
-            >
-              Markers
-            </button> */}
-            {/* <button
-              onClick={() => setActiveTab("settings")}
-              style={{
-                color: activeTab === "events" ? "yellow" : "lightgray",
-              }}
-            >
-              Events
-            </button> */}
-          </div>
+          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
           {activeTab === "track" && (
             <div className="main-content">
               {audioSrc && (
