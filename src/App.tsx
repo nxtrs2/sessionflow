@@ -578,7 +578,7 @@ const App: React.FC = () => {
                     // renderTick(tick, index)
                   )
                 )}
-              {!fileLoaded && <h3>Select a song from above</h3>}
+              {!fileLoaded && <h2>Select a track from the Tracks tab</h2>}
             </div>
             <div
               className={`center-indicator ${pulse ? "pulse" : ""}`}
@@ -905,6 +905,20 @@ const App: React.FC = () => {
                   </div>
                 </>
               )}
+            </div>
+          )}
+          {activeTab === "tracks" && (
+            <div className="main-content">
+              <div className="settings">
+                <h2>Your Tracks</h2>
+                <div className="settings-section">
+                  <TracksList
+                    isPlaying={isPlaying}
+                    handleLoadSongJSON={handleLoadSongJSON}
+                    onFileChange={onFileChange}
+                  />
+                </div>
+              </div>
             </div>
           )}
         </div>
