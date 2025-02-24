@@ -73,7 +73,7 @@ const App: React.FC = () => {
 
   // Global tempo and time signature state
   const [tempo, setTempo] = useState<number>(130); // BPM
-  const [timeSignatureString, setTimeSignatureString] = useState<string>("4/4");
+  // const [timeSignatureString, setTimeSignatureString] = useState<string>("4/4");
   const [timeSignature, setTimeSignature] = useState<TimeSignature>({
     numerator: 4,
     denominator: 4,
