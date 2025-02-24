@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+
 import * as Tone from "tone";
 import "./App.css";
 import CountIn from "./components/CountIn";
@@ -36,6 +37,11 @@ import EventDialog from "./components/EventDialog";
 import Settings from "./components/Settings";
 import Tabs from "./components/Tabs";
 import TracksList from "./components/TracksList";
+
+// const supabase = createClient(
+//   "https://zjhdapoqakbbheerqvsm.supabase.co",
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaGRhcG9xYWtiYmhlZXJxdnNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0MTYwMzksImV4cCI6MjA1NTk5MjAzOX0.zK1RcWP23BofCvpt2gcvE2psWMADHRQBT-HduaUX2SE"
+// );
 
 const App: React.FC = () => {
   // Tone.Player reference
@@ -911,6 +917,7 @@ const App: React.FC = () => {
             <div className="main-content">
               <div className="settings">
                 <h2>Your Tracks</h2>
+
                 <div className="settings-section">
                   <TracksList
                     isPlaying={isPlaying}
