@@ -4,7 +4,7 @@ import { TickData, EventData, Instrument, Mode } from "../types";
 interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
-  eventData?: EventData; // for edit mode, the current event data
+  existingEvent?: EventData; // for edit mode, the current event data
   selectedInstrument: Instrument;
   setSongTimeLines: React.Dispatch<React.SetStateAction<EventData[]>>;
   setShowEventDialog: (show: boolean) => void;
@@ -13,7 +13,7 @@ interface EventDialogProps {
 const EventDialog: React.FC<EventDialogProps> = ({
   mode,
   tickData,
-  eventData,
+  existingEvent,
   selectedInstrument,
   setSongTimeLines,
   setShowEventDialog,
@@ -27,10 +27,10 @@ const EventDialog: React.FC<EventDialogProps> = ({
   //   );
 
   const [message, setMessage] = useState<string>(
-    eventData ? eventData.message : ""
+    existingEvent ? existingEvent.message : ""
   );
   const [countOut, setCountOut] = useState<number>(
-    eventData ? eventData.countOut : 0
+    existingEvent ? existingEvent.countOut : 0
   );
   //   const [color, setColor] = useState<string>(
   //     instruments.length > 0 ? instruments[0].color || "#000000" : "#000000"
@@ -42,17 +42,18 @@ const EventDialog: React.FC<EventDialogProps> = ({
 
   // Reset form when eventData or mode changes
   useEffect(() => {
-    if (eventData) {
+    console.log("Event Data:", existingEvent);
+    if (existingEvent) {
       //   setInstrument(eventData.instrument);
       //   setInstId(eventData.instrumentId);
-      setMessage(eventData.message);
-      setCountOut(eventData.countOut);
+      setMessage(existingEvent.message);
+      setCountOut(existingEvent.countOut);
     } else {
       //   setInstrument(instruments[0]?.name || "");
       setMessage("");
       setCountOut(0);
     }
-  }, [eventData, mode]);
+  }, [existingEvent, mode]);
 
   //   useEffect(() => {
   //     if (instruments.length > 0) {
@@ -66,26 +67,27 @@ const EventDialog: React.FC<EventDialogProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Create the event data object with the beat from tickData
     const newEvent: EventData = {
       beat: tickData.beatIndex,
       instrumentId: selectedInstrument.id,
-      // instId === null
-      //   ? instruments.find((inst) => inst.name === instrument)?.id || null
-      //   : instId,
       message,
       countOut,
     };
-    console.log("New Event:", newEvent);
-    // if (!newEvent) {
-    //   return;
-    // }
-    setSongTimeLines((prevTimeLines) => [...prevTimeLines, newEvent]);
-    // setSongTimeLines([...songTimeLines, newEvent]);
+
+    if (existingEvent) {
+      setSongTimeLines((prevTimeLines) =>
+        prevTimeLines.map((event) =>
+          event.beat === existingEvent.beat &&
+          event.instrumentId === existingEvent.instrumentId
+            ? newEvent
+            : event
+        )
+      );
+    } else {
+      setSongTimeLines((prevTimeLines) => [...prevTimeLines, newEvent]);
+    }
 
     setShowEventDialog(false);
-
-    // onConfirm(newEvent);
   };
 
   const handleDelete = () => {

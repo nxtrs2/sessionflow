@@ -101,6 +101,9 @@ const App: React.FC = () => {
   const [structure, setStructure] = useState<Structure[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [songTimeLines, setSongTimeLines] = useState<EventData[]>([]);
+  const [existingEvent, setExistingEvent] = useState<EventData | undefined>(
+    undefined
+  );
 
   const [currentTickData, setCurrentTickData] = useState<TickData | null>(null);
 
@@ -450,9 +453,15 @@ const App: React.FC = () => {
         console.log("Event deleted at beat", tick.beatIndex);
       }
     } else {
+      const existingEvent = songTimeLines.find(
+        (event) =>
+          event.beat === tick.beatIndex &&
+          event.instrumentId === selectedInstrument?.id
+      );
+      setExistingEvent(existingEvent || undefined);
       setCurrentTickData(tick);
       setShowEditEventDialog(true);
-      console.log("Edit Event", tick, deleteEvent);
+      console.log("Edit Event", tick, deleteEvent, existingEvent);
     }
   };
 
@@ -936,9 +945,10 @@ const App: React.FC = () => {
 
       {showEditEventDialog && currentTickData && selectedInstrument && (
         <EventDialog
-          mode="new"
+          mode={existingEvent ? "edit" : "new"}
           tickData={currentTickData}
           // instruments={instruments}
+          existingEvent={existingEvent}
           selectedInstrument={selectedInstrument}
           setSongTimeLines={setSongTimeLines}
           setShowEventDialog={setShowEditEventDialog}
