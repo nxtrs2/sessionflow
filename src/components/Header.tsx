@@ -1,41 +1,25 @@
-// import React, { useEffect, useState } from 'react';
-// import { supabase } from '../supabaseClient'; // Make sure to configure your Supabase client
+import React from "react";
+import { User } from "lucide-react";
 
-// const Header: React.FC = () => {
-//     const [user, setUser] = useState<any>(null);
+interface HeaderProps {
+  isLoggedIn: boolean;
+}
 
-//     useEffect(() => {
-//         const session = supabase.auth.session();
-//         setUser(session?.user ?? null);
+const Header: React.FC<HeaderProps> = ({ isLoggedIn }) => {
+  return (
+    <div className="app-header">
+      <h1>Session Flow</h1>
+      <div className="header-right">
+        {isLoggedIn ? (
+          <button className="user-icon" title="User Profile">
+            <User size={18} />
+          </button>
+        ) : (
+          <button className="sign-in-button">Sign In</button>
+        )}
+      </div>
+    </div>
+  );
+};
 
-//         const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-//             setUser(session?.user ?? null);
-//         });
-
-//         return () => {
-//             authListener?.unsubscribe();
-//         };
-//     }, []);
-
-//     return (
-//         <div className="app-header">
-//             <h1>Session Flow</h1>
-//             <nav>
-//                 {user ? (
-//                     <div className="user-info">
-//                         <span>{user.email}</span>
-//                         <img src="/path/to/user/icon.png" alt="User Icon" className="user-icon" />
-//                     </div>
-//                 ) : (
-//                     <div className="auth-links">
-//                         <Link
-//                         <Link to="/login">Login</Link>
-//                         <Link to="/signup">Sign Up</Link>
-//                     </div>
-//                 )}
-//             </nav>
-//         </div>
-//     );
-// };
-
-// export default Header;
+export default Header;

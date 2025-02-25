@@ -37,6 +37,7 @@ import EventDialog from "./components/EventDialog";
 import Settings from "./components/Settings";
 import Tabs from "./components/Tabs";
 import TracksList from "./components/TracksList";
+import Header from "./components/Header";
 
 // const supabase = createClient(
 //   "https://zjhdapoqakbbheerqvsm.supabase.co",
@@ -515,9 +516,7 @@ const App: React.FC = () => {
   return (
     <div className="app-container">
       {loading && <Loader />}
-      <div className="app-header">
-        <h1>Session Flow</h1>
-      </div>
+      <Header isLoggedIn={true} />
       <div className="app-content">
         <div className="timeline-sidebar">
           <div
