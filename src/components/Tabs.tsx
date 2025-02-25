@@ -1,28 +1,50 @@
 import React from "react";
 
 interface TabsProps {
+  fileLoaded: boolean;
   activeTab: string;
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }) => {
+const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
   return (
     <div className="tab-links">
       <button
-        onClick={() => setActiveTab("track")}
-        style={{ color: activeTab === "track" ? "yellow" : "lightgray" }}
+        disabled={!fileLoaded}
+        onClick={() => setActiveTab("playback")}
+        style={{
+          color: fileLoaded
+            ? activeTab === "playback"
+              ? "yellow"
+              : "lightgray"
+            : "gray",
+        }}
       >
         Playback
       </button>
       <button
+        disabled={!fileLoaded}
         onClick={() => setActiveTab("settings")}
-        style={{ color: activeTab === "settings" ? "yellow" : "lightgray" }}
+        style={{
+          color: fileLoaded
+            ? activeTab === "settings"
+              ? "yellow"
+              : "lightgray"
+            : "gray",
+        }}
       >
         Settings
       </button>
       <button
+        disabled={!fileLoaded}
         onClick={() => setActiveTab("notes")}
-        style={{ color: activeTab === "notes" ? "yellow" : "lightgray" }}
+        style={{
+          color: fileLoaded
+            ? activeTab === "notes"
+              ? "yellow"
+              : "lightgray"
+            : "gray",
+        }}
       >
         Notes
       </button>

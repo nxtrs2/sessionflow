@@ -627,8 +627,12 @@ const App: React.FC = () => {
 
         {/* Main content: controls and settings */}
         <div className="main-tabs">
-          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-          {activeTab === "track" && (
+          <Tabs
+            fileLoaded={fileLoaded}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+          {activeTab === "playback" && (
             <div className="main-content">
               {audioSrc && (
                 <>
