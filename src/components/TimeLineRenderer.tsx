@@ -18,6 +18,13 @@ export const renderTick2 = (
   editEvent: (tick: TickData, deleteEvent: boolean) => void
 ) => {
   const isMarker = markers.some((marker) => marker.beat === tick.beatIndex);
+  const isEvent = selectedInstrument
+    ? timelines.some(
+        (timeline) =>
+          timeline.beat === tick.beatIndex &&
+          timeline.instrumentId === selectedInstrument.id
+      )
+    : timelines.some((timeline) => timeline.beat === tick.beatIndex);
   const isTimelineEvent = timelines.some(
     (timeline) => timeline.beat === tick.beatIndex
   );
@@ -203,6 +210,9 @@ export const renderTick2 = (
           )}
           {isMarker && (
             <button onClick={() => editMarker(tick, true)}>- Marker</button>
+          )}
+          {isEvent && (
+            <button onClick={() => editEvent(tick, false)}>* Event</button>
           )}
           {selectedInstrument && (
             <button onClick={() => editEvent(tick, false)}>+ Event</button>
