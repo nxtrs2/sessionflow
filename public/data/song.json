@@ -1,5 +1,5 @@
 {
-  "track": {
+  "project": {
     "title": "Seafarer",
     "filename": "seafarer.mp3",
     "url": "/songs/",
@@ -14,9 +14,30 @@
   "notes": "This is a song about the sea? Maybe. It's a song about something.",
   "structure": [],
   "instruments": [
-    { "id": 0, "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },
-    { "id": 1, "name": "DRUMS", "color": "#000000", "bgcolor": "#00ff00" },
-    { "id": 2, "name": "SYNTH2", "color": "#000000", "bgcolor": "#00ffff" }
+    {
+      "id": 0,
+      "name": "SYNTH1",
+      "filename": "seafarer.mp3",
+      "url": "/songs/",
+      "color": "#ffffff",
+      "bgcolor": "#ff0000"
+    },
+    {
+      "id": 1,
+      "name": "DRUMS",
+      "filename": "seafarer.mp3",
+      "url": "/songs/",
+      "color": "#000000",
+      "bgcolor": "#00ff00"
+    },
+    {
+      "id": 2,
+      "name": "SYNTH2",
+      "filename": "seafarer.mp3",
+      "url": "/songs/",
+      "color": "#000000",
+      "bgcolor": "#00ffff"
+    }
   ],
   "timeline": [
     {

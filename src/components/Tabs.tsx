@@ -50,10 +50,10 @@ const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
       </button>
 
       <button
-        onClick={() => setActiveTab("tracks")}
-        style={{ color: activeTab === "tracks" ? "yellow" : "lightgray" }}
+        onClick={() => setActiveTab("projects")}
+        style={{ color: activeTab === "projects" ? "yellow" : "lightgray" }}
       >
-        Tracks
+        Projects
       </button>
       {/* <button
                 onClick={() => setActiveTab('events')}

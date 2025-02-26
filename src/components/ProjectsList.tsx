@@ -1,12 +1,12 @@
 import React from "react";
 
-interface TracksListProps {
+interface ProjectsListProps {
   isPlaying: boolean;
   handleLoadSongJSON: (path: string) => void;
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const TracksList: React.FC<TracksListProps> = ({
+const ProjectsList: React.FC<ProjectsListProps> = ({
   isPlaying,
   handleLoadSongJSON,
   onFileChange,
@@ -37,10 +37,10 @@ const TracksList: React.FC<TracksListProps> = ({
         id="fileInput"
       />
       <button onClick={() => document.getElementById("fileInput")?.click()}>
-        Load Audio File
+        Load Master File
       </button>
     </div>
   );
 };
 
-export default TracksList;
+export default ProjectsList;

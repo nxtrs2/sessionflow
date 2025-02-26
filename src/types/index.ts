@@ -27,12 +27,11 @@ export interface MarkerData {
 }
 
 export interface SongData {
-  track: {
+  project: {
     title: string;
     filename: string;
     url: string;
     tempo: number;
-    // timeSignature: string;
     numerator: number;
     denominator: number;
     countIn: number;
@@ -71,6 +70,8 @@ export interface TickData {
 export interface Instrument {
   id: number;
   name: string;
+  filename: string;
+  url: string;
   color: string;
   bgcolor: string;
 }

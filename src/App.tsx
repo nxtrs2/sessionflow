@@ -36,7 +36,7 @@ import Loader from "./components/Loader";
 import EventDialog from "./components/EventDialog";
 import Settings from "./components/Settings";
 import Tabs from "./components/Tabs";
-import TracksList from "./components/TracksList";
+import ProjectsList from "./components/ProjectsList";
 import Header from "./components/Header";
 
 // const supabase = createClient(
@@ -134,23 +134,23 @@ const App: React.FC = () => {
   useEffect(() => {
     if (songData) {
       try {
-        handleLoadSong(songData.track.url + songData.track.filename);
+        handleLoadSong(songData.project.url + songData.project.filename);
       } catch (error) {
         console.error("Error loading song", error);
       }
-      setTitle(songData.track.title);
+      setTitle(songData.project.title);
       setNotes(songData.notes);
       setStructure(songData.structure);
       setSongTimeLines(songData.timeline);
       setMarkers(songData.markers);
-      setSkipBeats(songData.track.skipBeats);
+      setSkipBeats(songData.project.skipBeats);
       setTimeSignature({
-        numerator: songData.track.numerator,
-        denominator: songData.track.denominator,
+        numerator: songData.project.numerator,
+        denominator: songData.project.denominator,
       });
-      setTempo(songData.track.tempo);
-      setSkipBeatsBy(songData.track.skipBeatsBy);
-      setCountIn(songData.track.countIn);
+      setTempo(songData.project.tempo);
+      setSkipBeatsBy(songData.project.skipBeatsBy);
+      setCountIn(songData.project.countIn);
       setCanEdit(true); /* change this when user is logged in */
       setInstruments(songData.instruments);
       handleRestart(setCurrentTime, setIsPlaying);
@@ -158,7 +158,7 @@ const App: React.FC = () => {
   }, [songData]);
 
   useEffect(() => {
-    console.log("timesignature changed", timeSignature);
+    // console.log("timesignature changed", timeSignature);
     if (duration && tempo && timeSignature) {
       const newBeatData = generateBeatData(
         duration,
@@ -494,7 +494,7 @@ const App: React.FC = () => {
 
   const exportSongData = () => {
     const songData: SongData = {
-      track: {
+      project: {
         title,
         url: "/data",
         filename: "song.json",
@@ -592,7 +592,7 @@ const App: React.FC = () => {
                     // renderTick(tick, index)
                   )
                 )}
-              {!fileLoaded && <h2>Select a track from the Tracks tab</h2>}
+              {!fileLoaded && <h2>Select a project from the Projects tab</h2>}
             </div>
             <div
               className={`center-indicator ${pulse ? "pulse" : ""}`}
@@ -828,6 +828,28 @@ const App: React.FC = () => {
               )}
             </div>
           )}
+          {activeTab === "notes" && (
+            <div className="main-content">
+              {audioSrc && (
+                <>
+                  <div className="settings">
+                    <h2>Notes</h2>
+                    <div className="settings-section">
+                      <textarea
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          fontFamily: "Roboto",
+                        }}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
           {activeTab === "settings" && (
             <div className="main-content">
               {fileLoaded && (
@@ -903,6 +925,7 @@ const App: React.FC = () => {
               )}
             </div>
           )}
+
           {activeTab === "notes" && (
             <div className="main-content">
               {audioSrc && (
@@ -925,13 +948,13 @@ const App: React.FC = () => {
               )}
             </div>
           )}
-          {activeTab === "tracks" && (
+          {activeTab === "projects" && (
             <div className="main-content">
               <div className="settings">
-                <h2>Your Tracks</h2>
+                <h2>Your Projects</h2>
 
                 <div className="settings-section">
-                  <TracksList
+                  <ProjectsList
                     isPlaying={isPlaying}
                     handleLoadSongJSON={handleLoadSongJSON}
                     onFileChange={onFileChange}
