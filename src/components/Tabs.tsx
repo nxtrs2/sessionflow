@@ -24,6 +24,19 @@ const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
       </button>
       <button
         disabled={!fileLoaded}
+        onClick={() => setActiveTab("instruments")}
+        style={{
+          color: fileLoaded
+            ? activeTab === "instruments"
+              ? "yellow"
+              : "lightgray"
+            : "gray",
+        }}
+      >
+        Instruments
+      </button>
+      <button
+        disabled={!fileLoaded}
         onClick={() => setActiveTab("settings")}
         style={{
           color: fileLoaded
@@ -35,7 +48,7 @@ const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
       >
         Settings
       </button>
-      <button
+      {/* <button
         disabled={!fileLoaded}
         onClick={() => setActiveTab("notes")}
         style={{
@@ -47,7 +60,7 @@ const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
         }}
       >
         Notes
-      </button>
+      </button> */}
 
       <button
         onClick={() => setActiveTab("projects")}

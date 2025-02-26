@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Instrument } from "../types";
 import { Trash } from "lucide-react";
+import RangeSlider from "react-range-slider-input";
+import "react-range-slider-input/dist/style.css";
 
-interface SettingsProps {
+interface InstrumentsProps {
   instruments: Instrument[];
   handleInstrumentsUpdate: (
     instrument: Instrument,
@@ -10,7 +12,7 @@ interface SettingsProps {
   ) => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({
+const Instruments: React.FC<InstrumentsProps> = ({
   instruments,
   handleInstrumentsUpdate,
 }) => {
@@ -132,6 +134,37 @@ const Settings: React.FC<SettingsProps> = ({
       </div>
       {instruments.length > 0 && (
         <div className="settings-section">
+          <div className="instrument-list">
+            {instruments.map((inst, idx) => (
+              <div
+                className="instrument"
+                key={idx}
+                onClick={() => {
+                  setInstrument(inst.name);
+                  setInstId(inst.id);
+                  setColor(inst.color);
+                  setBgColor(inst.bgcolor);
+                }}
+              >
+                <span>{inst.name}</span>
+                <RangeSlider
+                  className="single-thumb"
+                  value={[0, 50]}
+                  min={0}
+                  max={100}
+                  thumbsDisabled={[true, false]}
+                  rangeSlideDisabled={true}
+                  orientation="vertical"
+                />
+                <span>{inst.name}</span>
+                <span>{inst.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {instruments.length > 0 && (
+        <div className="settings-section">
           <label>
             Instrument:
             <select value={instrument} onChange={(e) => handleSetInstrument(e)}>
@@ -208,4 +241,4 @@ const Settings: React.FC<SettingsProps> = ({
   );
 };
 
-export default Settings;
+export default Instruments;

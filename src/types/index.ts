@@ -70,8 +70,8 @@ export interface TickData {
 export interface Instrument {
   id: number;
   name: string;
-  filename: string;
-  url: string;
+  filename?: string;
+  url?: string;
   color: string;
   bgcolor: string;
 }

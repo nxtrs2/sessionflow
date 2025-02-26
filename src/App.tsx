@@ -34,7 +34,7 @@ import {
 } from "./helpers/TransportFunctions";
 import Loader from "./components/Loader";
 import EventDialog from "./components/EventDialog";
-import Settings from "./components/Settings";
+import Instruments from "./components/Instruments";
 import Tabs from "./components/Tabs";
 import ProjectsList from "./components/ProjectsList";
 import Header from "./components/Header";
@@ -828,24 +828,14 @@ const App: React.FC = () => {
               )}
             </div>
           )}
-          {activeTab === "notes" && (
+          {activeTab === "instruments" && (
             <div className="main-content">
               {audioSrc && (
                 <>
-                  <div className="settings">
-                    <h2>Notes</h2>
-                    <div className="settings-section">
-                      <textarea
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          fontFamily: "Roboto",
-                        }}
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                      />
-                    </div>
-                  </div>
+                  <Instruments
+                    instruments={instruments}
+                    handleInstrumentsUpdate={handleInstrumentsUpdate}
+                  />
                 </>
               )}
             </div>
@@ -917,16 +907,12 @@ const App: React.FC = () => {
                       </label>
                     </div>
                   </div>
-                  <Settings
-                    instruments={instruments}
-                    handleInstrumentsUpdate={handleInstrumentsUpdate}
-                  />
                 </>
               )}
             </div>
           )}
 
-          {activeTab === "notes" && (
+          {/* {activeTab === "notes" && (
             <div className="main-content">
               {audioSrc && (
                 <>
@@ -947,7 +933,7 @@ const App: React.FC = () => {
                 </>
               )}
             </div>
-          )}
+          )} */}
           {activeTab === "projects" && (
             <div className="main-content">
               <div className="settings">

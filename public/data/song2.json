@@ -1,7 +1,7 @@
 {
-  "track": {
+  "project": {
     "title": "Signals",
-    "filename": "signals.mp3",
+    "filename": "signals-master.mp3",
     "url": "/songs/",
     "tempo": 144,
     "timesignature": "4/4",
@@ -14,9 +14,30 @@
   "notes": "This is a song about signals. It's a song about something.",
   "structure": [],
   "instruments": [
-    { "id": 0, "name": "SYNTH1", "color": "#ffffff", "bgcolor": "#ff0000" },
-    { "id": 1, "name": "DRUMS", "color": "#000000", "bgcolor": "#00ff00" },
-    { "id": 2, "name": "BASS", "color": "#000000", "bgcolor": "#00ffff" }
+    {
+      "id": 0,
+      "name": "SYNTH1",
+      "filename": "signals-synth1.mp3",
+      "url": "/songs/",
+      "color": "#ffffff",
+      "bgcolor": "#ff0000"
+    },
+    {
+      "id": 1,
+      "name": "DRUMS",
+      "filename": "signals-drums.mp3",
+      "url": "/songs/",
+      "color": "#000000",
+      "bgcolor": "#00ff00"
+    },
+    {
+      "id": 2,
+      "name": "BASS",
+      "filename": "signals-lead1.mp3",
+      "url": "/songs/",
+      "color": "#000000",
+      "bgcolor": "#00ffff"
+    }
   ],
   "timeline": [
     {
