@@ -136,7 +136,15 @@ const Instruments: React.FC<InstrumentsProps> = ({
           <div className="instrument-master">
             <VerticalSlider min={0} max={100} initialValue={50} />
             <div className="instrument-details">
-              <p>Master</p>
+              <div
+                style={{
+                  fontFamily: "Roboto",
+                  textAlign: "center",
+                  margin: "0",
+                }}
+              >
+                MASTER
+              </div>
 
               <div className="instrument-buttons">
                 <button
@@ -165,10 +173,11 @@ const Instruments: React.FC<InstrumentsProps> = ({
                 <div
                   style={{
                     fontFamily: "Roboto",
-                    fontWeight: "bold",
                     textAlign: "center",
                     margin: "0",
                     color: inst.color,
+                    paddingLeft: "0.5em",
+                    paddingRight: "0.5em",
                     backgroundColor: inst.bgcolor,
                     cursor: "pointer",
                   }}
