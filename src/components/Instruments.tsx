@@ -133,23 +133,75 @@ const Instruments: React.FC<InstrumentsProps> = ({
       </div>
       {instruments.length > 0 && (
         <div className="instrument-list">
-          {/* {instruments.map((inst, idx) => ( */}
-          <div
-            className="instrument"
-            // key={idx}
-            // onClick={() => {
-            //   setInstrument(inst.name);
-            //   setInstId(inst.id);
-            //   setColor(inst.color);
-            //   setBgColor(inst.bgcolor);
-            // }}
-          >
-            <span>ccc</span>
+          <div className="instrument-master">
             <VerticalSlider min={0} max={100} initialValue={50} />
-            <span>dddd</span>
-            <span>dddddd</span>
+            <div className="instrument-details">
+              <p>Master</p>
+
+              <div className="instrument-buttons">
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Handle solo functionality here
+                  }}
+                >
+                  S
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Handle solo functionality here
+                  }}
+                >
+                  M
+                </button>
+              </div>
+            </div>
           </div>
-          {/* ))} */}
+          {instruments.map((inst, idx) => (
+            <div className="instrument" key={idx}>
+              <VerticalSlider min={0} max={100} initialValue={50} />
+              <div className="instrument-details">
+                <div
+                  style={{
+                    fontFamily: "Roboto",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    margin: "0",
+                    color: inst.color,
+                    backgroundColor: inst.bgcolor,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setInstrument(inst.name);
+                    setInstId(inst.id);
+                    setColor(inst.color);
+                    setBgColor(inst.bgcolor);
+                  }}
+                >
+                  {inst.name}
+                </div>
+                <div className="instrument-buttons">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Handle solo functionality here
+                    }}
+                  >
+                    S
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Handle solo functionality here
+                    }}
+                  >
+                    M
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
       {instruments.length > 0 && (

@@ -1,13 +1,17 @@
-import React, { useState } from "react";
 import "./VerticalSlider.css";
-
-const VerticalSlider = ({ min = 0, max = 100, initialValue = 50 }) => {
-  const [value, setValue] = useState(initialValue);
-
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
-
+interface VerticalSliderProps {
+  min?: number;
+  max?: number;
+  initialValue?: number;
+  value?: number;
+  onChange?: (value: number) => void;
+}
+const VerticalSlider = ({
+  min = 0,
+  max = 100,
+  value,
+  onChange,
+}: VerticalSliderProps) => {
   return (
     <div className="vertical-slider">
       <input
@@ -15,10 +19,9 @@ const VerticalSlider = ({ min = 0, max = 100, initialValue = 50 }) => {
         min={min}
         max={max}
         value={value}
-        onChange={handleChange}
+        onChange={() => onChange}
         className="slider"
       />
-      <div className="slider-value">{value}</div>
     </div>
   );
 };

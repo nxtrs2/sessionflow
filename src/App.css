@@ -615,24 +615,61 @@ select {
 .instrument-list {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  justify-content: center;
+  width: 550px;
+
   align-items: center;
+
   flex-wrap: nowrap; /* Prevent items from wrapping */
-  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-x: scroll;
   -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
   gap: 10px;
 }
 
 .instrument {
-  padding: 5px;
   border-radius: 5px;
   background: linear-gradient(135deg, #000000, #263368);
   width: 100px;
   height: 300px;
+  padding-top: 30px;
+  margin-bottom: 10px;
+  justify-content: space-around;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.instrument-master {
+  border-radius: 5px;
+  background: linear-gradient(135deg, #000000, #462668);
+  width: 100px;
+  height: 300px;
+  padding-top: 30px;
+  margin-bottom: 10px;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.instrument-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.instrument-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.instrument-buttons button {
+  border-radius: 1px;
+  color: #2c87f6;
+  font-size: 16px;
+  padding: 0 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -728,6 +765,9 @@ select {
     justify-content: center;
     width: 100vw;
     gap: 5px;
+  }
+  .instrument-list {
+    width: 100%;
   }
 }
 
