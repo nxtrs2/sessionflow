@@ -1,0 +1,42 @@
+.vertical-slider {
+  height: 100px; /*Adjust height as needed */
+  align-content: center;
+  border: 1px solid #ddd;
+  transform: rotate(-90deg); /* Rotate the slider */
+  margin-top: 30px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 200px; /* Width of the slider track when rotated */
+  height: 5px;
+  background: #ddd;
+  outline: none;
+  /* transform: rotate(-90deg); */
+}
+
+/* Webkit browsers (Chrome, Safari) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 30px;
+  background: linear-gradient(135deg, #3d73d6, #1e3a8a);
+  border-radius: 10%;
+  cursor: pointer;
+}
+
+/* Firefox */
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #3d73d6;
+  border: none;
+  border-radius: 10%;
+  cursor: pointer;
+}
+
+.slider-value {
+  font-size: 1rem;
+  color: #333;
+}
