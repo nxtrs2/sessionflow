@@ -23,7 +23,10 @@ import {
   SkipBack,
   Repeat2,
 } from "lucide-react";
-import { loadSongFromJson, handleFileChange } from "./helpers/FileFunctions";
+import {
+  loadMasterTrackFromJson,
+  handleMasterTrackFileChange,
+} from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
 import {
   togglePlayPause,
@@ -48,6 +51,8 @@ const App: React.FC = () => {
   // Tone.Player reference
   const [activeTab, setActiveTab] = useState<string>("track");
   const playerRef = useRef<Tone.Player | undefined>(undefined);
+  const playersRef = useRef<Tone.Players | undefined>(undefined);
+
   const clickSynthRef = useRef<Tone.Synth | null>(null);
 
   const [beatData, setBeatData] = useState<BeatData[]>([]);
@@ -77,6 +82,10 @@ const App: React.FC = () => {
   const [goToBeat, setGoToBeat] = useState<number>(0);
   const [skipBeatsBy, setSkipBeatsBy] = useState<number>(1);
   const [skipBeats, setSkipBeats] = useState<number>(0);
+  const [masterVolume, setMasterVolume] = useState<number>(-6);
+  const [masterPan, setMasterPan] = useState<number>(0);
+  const [masterMute, setMasterMute] = useState<boolean>(false);
+  const [masterSolo, setMasterSolo] = useState<boolean>(false);
   // const [skipStartBeat, setSkipStartBeat] = useState<number>(0);
   const [pulse, setPulse] = useState<boolean>(false);
 
@@ -134,7 +143,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (songData) {
       try {
-        handleLoadSong(songData.project.url + songData.project.filename);
+        handleLoadMasterTrack(songData.project.url + songData.project.filename);
       } catch (error) {
         console.error("Error loading song", error);
       }
@@ -144,6 +153,10 @@ const App: React.FC = () => {
       setSongTimeLines(songData.timeline);
       setMarkers(songData.markers);
       setSkipBeats(songData.project.skipBeats);
+      setMasterVolume(songData.project.masterVolume);
+      setMasterPan(songData.project.masterPan);
+      setMasterMute(songData.project.masterMute);
+      setMasterSolo(songData.project.masterSolo);
       setTimeSignature({
         numerator: songData.project.numerator,
         denominator: songData.project.denominator,
@@ -255,12 +268,12 @@ const App: React.FC = () => {
   //   console.log("Loop settings changed", loopStart, loopEnd);
   // }, [loopStart, loopEnd]);
 
-  const handleLoadSong = (file: string) => {
-    loadSongFromJson(file, setAudioSrc, setDuration, playerRef);
+  const handleLoadMasterTrack = (file: string) => {
+    loadMasterTrackFromJson(file, setAudioSrc, setDuration, playersRef);
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleFileChange(e, setAudioSrc, setDuration, playerRef);
+    handleMasterTrackFileChange(e, setAudioSrc, setDuration, playersRef);
     setFileLoaded(true);
     setCanEdit(true);
   };
@@ -500,6 +513,10 @@ const App: React.FC = () => {
         filename: "song.json",
         skipBeats,
         skipBeatsBy,
+        masterVolume,
+        masterPan,
+        masterMute,
+        masterSolo,
         countIn,
         numerator: timeSignature.numerator,
         denominator: timeSignature.denominator,

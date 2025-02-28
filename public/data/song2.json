@@ -9,7 +9,11 @@
     "denominator": 4,
     "countIn": 4,
     "skipBeatsBy": 4,
-    "skipBeats": 0
+    "skipBeats": 0,
+    "masterVolume": 50,
+    "masterPan": 0,
+    "masterMute": false,
+    "masterSolo": false
   },
   "notes": "This is a song about signals. It's a song about something.",
   "structure": [],
@@ -20,7 +24,11 @@
       "filename": "signals-synth1.mp3",
       "url": "/songs/",
       "color": "#ffffff",
-      "bgcolor": "#ff0000"
+      "bgcolor": "#ff0000",
+      "volume": 50,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     },
     {
       "id": 1,
@@ -28,7 +36,11 @@
       "filename": "signals-drums.mp3",
       "url": "/songs/",
       "color": "#000000",
-      "bgcolor": "#00ff00"
+      "bgcolor": "#00ff00",
+      "volume": 30,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     },
     {
       "id": 2,
@@ -36,7 +48,11 @@
       "filename": "signals-lead1.mp3",
       "url": "/songs/",
       "color": "#000000",
-      "bgcolor": "#00ffff"
+      "bgcolor": "#00ffff",
+      "volume": 50,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     }
   ],
   "timeline": [
@@ -51,7 +67,7 @@
       "beat": 16,
       "instrument": "DRUMS",
       "instrumentId": 1,
-      "message": "SYNTH1 START",
+      "message": "DRUMS START",
       "countOut": 0
     },
     {

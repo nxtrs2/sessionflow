@@ -37,6 +37,10 @@ export interface SongData {
     countIn: number;
     skipBeatsBy: number;
     skipBeats: number;
+    masterVolume: number;
+    masterPan: number;
+    masterMute: boolean;
+    masterSolo: boolean;
   };
   notes: string;
   structure: Structure[];
@@ -74,6 +78,10 @@ export interface Instrument {
   url?: string;
   color: string;
   bgcolor: string;
+  voloume: number;
+  pan: number;
+  mute: boolean;
+  solo: boolean;
 }
 
 export type Mode = "edit" | "new" | "delete";

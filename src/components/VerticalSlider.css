@@ -9,7 +9,7 @@
   -webkit-appearance: none;
   width: 150px; /* Width of the slider track when rotated */
   height: 5px;
-  background: #ffe74e;
+  background: linear-gradient(90deg, yellow, red);
   outline: none;
 
   margin-left: 20px;

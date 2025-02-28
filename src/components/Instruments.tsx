@@ -140,6 +140,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
                 style={{
                   fontFamily: "Roboto",
                   textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "0.8em",
                   margin: "0",
                 }}
               >
@@ -174,6 +176,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   style={{
                     fontFamily: "Roboto",
                     textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: "0.8em",
                     margin: "0",
                     color: inst.color,
                     paddingLeft: "0.5em",
