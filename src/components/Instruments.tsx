@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import * as Tone from "tone";
 import { Instrument } from "../types";
 import { Trash } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
@@ -9,11 +10,13 @@ interface InstrumentsProps {
     instrument: Instrument,
     deleteInstrument: boolean
   ) => void;
+  playersRef: React.MutableRefObject<Tone.Players>;
 }
 
 const Instruments: React.FC<InstrumentsProps> = ({
   instruments,
   handleInstrumentsUpdate,
+  playersRef,
 }) => {
   // Set initial form values (for new or edit modes)
   const [instrument, setInstrument] = useState<string>("");
@@ -131,10 +134,17 @@ const Instruments: React.FC<InstrumentsProps> = ({
           />
         </div>
       </div>
-      {instruments.length > 0 && (
+      {playersRef.current && playersRef.current.player("master") && (
         <div className="instrument-list">
           <div className="instrument-master">
-            <VerticalSlider min={0} max={100} initialValue={50} />
+            <VerticalSlider
+              min={-50}
+              max={5}
+              value={playersRef.current?.player("master").volume.value}
+              onChange={(value) => {
+                playersRef.current.player("master").volume.value = value;
+              }}
+            />
             <div className="instrument-details">
               <div
                 style={{
@@ -159,8 +169,16 @@ const Instruments: React.FC<InstrumentsProps> = ({
                 </button>
                 <button
                   type="button"
+                  style={{
+                    color:
+                      playersRef.current?.player("master").mute === false
+                        ? "yellow"
+                        : "red",
+                  }}
                   onClick={() => {
-                    // Handle solo functionality here
+                    // Handle mute functionality here
+                    playersRef.current.player("master").mute =
+                      !playersRef.current.player("master").mute;
                   }}
                 >
                   M
@@ -168,53 +186,61 @@ const Instruments: React.FC<InstrumentsProps> = ({
               </div>
             </div>
           </div>
-          {instruments.map((inst, idx) => (
-            <div className="instrument" key={idx}>
-              <VerticalSlider min={0} max={100} initialValue={50} />
-              <div className="instrument-details">
-                <div
-                  style={{
-                    fontFamily: "Roboto",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    fontSize: "0.8em",
-                    margin: "0",
-                    color: inst.color,
-                    paddingLeft: "0.5em",
-                    paddingRight: "0.5em",
-                    backgroundColor: inst.bgcolor,
-                    cursor: "pointer",
+          {instruments.length > 0 &&
+            instruments.map((inst, idx) => (
+              <div className="instrument" key={idx}>
+                <VerticalSlider
+                  min={-50}
+                  max={5}
+                  value={playersRef.current?.player(inst.name).volume.value}
+                  onChange={(value) => {
+                    playersRef.current.player(inst.name).volume.value = value;
                   }}
-                  onClick={() => {
-                    setInstrument(inst.name);
-                    setInstId(inst.id);
-                    setColor(inst.color);
-                    setBgColor(inst.bgcolor);
-                  }}
-                >
-                  {inst.name}
-                </div>
-                <div className="instrument-buttons">
-                  <button
-                    type="button"
+                />
+                <div className="instrument-details">
+                  <div
+                    style={{
+                      fontFamily: "Roboto",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      fontSize: "0.8em",
+                      margin: "0",
+                      color: inst.color,
+                      paddingLeft: "0.5em",
+                      paddingRight: "0.5em",
+                      backgroundColor: inst.bgcolor,
+                      cursor: "pointer",
+                    }}
                     onClick={() => {
-                      // Handle solo functionality here
+                      setInstrument(inst.name);
+                      setInstId(inst.id);
+                      setColor(inst.color);
+                      setBgColor(inst.bgcolor);
                     }}
                   >
-                    S
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Handle solo functionality here
-                    }}
-                  >
-                    M
-                  </button>
+                    {inst.name}
+                  </div>
+                  <div className="instrument-buttons">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Handle solo functionality here
+                      }}
+                    >
+                      S
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Handle solo functionality here
+                      }}
+                    >
+                      M
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
       {instruments.length > 0 && (

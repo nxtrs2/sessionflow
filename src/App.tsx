@@ -26,6 +26,7 @@ import {
 import {
   loadMasterTrackFromJson,
   handleMasterTrackFileChange,
+  loadTracksFromInstruments,
 } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
 import {
@@ -50,8 +51,8 @@ import Header from "./components/Header";
 const App: React.FC = () => {
   // Tone.Player reference
   const [activeTab, setActiveTab] = useState<string>("track");
-  const playerRef = useRef<Tone.Player | undefined>(undefined);
-  const playersRef = useRef<Tone.Players | undefined>(undefined);
+  // const playerRef = useRef<Tone.Player | undefined>(undefined);
+  const playersRef = useRef<Tone.Players | null>(null);
 
   const clickSynthRef = useRef<Tone.Synth | null>(null);
 
@@ -181,6 +182,10 @@ const App: React.FC = () => {
         structure,
         songTimeLines
       );
+
+      if (instruments.length > 0) {
+        loadTracksFromInstruments(instruments, playersRef);
+      }
       // setLoopEnd(duration);
       setLoopEnd(newBeatData.length - 1);
       setBeatData(newBeatData);
@@ -807,24 +812,7 @@ const App: React.FC = () => {
                   </div>
                   <div className="volume-controls">
                     <label>
-                      Song:
-                      <input
-                        type="range"
-                        min="-20"
-                        max="5"
-                        step="1"
-                        defaultValue="-6"
-                        onChange={(e) => {
-                          if (playerRef.current) {
-                            playerRef.current.volume.value = parseInt(
-                              e.target.value
-                            );
-                          }
-                        }}
-                      />
-                    </label>
-                    <label>
-                      Click:
+                      Click Volume:
                       <input
                         type="range"
                         min="-20"
@@ -852,6 +840,7 @@ const App: React.FC = () => {
                   <Instruments
                     instruments={instruments}
                     handleInstrumentsUpdate={handleInstrumentsUpdate}
+                    playersRef={playersRef}
                   />
                 </>
               )}

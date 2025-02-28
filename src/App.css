@@ -669,7 +669,6 @@ select {
   color: #2c87f6;
   font-size: 16px;
   padding: 0 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
