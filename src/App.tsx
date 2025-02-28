@@ -835,11 +835,18 @@ const App: React.FC = () => {
           )}
           {activeTab === "instruments" && (
             <div className="main-content">
-              {audioSrc && (
+              {audioSrc && playersRef && (
                 <>
                   <Instruments
+                    masterVolume={masterVolume}
+                    setMasterVolume={setMasterVolume}
+                    masterSolo={masterSolo}
+                    setMasterSolo={setMasterSolo}
+                    masterMute={masterMute}
+                    setMasterMute={setMasterMute}
                     instruments={instruments}
                     handleInstrumentsUpdate={handleInstrumentsUpdate}
+                    setInstruments={setInstruments}
                     playersRef={playersRef}
                   />
                 </>

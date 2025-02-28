@@ -41,8 +41,8 @@ export const loadTracksFromInstruments = (
 
   const newPlayers = new Tone.Players(
     instruments.reduce((acc, inst) => {
-      if (inst.url) {
-        acc[inst.name] = inst.url;
+      if (inst.url && inst.filename) {
+        acc[inst.name] = inst.url + inst.filename;
       }
       return acc;
     }, {} as Record<string, string>)
@@ -51,12 +51,14 @@ export const loadTracksFromInstruments = (
   Tone.loaded().then(() => {
     instruments.forEach((inst) => {
       const player = newPlayers.player(inst.name);
+      // console.log("Player:", player.name);
+      player.mute = true;
       if (player.buffer) {
+        playersRef.current?.add(inst.name, player.buffer);
         player.sync().start(0);
       }
     });
   });
-  playersRef.current = newPlayers;
 };
 
 export const handleMasterTrackFileChange = (
