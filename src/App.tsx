@@ -15,27 +15,14 @@ import {
   Structure,
   Instrument,
 } from "./types";
-import {
-  Rewind,
-  FastForward,
-  Play,
-  Pause,
-  SkipBack,
-  Repeat2,
-} from "lucide-react";
+import { Repeat2 } from "lucide-react";
 import {
   loadMasterTrackFromJson,
   handleMasterTrackFileChange,
   loadTracksFromInstruments,
 } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
-import {
-  togglePlayPause,
-  togglePlayPauseWithLoop,
-  handleSkipBackward,
-  handleSkipForward,
-  handleRestart,
-} from "./helpers/TransportFunctions";
+import { handleRestart } from "./helpers/TransportFunctions";
 import Loader from "./components/Loader";
 import EventDialog from "./components/EventDialog";
 import Instruments from "./components/Instruments";
@@ -811,7 +798,6 @@ const App: React.FC = () => {
                     setMasterMute={setMasterMute}
                     instruments={instruments}
                     handleInstrumentsUpdate={handleInstrumentsUpdate}
-                    setInstruments={setInstruments}
                     playersRef={playersRef}
                   />
                 </>

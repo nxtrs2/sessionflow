@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as Tone from "tone";
 import { Instrument } from "../types";
 import { Trash } from "lucide-react";
@@ -12,7 +12,6 @@ interface InstrumentsProps {
   masterSolo: boolean;
   setMasterSolo: React.Dispatch<React.SetStateAction<boolean>>;
   instruments: Instrument[];
-  setInstruments: React.Dispatch<React.SetStateAction<Instrument[]>>;
   handleInstrumentsUpdate: (
     instrument: Instrument,
     deleteInstrument: boolean
@@ -28,7 +27,6 @@ const Instruments: React.FC<InstrumentsProps> = ({
   masterSolo,
   setMasterSolo,
   instruments,
-  setInstruments,
   handleInstrumentsUpdate,
   playersRef,
 }) => {
@@ -72,6 +70,10 @@ const Instruments: React.FC<InstrumentsProps> = ({
           name: newInstrument,
           color: newColor || "#000000",
           bgcolor: newBgColor || "#FFFFFF",
+          volume: 0,
+          pan: 0,
+          mute: false,
+          solo: false,
         };
         handleInstrumentsUpdate(newInst, false);
         setInstrument(newInstrument);
@@ -205,10 +207,17 @@ const Instruments: React.FC<InstrumentsProps> = ({
                 <VerticalSlider
                   min={-50}
                   max={5}
-                  value={playersRef.current?.player(inst.name).volume.value}
+                  value={
+                    playersRef.current?.has(inst.name)
+                      ? playersRef.current?.player(inst.name).volume.value
+                      : 0
+                  }
                   onChange={(value) => {
                     if (playersRef.current) {
-                      playersRef.current.player(inst.name).volume.value = value;
+                      if (playersRef.current.has(inst.name)) {
+                        playersRef.current.player(inst.name).volume.value =
+                          value;
+                      }
                     }
                   }}
                 />
@@ -248,14 +257,17 @@ const Instruments: React.FC<InstrumentsProps> = ({
                       type="button"
                       style={{
                         color:
+                          playersRef.current?.has(inst.name) &&
                           playersRef.current?.player(inst.name).mute === false
                             ? "yellow"
                             : "red",
                       }}
                       onClick={() => {
                         if (playersRef.current) {
-                          playersRef.current.player(inst.name).mute =
-                            !playersRef.current.player(inst.name).mute;
+                          if (playersRef.current.has(inst.name)) {
+                            const player = playersRef.current.player(inst.name);
+                            player.mute = !player.mute;
+                          }
                         }
                       }}
                     >
@@ -291,6 +303,10 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   name: newName,
                   color,
                   bgcolor,
+                  volume: 0,
+                  pan: 0,
+                  mute: false,
+                  solo: false,
                 });
               }}
             />
@@ -319,6 +335,10 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   name: instrument,
                   color: newColor,
                   bgcolor,
+                  volume: 0,
+                  pan: 0,
+                  mute: false,
+                  solo: false,
                 });
               }}
             />
@@ -335,6 +355,10 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   name: instrument,
                   color,
                   bgcolor: newColor,
+                  volume: 0,
+                  pan: 0,
+                  mute: false,
+                  solo: false,
                 });
               }}
             />

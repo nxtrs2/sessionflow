@@ -11,7 +11,7 @@ const VerticalSlider = ({ min, max, value, onChange }: VerticalSliderProps) => {
     <div className="vertical-slider">
       <input
         type="range"
-        defaultValue={value}
+        defaultValue={value?.toString()}
         min={min}
         max={max}
         onChange={(e) => onChange?.(parseInt(e.target.value, 10))}

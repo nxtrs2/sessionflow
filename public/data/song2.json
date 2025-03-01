@@ -25,7 +25,7 @@
       "url": "/songs/",
       "color": "#ffffff",
       "bgcolor": "#ff0000",
-      "volume": 50,
+      "volume": -10,
       "pan": 0,
       "mute": false,
       "solo": false
@@ -37,7 +37,7 @@
       "url": "/songs/",
       "color": "#000000",
       "bgcolor": "#00ff00",
-      "volume": 30,
+      "volume": -10,
       "pan": 0,
       "mute": false,
       "solo": false
@@ -45,11 +45,11 @@
     {
       "id": 2,
       "name": "BASS",
-      "filename": "signals-lead1.mp3",
+      "filename": "signals-bass.mp3",
       "url": "/songs/",
       "color": "#000000",
       "bgcolor": "#00ffff",
-      "volume": 50,
+      "volume": -15,
       "pan": 0,
       "mute": false,
       "solo": false
