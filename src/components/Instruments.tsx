@@ -140,8 +140,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
         <div className="instrument-list">
           <div className="instrument-master">
             <VerticalSlider
-              min={-50}
-              max={5}
+              min={-30}
+              max={0}
               value={playersRef.current?.player("master").volume.value}
               onChange={(value) => {
                 if (playersRef.current) {
@@ -205,8 +205,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
             instruments.map((inst, idx) => (
               <div className="instrument" key={idx}>
                 <VerticalSlider
-                  min={-50}
-                  max={5}
+                  min={-30}
+                  max={0}
                   value={
                     playersRef.current?.has(inst.name)
                       ? playersRef.current?.player(inst.name).volume.value

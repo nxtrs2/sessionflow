@@ -25,6 +25,18 @@
       "url": "/songs/",
       "color": "#ffffff",
       "bgcolor": "#ff0000",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
+    },
+    {
+      "id": 0,
+      "name": "LEAD1",
+      "filename": "signals-lead1.mp3",
+      "url": "/songs/",
+      "color": "#ffffff",
+      "bgcolor": "#ff0000",
       "volume": -10,
       "pan": 0,
       "mute": false,

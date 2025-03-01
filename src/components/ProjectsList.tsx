@@ -19,16 +19,16 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           handleLoadSongJSON("/data/song2.json");
         }}
       >
-        Signals
+        DEMO
       </button>
-      <button
+      {/* <button
         disabled={isPlaying}
         onClick={() => {
           handleLoadSongJSON("/data/song.json");
         }}
       >
         Untitled2
-      </button>
+      </button> */}
       <input
         type="file"
         accept="audio/*"
@@ -37,7 +37,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         id="fileInput"
       />
       <button onClick={() => document.getElementById("fileInput")?.click()}>
-        Load Master File
+        Load Master Track
       </button>
     </div>
   );
