@@ -52,7 +52,7 @@ export const loadTracksFromInstruments = (
     instruments.forEach((inst) => {
       const player = newPlayers.player(inst.name);
       // console.log("Player:", player.name);
-      player.mute = true;
+      //player.mute = true;
       if (player.buffer) {
         playersRef.current?.add(inst.name, player.buffer);
         player.sync().start(0);

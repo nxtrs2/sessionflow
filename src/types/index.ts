@@ -78,7 +78,7 @@ export interface Instrument {
   url?: string;
   color: string;
   bgcolor: string;
-  voloume: number;
+  volume: number;
   pan: number;
   mute: boolean;
   solo: boolean;

@@ -42,6 +42,7 @@ import Instruments from "./components/Instruments";
 import Tabs from "./components/Tabs";
 import ProjectsList from "./components/ProjectsList";
 import Header from "./components/Header";
+import TransportControls from "./components/TransportControls";
 
 // const supabase = createClient(
 //   "https://zjhdapoqakbbheerqvsm.supabase.co",
@@ -668,58 +669,22 @@ const App: React.FC = () => {
               {audioSrc && (
                 <>
                   <div className="transport-system">
-                    <div className="transport-controls">
-                      <button
-                        onClick={() => {
-                          setIsPlaying(!isPlaying);
+                    <TransportControls
+                      size={20}
+                      isPlaying={isPlaying}
+                      loop={loop}
+                      loopStart={loopStart}
+                      loopEnd={loopEnd}
+                      beatData={beatData}
+                      timeSignature={timeSignature}
+                      skipBeats={skipBeats}
+                      countIn={countIn}
+                      skipBeatsBy={skipBeatsBy}
+                      setCurrentTime={setCurrentTime}
+                      setIsPlaying={setIsPlaying}
+                      setShowCountIn={setShowCountIn}
+                    />
 
-                          if (loop) {
-                            //console.log("Looping");
-                            togglePlayPauseWithLoop(
-                              isPlaying,
-                              beatData[loopStart].time,
-                              beatData[loopEnd].time,
-                              timeSignature,
-                              skipBeats,
-                              setIsPlaying
-                            );
-                          } else {
-                            //console.log("Not Looping");
-                            togglePlayPause(
-                              isPlaying,
-                              countIn,
-                              timeSignature,
-                              skipBeats,
-                              setShowCountIn,
-                              setIsPlaying
-                            );
-                          }
-                        }}
-                      >
-                        {isPlaying ? <Pause /> : <Play />}
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleRestart(setCurrentTime, setIsPlaying)
-                        }
-                      >
-                        <SkipBack />
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleSkipBackward(skipBeatsBy, setCurrentTime)
-                        }
-                      >
-                        <Rewind />
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleSkipForward(skipBeatsBy, setCurrentTime)
-                        }
-                      >
-                        <FastForward />
-                      </button>
-                    </div>
                     <div className="transport-tools">
                       <label>
                         Skip by:
