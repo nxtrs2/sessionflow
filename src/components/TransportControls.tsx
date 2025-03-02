@@ -39,7 +39,7 @@ const TransportControls: React.FC<TransportControlsProps> = ({
   setShowCountIn,
 }) => {
   return (
-    <div className="transport-controls">
+    <>
       <button onClick={() => handleRestart(setCurrentTime, setIsPlaying)}>
         <SkipBack size={size} />
       </button>
@@ -76,7 +76,7 @@ const TransportControls: React.FC<TransportControlsProps> = ({
       <button onClick={() => handleSkipForward(skipBeatsBy, setCurrentTime)}>
         <FastForward size={size} />
       </button>
-    </div>
+    </>
   );
 };
 

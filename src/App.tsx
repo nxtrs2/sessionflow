@@ -555,9 +555,25 @@ const App: React.FC = () => {
             <div className="timeline-header">
               {fileLoaded && (
                 <>
-                  <div className="time-display">
+                  <TransportControls
+                    size={20}
+                    isPlaying={isPlaying}
+                    loop={loop}
+                    loopStart={loopStart}
+                    loopEnd={loopEnd}
+                    beatData={beatData}
+                    timeSignature={timeSignature}
+                    skipBeats={skipBeats}
+                    countIn={countIn}
+                    skipBeatsBy={skipBeatsBy}
+                    setCurrentTime={setCurrentTime}
+                    setIsPlaying={setIsPlaying}
+                    setShowCountIn={setShowCountIn}
+                  />
+
+                  {/* <div className="time-display">
                     {timeSignature.numerator + "/" + timeSignature.denominator}
-                  </div>
+                  </div> */}
                   <div className="time-display" style={{ width: "100px" }}>
                     <div>
                       {`${Math.floor(currentBar)}`} :{" "}
@@ -666,22 +682,23 @@ const App: React.FC = () => {
               {audioSrc && (
                 <>
                   <div className="transport-system">
-                    <TransportControls
-                      size={20}
-                      isPlaying={isPlaying}
-                      loop={loop}
-                      loopStart={loopStart}
-                      loopEnd={loopEnd}
-                      beatData={beatData}
-                      timeSignature={timeSignature}
-                      skipBeats={skipBeats}
-                      countIn={countIn}
-                      skipBeatsBy={skipBeatsBy}
-                      setCurrentTime={setCurrentTime}
-                      setIsPlaying={setIsPlaying}
-                      setShowCountIn={setShowCountIn}
-                    />
-
+                    <div className="transport-controls">
+                      <TransportControls
+                        size={20}
+                        isPlaying={isPlaying}
+                        loop={loop}
+                        loopStart={loopStart}
+                        loopEnd={loopEnd}
+                        beatData={beatData}
+                        timeSignature={timeSignature}
+                        skipBeats={skipBeats}
+                        countIn={countIn}
+                        skipBeatsBy={skipBeatsBy}
+                        setCurrentTime={setCurrentTime}
+                        setIsPlaying={setIsPlaying}
+                        setShowCountIn={setShowCountIn}
+                      />
+                    </div>
                     <div className="transport-tools">
                       <label>
                         Skip by:

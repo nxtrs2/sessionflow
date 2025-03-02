@@ -462,8 +462,9 @@ select {
 .timeline-header {
   z-index: 100;
   position: absolute;
-  height: 100px;
+  height: 70px;
   width: 100%;
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
