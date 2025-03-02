@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import { SetAudioSrc, SetDuration, Instrument } from "../types";
 
 // export const loadMasterTrackFromJson = (
@@ -54,7 +54,7 @@ export const loadMasterTrackFromJson = (
     master: songUrl,
   }).toDestination();
 
-  newPlayers.player("master").volume.value = -20;
+  newPlayers.player("master").mute = true;
 
   Tone.loaded().then(() => {
     const masterPlayer = newPlayers.player("master");
@@ -68,13 +68,17 @@ export const loadMasterTrackFromJson = (
 
 export const loadTracksFromInstruments = (
   instruments: Instrument[],
-  playersRef: React.MutableRefObject<Tone.Players | null>
+  playersRef: React.MutableRefObject<Tone.Players | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loadingMsg: React.Dispatch<React.SetStateAction<string>>
 ) => {
   if (!playersRef.current) {
     console.error("No master track loaded.");
     return;
   }
 
+  setLoading(true);
+  loadingMsg("Loading instrument tracks...");
   if (playersRef.current) {
     instruments.forEach((inst) => {
       if (inst.url && inst.filename) {
@@ -89,6 +93,10 @@ export const loadTracksFromInstruments = (
       }
     });
   }
+  Tone.loaded().then(() => {
+    setLoading(false);
+    loadingMsg("");
+  });
 };
 
 // export const loadTracksFromInstruments = (

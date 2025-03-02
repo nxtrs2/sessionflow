@@ -173,8 +173,12 @@ const App: React.FC = () => {
       );
 
       if (instruments.length > 0) {
-        loadTracksFromInstruments(instruments, playersRef);
-        setLoading(false);
+        loadTracksFromInstruments(
+          instruments,
+          playersRef,
+          setLoading,
+          setLoadingMsg
+        );
       }
       // setLoopEnd(duration);
       setLoopEnd(newBeatData.length - 1);
