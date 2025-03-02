@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 import React, { ChangeEvent } from "react";
-import { SetAudioSrc, SetDuration, Instrument } from "../types";
+import { SetAudioSrc, SetDuration, Instrument, CustomPlayer } from "../types";
 
 // export const loadMasterTrackFromJson = (
 //   file: string,
@@ -57,7 +57,8 @@ export const loadMasterTrackFromJson = (
   newPlayers.player("master").mute = true;
 
   Tone.loaded().then(() => {
-    const masterPlayer = newPlayers.player("master");
+    const masterPlayer = newPlayers.player("master") as CustomPlayer;
+    masterPlayer.solo = false;
     if (masterPlayer.buffer) {
       setDuration(masterPlayer.buffer.duration);
     }
@@ -85,8 +86,11 @@ export const loadTracksFromInstruments = (
         const trackUrl = inst.url + inst.filename;
         if (!playersRef.current?.has(inst.name)) {
           playersRef.current?.add(inst.name, trackUrl, () => {
-            const player = playersRef.current!.player(inst.name);
+            const player = playersRef.current!.player(
+              inst.name
+            ) as CustomPlayer;
             player.volume.value = inst.volume;
+            player.solo = false;
             player.sync().start(0);
           });
         }

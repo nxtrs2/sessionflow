@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import * as Tone from "tone";
-import { Instrument } from "../types";
+import { Instrument, CustomPlayer } from "../types";
 import { Trash } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 
 interface InstrumentsProps {
-  masterVolume: number;
-  setMasterVolume: React.Dispatch<React.SetStateAction<number>>;
   masterMute: boolean;
   setMasterMute: React.Dispatch<React.SetStateAction<boolean>>;
   masterSolo: boolean;
@@ -20,8 +18,6 @@ interface InstrumentsProps {
 }
 
 const Instruments: React.FC<InstrumentsProps> = ({
-  masterVolume,
-  setMasterVolume,
   masterMute,
   setMasterMute,
   masterSolo,
@@ -145,9 +141,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
               value={playersRef.current?.player("master").volume.value}
               onChange={(value) => {
                 if (playersRef.current) {
-                  setMasterVolume(value);
-                  playersRef.current.player("master").volume.value =
-                    masterVolume;
+                  playersRef.current.player("master").volume.value = value;
                 }
               }}
             />
@@ -167,14 +161,21 @@ const Instruments: React.FC<InstrumentsProps> = ({
               <div className="instrument-buttons">
                 <button
                   type="button"
+                  style={{
+                    color: masterSolo ? "limegreen" : "gray",
+                  }}
                   onClick={() => {
                     if (playersRef.current) {
-                      setMasterSolo(!masterSolo);
+                      if (masterSolo)
+                        playersRef.current.player("master").mute = false;
+
                       instruments.forEach((inst) => {
                         if (playersRef.current) {
-                          playersRef.current.player(inst.name).mute = true;
+                          playersRef.current.player(inst.name).mute =
+                            masterSolo;
                         }
                       });
+                      setMasterSolo(!masterSolo);
                     }
                   }}
                 >
@@ -185,8 +186,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   style={{
                     color:
                       playersRef.current?.player("master").mute === false
-                        ? "yellow"
-                        : "red",
+                        ? "gray"
+                        : "limegreen",
                   }}
                   onClick={() => {
                     setMasterMute(!masterMute);
@@ -247,8 +248,58 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   <div className="instrument-buttons">
                     <button
                       type="button"
+                      style={{
+                        color:
+                          playersRef.current?.has(inst.name) &&
+                          (
+                            playersRef.current?.player(
+                              inst.name
+                            ) as CustomPlayer
+                          ).solo
+                            ? "limegreen"
+                            : "gray",
+                      }}
                       onClick={() => {
-                        // Handle mute functionality here
+                        if (playersRef.current) {
+                          const player = playersRef.current.player(
+                            inst.name
+                          ) as CustomPlayer;
+                          player.solo = !player.solo;
+                          player.mute = false;
+                          if (player.solo) {
+                            playersRef.current.player("master").mute = true;
+                            setMasterSolo(false);
+                            setMasterMute(true);
+
+                            instruments.forEach((otherInst) => {
+                              if (
+                                playersRef.current &&
+                                otherInst.name !== inst.name
+                              ) {
+                                const otherPlayer = playersRef.current.player(
+                                  otherInst.name
+                                ) as CustomPlayer;
+                                otherPlayer.mute = true;
+                              }
+                            });
+                          } else {
+                            playersRef.current.player("master").mute = false;
+                            setMasterSolo(false);
+                            setMasterMute(false);
+
+                            instruments.forEach((otherInst) => {
+                              if (
+                                playersRef.current &&
+                                otherInst.name !== inst.name
+                              ) {
+                                const otherPlayer = playersRef.current.player(
+                                  otherInst.name
+                                ) as CustomPlayer;
+                                otherPlayer.mute = false;
+                              }
+                            });
+                          }
+                        }
                       }}
                     >
                       S
@@ -259,8 +310,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
                         color:
                           playersRef.current?.has(inst.name) &&
                           playersRef.current?.player(inst.name).mute === false
-                            ? "yellow"
-                            : "red",
+                            ? "gray"
+                            : "limegreen",
                       }}
                       onClick={() => {
                         if (playersRef.current) {

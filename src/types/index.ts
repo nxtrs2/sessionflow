@@ -1,3 +1,8 @@
+import * as Tone from "tone";
+export interface CustomPlayer extends Tone.Player {
+  solo?: boolean;
+}
+
 export interface Structure {
   fromBeat: number;
   toBeat: number;

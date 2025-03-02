@@ -800,8 +800,6 @@ const App: React.FC = () => {
               {audioSrc && playersRef && (
                 <>
                   <Instruments
-                    masterVolume={masterVolume}
-                    setMasterVolume={setMasterVolume}
                     masterSolo={masterSolo}
                     setMasterSolo={setMasterSolo}
                     masterMute={masterMute}
