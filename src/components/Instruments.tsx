@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as Tone from "tone";
 import { Instrument, CustomPlayer } from "../types";
-import { Trash } from "lucide-react";
+import { Trash, Save, Music } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 
 interface InstrumentsProps {
@@ -98,40 +98,68 @@ const Instruments: React.FC<InstrumentsProps> = ({
   return (
     <div className="settings">
       <h2>Instruments</h2>
+      <form>
+        <div className="settings-section">
+          <div>
+            <input
+              type="text"
+              placeholder="Add new instrument"
+              onKeyDown={(e) => {
+                handleAddNewInstrument(e);
+              }}
+            />
+          </div>
+          <div>
+            <label>Text: </label>
+            <input
+              type="color"
+              value={newColor}
+              onChange={(e) => {
+                const newColor = e.target.value;
+                setNewColor(newColor);
+              }}
+            />
+          </div>
+          <div>
+            <label>Bg: </label>
+            <input
+              type="color"
+              value={newBgColor}
+              onChange={(e) => {
+                const newColor = e.target.value;
+                setNewBgColor(newColor);
+              }}
+            />
+          </div>
 
-      <div className="settings-section">
-        <div>
-          <input
-            type="text"
-            placeholder="Add new instrument"
-            onKeyDown={(e) => {
-              handleAddNewInstrument(e);
-            }}
-          />
+          <div>
+            <input
+              type="file"
+              accept=".mp3"
+              style={{ display: "none" }}
+              id="track-upload"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  // Handle file upload logic here
+                  console.log(file);
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById("track-upload")?.click();
+              }}
+            >
+              <Music size={20} />
+            </button>
+            <button type="submit">
+              <Save size={20} />
+            </button>
+          </div>
         </div>
-        <div>
-          <label>Text: </label>
-          <input
-            type="color"
-            value={newColor}
-            onChange={(e) => {
-              const newColor = e.target.value;
-              setNewColor(newColor);
-            }}
-          />
-        </div>
-        <div>
-          <label>Bg: </label>
-          <input
-            type="color"
-            value={newBgColor}
-            onChange={(e) => {
-              const newColor = e.target.value;
-              setNewBgColor(newColor);
-            }}
-          />
-        </div>
-      </div>
+      </form>
       {playersRef.current && playersRef.current.player("master") && (
         <div className="instrument-list">
           <div className="instrument-master">

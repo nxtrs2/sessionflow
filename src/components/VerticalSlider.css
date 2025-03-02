@@ -12,6 +12,7 @@
   background: linear-gradient(90deg, yellow, red);
   outline: none;
   margin-left: 20px;
+  border: none;
   /* transform: rotate(-90deg); */
 }
 

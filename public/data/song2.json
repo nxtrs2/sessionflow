@@ -30,18 +30,7 @@
       "mute": false,
       "solo": false
     },
-    {
-      "id": 0,
-      "name": "LEAD1",
-      "filename": "signals-lead1.mp3",
-      "url": "/songs/",
-      "color": "#ffffff",
-      "bgcolor": "#ff0000",
-      "volume": -10,
-      "pan": 0,
-      "mute": false,
-      "solo": false
-    },
+
     {
       "id": 1,
       "name": "DRUMS",
@@ -62,6 +51,18 @@
       "color": "#000000",
       "bgcolor": "#00ffff",
       "volume": -15,
+      "pan": 0,
+      "mute": false,
+      "solo": false
+    },
+    {
+      "id": 3,
+      "name": "LEAD1",
+      "filename": "signals-lead1.mp3",
+      "url": "/songs/",
+      "color": "#ffffff",
+      "bgcolor": "#ff0000",
+      "volume": -10,
       "pan": 0,
       "mute": false,
       "solo": false
