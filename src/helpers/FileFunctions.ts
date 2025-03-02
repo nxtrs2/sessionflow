@@ -79,11 +79,10 @@ export const loadTracksFromInstruments = (
     instruments.forEach((inst) => {
       if (inst.url && inst.filename) {
         const trackUrl = inst.url + inst.filename;
-        // Only add if it hasn't been added yet.
         if (!playersRef.current?.has(inst.name)) {
           playersRef.current?.add(inst.name, trackUrl, () => {
             const player = playersRef.current!.player(inst.name);
-            player.volume.value = inst.volume; // use the instrument volume
+            player.volume.value = inst.volume;
             player.sync().start(0);
           });
         }

@@ -114,6 +114,7 @@ const App: React.FC = () => {
   const [messageCountOut, setMessageCountOut] = useState<number>(0);
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMsg, setLoadingMsg] = useState<string>("");
   const [fileLoaded, setFileLoaded] = useState<boolean>(false);
 
   // High-frequency update using requestAnimationFrame
@@ -173,6 +174,7 @@ const App: React.FC = () => {
 
       if (instruments.length > 0) {
         loadTracksFromInstruments(instruments, playersRef);
+        setLoading(false);
       }
       // setLoopEnd(duration);
       setLoopEnd(newBeatData.length - 1);
@@ -262,7 +264,10 @@ const App: React.FC = () => {
   // }, [loopStart, loopEnd]);
 
   const handleLoadMasterTrack = (file: string) => {
+    //  setLoading(true);
+    setLoadingMsg("Loading Master Track");
     loadMasterTrackFromJson(file, setAudioSrc, setDuration, playersRef);
+    //  setLoading(false);
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -399,11 +404,12 @@ const App: React.FC = () => {
 
   const handleLoadSongJSON = async (file: string) => {
     setLoading(true);
+    setLoadingMsg("Loading Project File");
     const loaded = await loadSongFile(file, setSongData, setFileLoaded);
     if (!loaded) {
       alert("Error loading song file.");
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
   const handleAddEditMarker = (tick: TickData, deleteMarker: boolean) => {
@@ -534,7 +540,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      {loading && <Loader />}
+      {loading && <Loader message={loadingMsg} />}
       <Header isLoggedIn={true} />
       <div className="app-content">
         <div className="timeline-sidebar">
