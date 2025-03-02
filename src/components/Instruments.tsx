@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import * as Tone from "tone";
 import { Instrument, CustomPlayer } from "../types";
-import { Trash, Save, Music } from "lucide-react";
+import { Trash, Plus, X } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
+import AddInstrumentDialog from "./AddInstrumentDialog";
 
 interface InstrumentsProps {
   masterMute: boolean;
@@ -26,68 +27,22 @@ const Instruments: React.FC<InstrumentsProps> = ({
   handleInstrumentsUpdate,
   playersRef,
 }) => {
-  // Set initial form values (for new or edit modes)
-  const [instrument, setInstrument] = useState<string>("");
-  const [instId, setInstId] = useState<number | null>(null);
-  const [newColor, setNewColor] = useState<string>("#000000");
-  const [newBgColor, setNewBgColor] = useState<string>("#FFFFFF");
-  const [color, setColor] = useState<string>(
-    instruments.length > 0 ? instruments[0].color || "#000000" : "#000000"
-  );
-  const [bgcolor, setBgColor] = useState<string>(
-    instruments.length > 0 ? instruments[0].bgcolor || "#FFFFFF" : "#FFFFFF"
-  );
-
-  const handleSetInstrument = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedInstrument = instruments.find(
-      (inst) => inst.name === e.target.value
-    );
-    if (selectedInstrument) {
-      setInstrument(selectedInstrument.name);
-      setInstId(selectedInstrument.id);
-      setColor(selectedInstrument.color);
-      setBgColor(selectedInstrument.bgcolor);
-    }
-  };
+  const [selectedInstrument, setSelectedInstrument] =
+    useState<Instrument | null>(null);
+  const [addInstrument, setAddInstrument] = useState<boolean>(false);
 
   const handleUpdateInstrument = (newInstrument: Instrument) => {
     handleInstrumentsUpdate(newInstrument, false);
-    setInstrument(newInstrument.name);
-    setColor(newInstrument.color);
-    setBgColor(newInstrument.bgcolor);
-  };
-
-  const handleAddNewInstrument = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      const newInstrument = e.currentTarget.value.trim();
-      if (newInstrument !== "") {
-        const newInst: Instrument = {
-          id: instruments.length,
-          name: newInstrument,
-          color: newColor || "#000000",
-          bgcolor: newBgColor || "#FFFFFF",
-          volume: 0,
-          pan: 0,
-          mute: false,
-          solo: false,
-        };
-        handleInstrumentsUpdate(newInst, false);
-        setInstrument(newInstrument);
-        setColor(newColor);
-        setBgColor(newBgColor);
-        e.currentTarget.value = "";
-      }
-    }
   };
 
   const handleDeleteInstrument = () => {
     if (
       window.confirm(
-        `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${instrument}"?`
+        `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${selectedInstrument?.name}"?`
       )
     ) {
       const instrumentToDelete = instruments.find(
-        (inst) => inst.name === instrument
+        (inst) => inst.name === selectedInstrument?.name
       );
       if (instrumentToDelete) {
         handleInstrumentsUpdate(instrumentToDelete, true);
@@ -98,68 +53,13 @@ const Instruments: React.FC<InstrumentsProps> = ({
   return (
     <div className="settings">
       <h2>Instruments</h2>
-      <form>
-        <div className="settings-section">
-          <div>
-            <input
-              type="text"
-              placeholder="Add new instrument"
-              onKeyDown={(e) => {
-                handleAddNewInstrument(e);
-              }}
-            />
-          </div>
-          <div>
-            <label>Text: </label>
-            <input
-              type="color"
-              value={newColor}
-              onChange={(e) => {
-                const newColor = e.target.value;
-                setNewColor(newColor);
-              }}
-            />
-          </div>
-          <div>
-            <label>Bg: </label>
-            <input
-              type="color"
-              value={newBgColor}
-              onChange={(e) => {
-                const newColor = e.target.value;
-                setNewBgColor(newColor);
-              }}
-            />
-          </div>
-
-          <div>
-            <input
-              type="file"
-              accept=".mp3"
-              style={{ display: "none" }}
-              id="track-upload"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  // Handle file upload logic here
-                  console.log(file);
-                }
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                document.getElementById("track-upload")?.click();
-              }}
-            >
-              <Music size={20} />
-            </button>
-            <button type="submit">
-              <Save size={20} />
-            </button>
-          </div>
-        </div>
-      </form>
+      {addInstrument && (
+        <AddInstrumentDialog
+          instCount={instruments.length}
+          handleUpdateInstrument={handleUpdateInstrument}
+          setAddInstrument={setAddInstrument}
+        />
+      )}
       {playersRef.current && playersRef.current.player("master") && (
         <div className="instrument-list">
           <div className="instrument-master">
@@ -200,7 +100,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
 
                       instruments.forEach((inst) => {
                         if (playersRef.current) {
-                          playersRef.current.player(inst.name).mute =
+                          playersRef.current.player(inst.id.toString()).mute =
                             masterSolo;
                         }
                       });
@@ -234,28 +134,35 @@ const Instruments: React.FC<InstrumentsProps> = ({
           {instruments.length > 0 &&
             instruments.map((inst, idx) => (
               <div className="instrument" key={idx}>
-                <VerticalSlider
-                  min={-30}
-                  max={0}
-                  value={
-                    playersRef.current?.has(inst.name)
-                      ? playersRef.current?.player(inst.name).volume.value
-                      : 0
-                  }
-                  onChange={(value) => {
-                    if (playersRef.current) {
-                      if (playersRef.current.has(inst.name)) {
-                        playersRef.current.player(inst.name).volume.value =
-                          value;
-                      }
+                {inst.filename && (
+                  <VerticalSlider
+                    min={-30}
+                    max={0}
+                    value={
+                      playersRef.current?.has(inst.id.toString())
+                        ? playersRef.current?.player(inst.id.toString()).volume
+                            .value
+                        : 0
                     }
-                  }}
-                  muted={
-                    playersRef.current?.has(inst.name)
-                      ? playersRef.current?.player(inst.name).mute
-                      : false
-                  }
-                />
+                    onChange={(value) => {
+                      if (playersRef.current) {
+                        if (playersRef.current.has(inst.id.toString())) {
+                          playersRef.current.player(
+                            inst.id.toString()
+                          ).volume.value = value;
+                        }
+                      }
+                    }}
+                    muted={
+                      playersRef.current?.has(inst.id.toString())
+                        ? playersRef.current?.player(inst.id.toString()).mute
+                        : false
+                    }
+                  />
+                )}
+                {!inst.filename && (
+                  <div style={{ width: "100px", height: "150px" }}></div>
+                )}
                 <div className="instrument-details">
                   <div
                     style={{
@@ -271,161 +178,157 @@ const Instruments: React.FC<InstrumentsProps> = ({
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      setInstrument(inst.name);
-                      setInstId(inst.id);
-                      setColor(inst.color);
-                      setBgColor(inst.bgcolor);
+                      setSelectedInstrument(inst);
                     }}
                   >
                     {inst.name}
                   </div>
-                  <div className="instrument-buttons">
-                    <button
-                      type="button"
-                      style={{
-                        color:
-                          playersRef.current?.has(inst.name) &&
-                          (
-                            playersRef.current?.player(
-                              inst.name
-                            ) as CustomPlayer
-                          ).solo
-                            ? "limegreen"
-                            : "gray",
-                      }}
-                      onClick={() => {
-                        if (playersRef.current) {
-                          const player = playersRef.current.player(
-                            inst.name
-                          ) as CustomPlayer;
-                          player.solo = !player.solo;
-                          player.mute = false;
-                          if (player.solo) {
-                            playersRef.current.player("master").mute = true;
-                            setMasterSolo(false);
-                            setMasterMute(true);
+                  {!inst.filename && (
+                    <div className="instrument-buttons">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          document.getElementById("track-upload")?.click();
+                        }}
+                      >
+                        Add Track
+                      </button>
+                    </div>
+                  )}
+                  {inst.filename && (
+                    <div className="instrument-buttons">
+                      <button
+                        type="button"
+                        style={{
+                          color:
+                            playersRef.current?.has(inst.id.toString()) &&
+                            (
+                              playersRef.current?.player(
+                                inst.id.toString()
+                              ) as CustomPlayer
+                            ).solo
+                              ? "limegreen"
+                              : "gray",
+                        }}
+                        onClick={() => {
+                          if (playersRef.current) {
+                            const player = playersRef.current.player(
+                              inst.id.toString()
+                            ) as CustomPlayer;
+                            player.solo = !player.solo;
+                            player.mute = false;
+                            if (player.solo) {
+                              playersRef.current.player("master").mute = true;
+                              setMasterSolo(false);
+                              setMasterMute(true);
 
-                            instruments.forEach((otherInst) => {
-                              if (
-                                playersRef.current &&
-                                otherInst.name !== inst.name
-                              ) {
-                                const otherPlayer = playersRef.current.player(
-                                  otherInst.name
-                                ) as CustomPlayer;
-                                otherPlayer.mute = true;
-                                otherPlayer.solo = false;
-                              }
-                            });
-                          } else {
-                            playersRef.current.player("master").mute = false;
-                            setMasterSolo(false);
-                            setMasterMute(false);
+                              instruments.forEach((otherInst) => {
+                                if (
+                                  playersRef.current &&
+                                  otherInst.id !== inst.id
+                                ) {
+                                  const otherPlayer = playersRef.current.player(
+                                    otherInst.id.toString()
+                                  ) as CustomPlayer;
+                                  otherPlayer.mute = true;
+                                  otherPlayer.solo = false;
+                                }
+                              });
+                            } else {
+                              playersRef.current.player("master").mute = false;
+                              setMasterSolo(false);
+                              setMasterMute(false);
 
-                            instruments.forEach((otherInst) => {
-                              if (
-                                playersRef.current &&
-                                otherInst.name !== inst.name
-                              ) {
-                                const otherPlayer = playersRef.current.player(
-                                  otherInst.name
-                                ) as CustomPlayer;
-                                otherPlayer.mute = false;
-                                otherPlayer.solo = false;
-                              }
-                            });
+                              instruments.forEach((otherInst) => {
+                                if (
+                                  playersRef.current &&
+                                  otherInst.name !== inst.name
+                                ) {
+                                  const otherPlayer = playersRef.current.player(
+                                    otherInst.id.toString()
+                                  ) as CustomPlayer;
+                                  otherPlayer.mute = false;
+                                  otherPlayer.solo = false;
+                                }
+                              });
+                            }
                           }
-                        }
-                      }}
-                    >
-                      S
-                    </button>
-                    <button
-                      type="button"
-                      style={{
-                        color:
-                          playersRef.current?.has(inst.name) &&
-                          playersRef.current?.player(inst.name).mute === false
-                            ? "gray"
-                            : "limegreen",
-                      }}
-                      onClick={() => {
-                        if (playersRef.current) {
-                          if (playersRef.current.has(inst.name)) {
-                            const player = playersRef.current.player(inst.name);
-                            player.mute = !player.mute;
+                        }}
+                      >
+                        S
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          color:
+                            playersRef.current?.has(inst.id.toString()) &&
+                            playersRef.current?.player(inst.id.toString())
+                              .mute === false
+                              ? "gray"
+                              : "limegreen",
+                        }}
+                        onClick={() => {
+                          if (playersRef.current) {
+                            if (playersRef.current.has(inst.id.toString())) {
+                              const player = playersRef.current.player(
+                                inst.id.toString()
+                              );
+                              player.mute = !player.mute;
+                            }
                           }
-                        }
-                      }}
-                    >
-                      M
-                    </button>
-                  </div>
+                        }}
+                      >
+                        M
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
+            ))}{" "}
+          <div className="instrument-master">
+            <div style={{ width: "50px" }}>
+              <button
+                style={{
+                  borderRadius: "50%",
+                  padding: "10px",
+                }}
+                type="button"
+                onClick={() => {
+                  setAddInstrument(!addInstrument);
+                  // document.getElementById("track-upload")?.click();
+                }}
+              >
+                <Plus size={20} />
+              </button>
+            </div>
+          </div>
         </div>
       )}
-      {instruments.length > 0 && (
+      {instruments.length > 0 && selectedInstrument && (
         <div className="settings-section">
-          <label>
-            Instrument:
-            <select value={instrument} onChange={(e) => handleSetInstrument(e)}>
-              {instruments.map((inst, idx) => (
-                <option key={idx} value={inst.name}>
-                  {inst.name}
-                </option>
-              ))}
-            </select>
-          </label>
           <div>
             <input
               type="text"
-              value={instrument}
+              value={selectedInstrument.name}
               onChange={(e) => {
                 const newName = e.target.value;
-                setInstrument(newName);
                 handleUpdateInstrument({
-                  id: instId || 0,
+                  ...selectedInstrument,
                   name: newName,
-                  color,
-                  bgcolor,
-                  volume: 0,
-                  pan: 0,
-                  mute: false,
-                  solo: false,
                 });
               }}
             />
           </div>
           <div>
-            <button
-              style={{ border: "none" }}
-              disabled={instrument === ""}
-              type="button"
-              onClick={() => {
-                handleDeleteInstrument();
-              }}
-            >
-              <Trash size={18} style={{ color: "orange" }} />
-            </button>
-          </div>
-          <div>
             <label>Text: </label>
             <input
               type="color"
-              value={color}
+              value={selectedInstrument.color}
               onChange={(e) => {
                 const newColor = e.target.value;
                 handleUpdateInstrument({
-                  id: instId || 0,
-                  name: instrument,
+                  ...selectedInstrument,
                   color: newColor,
-                  bgcolor,
-                  volume: 0,
-                  pan: 0,
-                  mute: false,
-                  solo: false,
                 });
               }}
             />
@@ -434,21 +337,38 @@ const Instruments: React.FC<InstrumentsProps> = ({
             <label>Bg: </label>
             <input
               type="color"
-              value={bgcolor}
+              value={selectedInstrument.bgcolor}
               onChange={(e) => {
                 const newColor = e.target.value;
                 handleUpdateInstrument({
-                  id: instId || 0,
-                  name: instrument,
-                  color,
+                  ...selectedInstrument,
                   bgcolor: newColor,
-                  volume: 0,
-                  pan: 0,
-                  mute: false,
-                  solo: false,
                 });
               }}
             />
+          </div>
+          <div>
+            <button
+              style={{ border: "none" }}
+              disabled={!selectedInstrument}
+              type="button"
+              onClick={() => {
+                handleDeleteInstrument();
+                setSelectedInstrument(null);
+              }}
+            >
+              <Trash size={18} style={{ color: "red" }} />
+            </button>
+            <button
+              style={{ border: "none" }}
+              disabled={!selectedInstrument}
+              type="button"
+              onClick={() => {
+                setSelectedInstrument(null);
+              }}
+            >
+              <X size={18} />
+            </button>
           </div>
         </div>
       )}

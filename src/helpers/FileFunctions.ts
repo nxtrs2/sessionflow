@@ -2,39 +2,6 @@ import * as Tone from "tone";
 import React, { ChangeEvent } from "react";
 import { SetAudioSrc, SetDuration, Instrument, CustomPlayer } from "../types";
 
-// export const loadMasterTrackFromJson = (
-//   file: string,
-//   setAudioSrc: SetAudioSrc,
-//   setDuration: SetDuration,
-//   playersRef: React.MutableRefObject<Tone.Players | null>
-// ) => {
-//   const songUrl = file;
-//   setAudioSrc(songUrl);
-//   if (playersRef.current) {
-//     playersRef.current.dispose();
-//   }
-
-//   if (!playersRef.current) {
-//     playersRef.current = new Tone.Players().toDestination();
-//   } else {
-//     if (playersRef.current.has("master")) {
-//       console.warn(
-//         "Master track already exists. Overwriting is not implemented."
-//       );
-//       return;
-//     }
-//   }
-
-//   playersRef.current.add("master", songUrl, () => {
-//     const masterPlayer = playersRef.current!.player("master");
-//     masterPlayer.volume.value = -20; // Set master volume
-//     if (masterPlayer.buffer) {
-//       setDuration(masterPlayer.buffer.duration);
-//     }
-//     masterPlayer.sync().start(0);
-//   });
-// };
-
 export const loadMasterTrackFromJson = (
   file: string,
   setAudioSrc: SetAudioSrc,
@@ -79,15 +46,15 @@ export const loadTracksFromInstruments = (
   }
 
   setLoading(true);
-  loadingMsg("Loading instrument tracks...");
+  loadingMsg("Loading instruments");
   if (playersRef.current) {
     instruments.forEach((inst) => {
       if (inst.url && inst.filename) {
         const trackUrl = inst.url + inst.filename;
-        if (!playersRef.current?.has(inst.name)) {
-          playersRef.current?.add(inst.name, trackUrl, () => {
+        if (!playersRef.current?.has(inst.id.toString())) {
+          playersRef.current?.add(inst.id.toString(), trackUrl, () => {
             const player = playersRef.current!.player(
-              inst.name
+              inst.id.toString()
             ) as CustomPlayer;
             player.volume.value = inst.volume;
             player.solo = false;
