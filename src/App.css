@@ -12,6 +12,10 @@
   margin: 0;
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
   /* 3. Add accessible line-height */
   line-height: 1.5;
@@ -87,6 +91,7 @@ h6 {
 body {
   font-family: "Rationale", serif;
   font-weight: 300;
+  color: white;
 }
 
 /* Flex layout for the two main columns */
@@ -308,6 +313,7 @@ body {
 }
 
 button {
+  color: white;
   margin: 5px;
   border: 1px solid slategray;
   font-size: 12px;
