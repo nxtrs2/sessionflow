@@ -5,8 +5,15 @@ interface VerticalSliderProps {
   initialValue?: number;
   value?: number;
   onChange?: (value: number) => void;
+  muted?: boolean;
 }
-const VerticalSlider = ({ min, max, value, onChange }: VerticalSliderProps) => {
+const VerticalSlider = ({
+  min,
+  max,
+  value,
+  onChange,
+  muted,
+}: VerticalSliderProps) => {
   return (
     <div className="vertical-slider">
       <input
@@ -15,7 +22,7 @@ const VerticalSlider = ({ min, max, value, onChange }: VerticalSliderProps) => {
         min={min}
         max={max}
         onChange={(e) => onChange?.(parseInt(e.target.value, 10))}
-        className="slider"
+        className={muted ? "slider gray-background" : "slider"}
       />
     </div>
   );

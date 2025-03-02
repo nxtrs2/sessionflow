@@ -144,6 +144,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                   playersRef.current.player("master").volume.value = value;
                 }
               }}
+              muted={masterMute}
             />
             <div className="instrument-details">
               <div
@@ -221,6 +222,11 @@ const Instruments: React.FC<InstrumentsProps> = ({
                       }
                     }
                   }}
+                  muted={
+                    playersRef.current?.has(inst.name)
+                      ? playersRef.current?.player(inst.name).mute
+                      : false
+                  }
                 />
                 <div className="instrument-details">
                   <div
@@ -280,6 +286,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                                   otherInst.name
                                 ) as CustomPlayer;
                                 otherPlayer.mute = true;
+                                otherPlayer.solo = false;
                               }
                             });
                           } else {
@@ -296,6 +303,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                                   otherInst.name
                                 ) as CustomPlayer;
                                 otherPlayer.mute = false;
+                                otherPlayer.solo = false;
                               }
                             });
                           }

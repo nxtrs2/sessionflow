@@ -11,9 +11,12 @@
   height: 5px;
   background: linear-gradient(90deg, yellow, red);
   outline: none;
-
   margin-left: 20px;
   /* transform: rotate(-90deg); */
+}
+
+.slider.gray-background {
+  background: gray;
 }
 
 /* Webkit browsers (Chrome, Safari) */
