@@ -123,13 +123,11 @@ body {
   color: white;
 }
 
-/* Flex layout for the two main columns */
 .app-container {
   max-width: 1220px;
   margin: 0 auto;
   padding-bottom: 20px;
   justify-content: space-between;
-
   align-items: flex-start;
 }
 
@@ -711,6 +709,102 @@ select {
   padding: 0 5px;
 }
 
+@media (max-width: 1024px) {
+  .app-container {
+    width: 100vw;
+    flex-direction: column;
+  }
+  .app-content {
+    flex-direction: column;
+    margin-top: 60px;
+    flex: 1;
+  }
+
+  .main-tabs {
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .tab-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .app-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .app-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .timeline-sidebar {
+    flex: 1;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .timeline-container {
+    border-radius: 0;
+  }
+
+  .timeline-header {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .timeline-footer {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .transport-controls {
+    margin-top: 0;
+    padding: 5px 0;
+  }
+  .transport-controls button {
+    margin: 0px;
+  }
+  .main-content {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .marker-label {
+    position: absolute;
+    padding-right: 5px;
+    height: 1px;
+    width: 100vw;
+    left: 0;
+  }
+
+  .hoverDiv {
+    width: 100vw;
+    padding-right: 20px;
+  }
+
+  .tick-message {
+    left: 35vw;
+  }
+
+  .tick-message-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    gap: 5px;
+  }
+  .instrument-list {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .app-container {
     width: 100vw;
@@ -765,9 +859,6 @@ select {
     border-bottom-right-radius: 0;
   }
 
-  /* .file-info {
-    display: none;
-  } */
   .transport-controls {
     margin-top: 0;
     padding: 5px 0;
