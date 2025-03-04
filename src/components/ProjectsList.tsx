@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Session } from "@supabase/supabase-js";
+import { supabase } from "../supabase/supabaseClient";
 
 interface ProjectsListProps {
   session: Session | null;
@@ -14,9 +15,38 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   handleLoadSongJSON,
   onFileChange,
 }) => {
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (session) {
+        try {
+          const { data, error } = await supabase
+            .from("projects")
+            .select("*")
+            .eq("user_id", session.user.id);
+
+          if (error) {
+            throw error;
+          }
+
+          setProjects(data);
+        } catch (error) {
+          console.error("Error fetching projects:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProjects();
+  }, [session]);
+
   return (
-    <>
-      <div>
+    <div className="settings">
+      <h2>Demo Projects</h2>
+      <div className="settings-section">
         <button
           disabled={isPlaying}
           onClick={() => {
@@ -44,16 +74,32 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           Load Master Track
         </button>
       </div>
-      <div>
+      <h2>Your Projects</h2>
+      <div className="settings-section">
         {session && (
           <div>
-            {/* Code to load and display projects from Supabase */}
-            {/* Example: */}
-            <p>Loading projects...</p>
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <>
+                {projects.map((project) => (
+                  <div key={project.id}>
+                    <h3>{project.name}</h3>
+                    <button
+                      onClick={() => {
+                        handleLoadSongJSON(project.data);
+                      }}
+                    >
+                      {project.title}
+                    </button>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -931,18 +931,12 @@ const App: React.FC = () => {
           {activeTab === "projects" && (
             <div className="main-content">
               <Suspense fallback={<p>Loading...</p>}>
-                <div className="settings">
-                  <h2>Your Projects</h2>
-
-                  <div className="settings-section">
-                    <ProjectsList
-                      session={session}
-                      isPlaying={isPlaying}
-                      handleLoadSongJSON={handleLoadSongJSON}
-                      onFileChange={onFileChange}
-                    />
-                  </div>
-                </div>
+                <ProjectsList
+                  session={session}
+                  isPlaying={isPlaying}
+                  handleLoadSongJSON={handleLoadSongJSON}
+                  onFileChange={onFileChange}
+                />
               </Suspense>
             </div>
           )}
