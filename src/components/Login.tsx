@@ -3,9 +3,13 @@ import { supabase } from "../supabase/supabaseClient";
 
 interface LoginProps {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Login: React.FC<LoginProps> = ({ setIsLoggedIn }: LoginProps) => {
+const Login: React.FC<LoginProps> = ({
+  setIsLoggedIn,
+  setShowLogin,
+}: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +52,9 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }: LoginProps) => {
             />
           </div>
           {error && <p>{error}</p>}
+          <button type="button" onClick={() => setShowLogin(false)}>
+            Cancel
+          </button>
           <button type="submit">Login</button>
         </form>
       </div>
