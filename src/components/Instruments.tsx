@@ -94,6 +94,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                     color: masterSolo ? "limegreen" : "gray",
                   }}
                   onClick={() => {
+                    setMasterSolo(!masterSolo);
                     if (playersRef.current) {
                       if (masterSolo)
                         playersRef.current.player("master").mute = false;
@@ -101,10 +102,9 @@ const Instruments: React.FC<InstrumentsProps> = ({
                       instruments.forEach((inst) => {
                         if (playersRef.current) {
                           playersRef.current.player(inst.id.toString()).mute =
-                            masterSolo;
+                            !masterSolo;
                         }
                       });
-                      setMasterSolo(!masterSolo);
                     }
                   }}
                 >
@@ -156,6 +156,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
                     muted={
                       playersRef.current?.has(inst.id.toString())
                         ? playersRef.current?.player(inst.id.toString()).mute
+                          ? true
+                          : false
                         : false
                     }
                   />
@@ -235,7 +237,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                                 }
                               });
                             } else {
-                              playersRef.current.player("master").mute = false;
+                              // playersRef.current.player("master").mute = false;
                               setMasterSolo(false);
                               setMasterMute(false);
 
