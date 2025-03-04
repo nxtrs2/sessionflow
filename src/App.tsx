@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  ChangeEvent,
+  Suspense,
+} from "react";
 
 import * as Tone from "tone";
 import "./App.css";
@@ -24,10 +30,10 @@ import {
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
 import { handleRestart } from "./helpers/TransportFunctions";
 import Loader from "./components/Loader";
-import EventDialog from "./components/EventDialog";
-import Instruments from "./components/Instruments";
+const EventDialog = React.lazy(() => import("./components/EventDialog"));
+const Instruments = React.lazy(() => import("./components/Instruments"));
 import Tabs from "./components/Tabs";
-import ProjectsList from "./components/ProjectsList";
+const ProjectsList = React.lazy(() => import("./components/ProjectsList"));
 import Header from "./components/Header";
 import TransportControls from "./components/TransportControls";
 
@@ -245,6 +251,7 @@ const App: React.FC = () => {
             setMessage(beatData[i].message);
             setMessageCountOut(beatData[i].countOut);
           }
+
           if (beatData[i].isBarStart) {
             if (clickSynthRef.current) {
               clickSynthRef.current.triggerAttackRelease("C5", "8n", time);
@@ -593,7 +600,7 @@ const App: React.FC = () => {
                 onBeat={handleBeat}
               />
             )}
-            {isPlaying && showMessage && (
+            {isPlaying && showMessage && messageCountOut > 1 && (
               <CountOut
                 countOut={messageCountOut}
                 message={message}
@@ -814,19 +821,21 @@ const App: React.FC = () => {
           )}
           {activeTab === "instruments" && (
             <div className="main-content">
-              {audioSrc && playersRef && (
-                <>
-                  <Instruments
-                    masterSolo={masterSolo}
-                    setMasterSolo={setMasterSolo}
-                    masterMute={masterMute}
-                    setMasterMute={setMasterMute}
-                    instruments={instruments}
-                    handleInstrumentsUpdate={handleInstrumentsUpdate}
-                    playersRef={playersRef}
-                  />
-                </>
-              )}
+              <Suspense fallback={<p>Loading...</p>}>
+                {audioSrc && playersRef && (
+                  <>
+                    <Instruments
+                      masterSolo={masterSolo}
+                      setMasterSolo={setMasterSolo}
+                      masterMute={masterMute}
+                      setMasterMute={setMasterMute}
+                      instruments={instruments}
+                      handleInstrumentsUpdate={handleInstrumentsUpdate}
+                      playersRef={playersRef}
+                    />
+                  </>
+                )}
+              </Suspense>
             </div>
           )}
           {activeTab === "settings" && (
@@ -900,58 +909,38 @@ const App: React.FC = () => {
               )}
             </div>
           )}
-
-          {/* {activeTab === "notes" && (
-            <div className="main-content">
-              {audioSrc && (
-                <>
-                  <div className="settings">
-                    <h2>Notes</h2>
-                    <div className="settings-section">
-                      <textarea
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          fontFamily: "Roboto",
-                        }}
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          )} */}
           {activeTab === "projects" && (
             <div className="main-content">
-              <div className="settings">
-                <h2>Your Projects</h2>
+              <Suspense fallback={<p>Loading...</p>}>
+                <div className="settings">
+                  <h2>Your Projects</h2>
 
-                <div className="settings-section">
-                  <ProjectsList
-                    isPlaying={isPlaying}
-                    handleLoadSongJSON={handleLoadSongJSON}
-                    onFileChange={onFileChange}
-                  />
+                  <div className="settings-section">
+                    <ProjectsList
+                      isPlaying={isPlaying}
+                      handleLoadSongJSON={handleLoadSongJSON}
+                      onFileChange={onFileChange}
+                    />
+                  </div>
                 </div>
-              </div>
+              </Suspense>
             </div>
           )}
         </div>
       </div>
-
-      {showEditEventDialog && currentTickData && selectedInstrument && (
-        <EventDialog
-          mode={existingEvent ? "edit" : "new"}
-          tickData={currentTickData}
-          // instruments={instruments}
-          existingEvent={existingEvent}
-          selectedInstrument={selectedInstrument}
-          setSongTimeLines={setSongTimeLines}
-          setShowEventDialog={setShowEditEventDialog}
-        />
-      )}
+      <Suspense fallback={<p>Loading...</p>}>
+        {showEditEventDialog && currentTickData && selectedInstrument && (
+          <EventDialog
+            mode={existingEvent ? "edit" : "new"}
+            tickData={currentTickData}
+            // instruments={instruments}
+            existingEvent={existingEvent}
+            selectedInstrument={selectedInstrument}
+            setSongTimeLines={setSongTimeLines}
+            setShowEventDialog={setShowEditEventDialog}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

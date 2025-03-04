@@ -26,10 +26,6 @@ const CountOut: React.FC<CountOutProps> = ({
       return;
     }
 
-    // if (count > 0 && onBeat) {
-    //   onBeat(count);
-    // }
-
     const timer = setTimeout(() => {
       setCount((prevCount) => prevCount - 1);
     }, beatDuration);
