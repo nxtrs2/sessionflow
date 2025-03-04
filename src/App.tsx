@@ -8,6 +8,8 @@ import React, {
 
 import * as Tone from "tone";
 import "./App.css";
+import { supabase } from "./supabase/supabaseClient";
+import { Session } from "@supabase/supabase-js";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
 import { renderTick2 } from "./components/TimeLineRenderer";
@@ -22,6 +24,7 @@ import {
   Instrument,
 } from "./types";
 import { Repeat2 } from "lucide-react";
+
 import {
   loadMasterTrackFromJson,
   handleMasterTrackFileChange,
@@ -43,6 +46,9 @@ import TransportControls from "./components/TransportControls";
 // );
 
 const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  const [session, setSession] = useState<Session | null>(null);
   // Tone.Player reference
   const [activeTab, setActiveTab] = useState<string>("track");
   // const playerRef = useRef<Tone.Player | undefined>(undefined);
@@ -134,6 +140,19 @@ const App: React.FC = () => {
     };
     animationFrameId = requestAnimationFrame(updateTime);
     return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -552,7 +571,7 @@ const App: React.FC = () => {
   return (
     <div className="app-container">
       {loading && <Loader message={loadingMsg} />}
-      <Header isLoggedIn={true} />
+      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div className="app-content">
         <div className="timeline-sidebar">
           <div
