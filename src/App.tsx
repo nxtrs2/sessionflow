@@ -936,6 +936,7 @@ const App: React.FC = () => {
 
                   <div className="settings-section">
                     <ProjectsList
+                      session={session}
                       isPlaying={isPlaying}
                       handleLoadSongJSON={handleLoadSongJSON}
                       onFileChange={onFileChange}

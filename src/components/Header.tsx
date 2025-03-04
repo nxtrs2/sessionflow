@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { LogOut } from "lucide-react";
 import Login from "./Login";
+import Register from "./Register";
 import { supabase } from "../supabase/supabaseClient"; // Adjust the import path as necessary
 
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -23,7 +25,14 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   return (
     <div className="app-header">
       {showLogin && !isLoggedIn && (
-        <Login setIsLoggedIn={setIsLoggedIn} setShowLogin={setShowLogin} />
+        <Login
+          setIsLoggedIn={setIsLoggedIn}
+          setShowLogin={setShowLogin}
+          setShowRegister={setShowRegister}
+        />
+      )}
+      {showRegister && !isLoggedIn && (
+        <Register setShowRegister={setShowRegister} />
       )}
       <h1>Session Flow</h1>
       <div className="header-right">

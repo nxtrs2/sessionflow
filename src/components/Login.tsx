@@ -4,11 +4,13 @@ import { supabase } from "../supabase/supabaseClient";
 interface LoginProps {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowRegister: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Login: React.FC<LoginProps> = ({
   setIsLoggedIn,
   setShowLogin,
+  setShowRegister,
 }: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,8 +53,32 @@ const Login: React.FC<LoginProps> = ({
               required
             />
           </div>
+          <div>
+            <button
+              style={{
+                fontSize: "1em",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                textDecoration: "underline",
+              }}
+              type="button"
+              onClick={() => {
+                setShowLogin(false);
+                setShowRegister(true);
+              }}
+            >
+              Create an Account
+            </button>
+          </div>
           {error && <p>{error}</p>}
-          <button type="button" onClick={() => setShowLogin(false)}>
+          <button
+            type="button"
+            onClick={() => {
+              setShowLogin(false);
+            }}
+          >
             Cancel
           </button>
           <button type="submit">Login</button>
