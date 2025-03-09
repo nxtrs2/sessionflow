@@ -1,6 +1,12 @@
 import * as Tone from "tone";
 import React, { ChangeEvent } from "react";
-import { SetAudioSrc, SetDuration, Instrument, CustomPlayer } from "../types";
+import {
+  SetAudioSrc,
+  SetDuration,
+  Instrument,
+  CustomPlayer,
+  projectsURL,
+} from "../types";
 
 export const loadMasterTrackFromJson = (
   file: string,
@@ -50,7 +56,7 @@ export const loadTracksFromInstruments = (
   if (playersRef.current) {
     instruments.forEach((inst) => {
       if (inst.url && inst.filename) {
-        const trackUrl = inst.url + inst.filename;
+        const trackUrl = projectsURL + inst.url + inst.filename;
         if (!playersRef.current?.has(inst.id.toString())) {
           playersRef.current?.add(inst.id.toString(), trackUrl, () => {
             const player = playersRef.current!.player(

@@ -22,6 +22,7 @@ import {
   TimeSignature,
   Structure,
   Instrument,
+  projectsURL,
 } from "./types";
 import { Repeat2 } from "lucide-react";
 
@@ -307,7 +308,12 @@ const App: React.FC = () => {
   const handleLoadMasterTrack = (file: string) => {
     //  setLoading(true);
     setLoadingMsg("Loading Master Track");
-    loadMasterTrackFromJson(file, setAudioSrc, setDuration, playersRef);
+    loadMasterTrackFromJson(
+      projectsURL + file,
+      setAudioSrc,
+      setDuration,
+      playersRef
+    );
     //  setLoading(false);
   };
 
@@ -443,13 +449,25 @@ const App: React.FC = () => {
     console.log("Beat:", beat);
   };
 
-  const handleLoadSongJSON = async (file: string) => {
+  const handleLoadSongJSONFile = async (file: string) => {
     setLoading(true);
     setLoadingMsg("Loading Project File");
+
     const loaded = await loadSongFile(file, setSongData, setFileLoaded);
     if (!loaded) {
       alert("Error loading song file.");
     }
+
+    // setLoading(false);
+  };
+
+  const handleLoadSongJSON = async (songData: SongData) => {
+    setLoading(true);
+    setLoadingMsg("Loading Project");
+
+    setSongData(songData);
+    setFileLoaded(true);
+
     // setLoading(false);
   };
 
@@ -948,6 +966,7 @@ const App: React.FC = () => {
                 <ProjectsList
                   session={session}
                   isPlaying={isPlaying}
+                  handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
                   onFileChange={onFileChange}
                 />

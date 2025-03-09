@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../supabase/supabaseClient";
+import { SongData } from "../types";
 
 interface ProjectsListProps {
   session: Session | null;
   isPlaying: boolean;
-  handleLoadSongJSON: (path: string) => void;
+  handleLoadSongJSONFile: (path: string) => void;
+  handleLoadSongJSON: (data: SongData) => void;
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
   session,
   isPlaying,
+  handleLoadSongJSONFile,
   handleLoadSongJSON,
   onFileChange,
 }) => {
@@ -53,7 +56,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           }}
           disabled={isPlaying}
           onClick={() => {
-            handleLoadSongJSON("/data/song2.json");
+            handleLoadSongJSONFile("/data/song2.json");
           }}
         >
           DEMO
@@ -90,22 +93,30 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               <p>Loading...</p>
             ) : (
               <>
-                {projects.map((project) => (
-                  <div key={project.id}>
-                    <h3>{project.name}</h3>
-                    <button
-                      style={{
-                        fontSize: "1em",
-                      }}
-                      disabled={isPlaying}
-                      onClick={() => {
-                        handleLoadSongJSON(project.data);
-                      }}
-                    >
-                      {project.title}
-                    </button>
-                  </div>
-                ))}
+                {projects.map((project) => {
+                  return (
+                    <div key={project.id}>
+                      <h3>{project.name}</h3>
+
+                      <button
+                        style={{
+                          fontSize: "1em",
+                        }}
+                        disabled={isPlaying}
+                        onClick={() => {
+                          handleLoadSongJSON(project.data);
+                        }}
+                      >
+                        <img
+                          // src={coverartUrls[projects.indexOf(project)]}
+                          src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/coverart/${project.coverart}`}
+                          alt={`${project.name} cover art`}
+                          style={{ width: "100px", height: "100px" }}
+                        />
+                      </button>
+                    </div>
+                  );
+                })}
               </>
             )}
           </div>

@@ -1,4 +1,10 @@
 import * as Tone from "tone";
+
+const appURL = process.env.REACT_SUPABASE_URL;
+const projectsURL = `${appURL}/storage/v1/object/project_files`;
+
+export { appURL, projectsURL };
+
 export interface CustomPlayer extends Tone.Player {
   solo?: boolean;
 }
