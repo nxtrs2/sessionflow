@@ -534,6 +534,17 @@ select {
   flex: 0 0 auto;
 }
 
+.timeline-title {
+  position: absolute;
+  text-align: center;
+  font-family: "Roboto", serif;
+  width: 100%;
+  top: 100px;
+  font-size: 1.5rem;
+  color: black;
+  text-shadow: 2px 0px 1px rgb(46, 42, 75);
+}
+
 /* .timeline-footer {
   z-index: 100;
   position: absolute;

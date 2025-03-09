@@ -666,6 +666,9 @@ const App: React.FC = () => {
                 </>
               )}
             </div>
+            <div className="timeline-title">
+              {fileLoaded && <h2>{title}</h2>}
+            </div>
             {showCountIn && (
               <CountIn
                 countIn={countIn}
@@ -711,7 +714,9 @@ const App: React.FC = () => {
                     // renderTick(tick, index)
                   )
                 )}
-              {!fileLoaded && <h2>Select a project from the Projects tab</h2>}
+              {!fileLoaded && (
+                <h3>Sign-up, Login or Select a Demo from Projects tab</h3>
+              )}
             </div>
             <div
               className={`center-indicator ${pulse ? "pulse" : ""}`}

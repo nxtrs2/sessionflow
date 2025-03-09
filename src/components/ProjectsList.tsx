@@ -36,7 +36,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             setDemoLoaded(true);
           }}
         >
-          DEMO 1
+          Signals
         </button>
         {/* <button
         disabled={isPlaying}

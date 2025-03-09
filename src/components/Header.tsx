@@ -35,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
         <Register setShowRegister={setShowRegister} />
       )}
       <h1>Session Flow</h1>
+
       <div className="header-right">
         {isLoggedIn ? (
           <button
