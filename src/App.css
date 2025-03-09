@@ -525,18 +525,21 @@ select {
 } */
 
 .timeline-footer button {
-  margin: 5px;
+  border-radius: 5px;
+  align-items: center;
+  padding: 5px 10px;
   border: none;
   font-size: 1rem;
   background: none;
   letter-spacing: 0.1em;
-  height: 40px;
 
   /* background: linear-gradient(135deg, #000000, #266168); */
 }
 
-.timeline-footer > .selected {
+.selected {
   color: #0bf681;
+  text-decoration: underline;
+  border: 1px solid white;
 }
 
 .timeline-footer button:hover {
@@ -638,12 +641,17 @@ select {
 }
 
 .hoverDiv button {
-  background: none;
+  background: gray;
+  border-radius: 0;
   border: none;
-  color: #2c87f6;
+  color: black;
   font-size: 16px;
   padding: 0 5px;
   display: none;
+}
+.hoverDiv button:hover {
+  background: white;
+  font-size: 16px;
 }
 
 .hoverDiv:hover button {

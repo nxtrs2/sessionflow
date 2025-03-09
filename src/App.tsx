@@ -709,6 +709,10 @@ const App: React.FC = () => {
                 instruments.length > 0 &&
                 instruments.map((instrument, index) => (
                   <button
+                    style={{
+                      color: instrument.color,
+                      backgroundColor: instrument.bgcolor,
+                    }}
                     className={
                       selectedInstrument?.id === instrument.id ? "selected" : ""
                     }
