@@ -23,6 +23,7 @@ import {
   Structure,
   Instrument,
   projectsURL,
+  Project,
 } from "./types";
 import { Repeat2 } from "lucide-react";
 
@@ -50,6 +51,8 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const [session, setSession] = useState<Session | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
   // Tone.Player reference
   const [activeTab, setActiveTab] = useState<string>("track");
   // const playerRef = useRef<Tone.Player | undefined>(undefined);
@@ -163,6 +166,31 @@ const App: React.FC = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (session) {
+        try {
+          const { data, error } = await supabase
+            .from("projects")
+            .select("*")
+            .eq("user_id", session.user.id);
+
+          if (error) {
+            throw error;
+          }
+
+          setProjects(data);
+        } catch (error) {
+          console.error("Error fetching projects:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProjects();
+  }, [session]);
 
   useEffect(() => {
     if (songData) {
@@ -968,8 +996,11 @@ const App: React.FC = () => {
             <div className="main-content">
               <Suspense fallback={<p>Loading...</p>}>
                 <ProjectsList
-                  session={session}
                   isPlaying={isPlaying}
+                  projects={projects}
+                  projectLoaded={fileLoaded}
+                  demoLoaded={demoLoaded}
+                  setDemoLoaded={setDemoLoaded}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
                   onFileChange={onFileChange}

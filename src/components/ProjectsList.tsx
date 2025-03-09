@@ -1,54 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { Session } from "@supabase/supabase-js";
-import { supabase } from "../supabase/supabaseClient";
-import { SongData } from "../types";
+import React from "react";
+import { Project, SongData } from "../types";
 
 interface ProjectsListProps {
-  session: Session | null;
   isPlaying: boolean;
+  projects: Project[];
+  projectLoaded: boolean;
+  demoLoaded: boolean;
+  setDemoLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
-  session,
   isPlaying,
+  projects,
+  projectLoaded,
+  demoLoaded,
+  setDemoLoaded,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
   onFileChange,
 }) => {
-  const [projects, setProjects] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      if (session) {
-        try {
-          const { data, error } = await supabase
-            .from("projects")
-            .select("*")
-            .eq("user_id", session.user.id);
-
-          if (error) {
-            throw error;
-          }
-
-          setProjects(data);
-        } catch (error) {
-          console.error("Error fetching projects:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchProjects();
-  }, [session]);
-
   return (
     <div className="settings">
-      <h2>Demo Projects</h2>
+      <div className="settings-heading">Demo Projects</div>
       <div className="settings-section">
         <button
           style={{
@@ -57,9 +33,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           disabled={isPlaying}
           onClick={() => {
             handleLoadSongJSONFile("/data/song2.json");
+            setDemoLoaded(true);
           }}
         >
-          DEMO
+          DEMO 1
         </button>
         {/* <button
         disabled={isPlaying}
@@ -85,40 +62,66 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           Load Master Track
         </button>
       </div>
-      <h2>Your Projects</h2>
-      <div className="settings-section">
-        {session && (
-          <div>
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                {projects.map((project) => {
-                  return (
-                    <div key={project.id}>
-                      <h3>{project.name}</h3>
 
-                      <button
-                        style={{
-                          fontSize: "1em",
-                        }}
-                        disabled={isPlaying}
-                        onClick={() => {
-                          handleLoadSongJSON(project.data);
-                        }}
-                      >
-                        <img
-                          // src={coverartUrls[projects.indexOf(project)]}
-                          src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/coverart/${project.coverart}`}
-                          alt={`${project.name} cover art`}
-                          style={{ width: "100px", height: "100px" }}
-                        />
-                      </button>
-                    </div>
-                  );
-                })}
-              </>
-            )}
+      <div className="settings-heading">
+        Your Projects
+        <div>
+          <button
+            onClick={() => {
+              // Add your new project creation logic here
+              console.log("New Project button clicked");
+            }}
+          >
+            New
+          </button>
+          {!demoLoaded && projectLoaded && (
+            <button
+              onClick={() => {
+                // Add your new project creation logic here
+                console.log("Save Project button clicked");
+              }}
+            >
+              Save
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="settings-section">
+        {projects && (
+          <div className="projects-list">
+            <>
+              {projects.map((project) => {
+                return (
+                  <div
+                    key={project.id}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontSize: "1em",
+                      }}
+                      disabled={isPlaying}
+                      onClick={() => {
+                        setDemoLoaded(false);
+                        handleLoadSongJSON(project.data);
+                      }}
+                    >
+                      <img
+                        // src={coverartUrls[projects.indexOf(project)]}
+                        src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/coverart/${project.coverart}`}
+                        alt={`${project.title} cover art`}
+                        style={{ width: "100px", height: "100px" }}
+                      />
+                    </button>
+                    <h3>{project.title}</h3>
+                  </div>
+                );
+              })}
+            </>
           </div>
         )}
       </div>

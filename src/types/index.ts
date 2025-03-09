@@ -103,3 +103,13 @@ export type SetIsPlaying = (isPlaying: boolean) => void;
 export type SetShowCountIn = (showCountIn: boolean) => void;
 export type SetCurrentTime = (time: number) => void;
 export type SetSongHasEnded = () => void;
+
+export interface Project {
+  id: number;
+  user_id: string | null;
+  title: string;
+  data: SongData;
+  filename: string;
+  url: string;
+  coverart: string;
+}

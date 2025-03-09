@@ -377,11 +377,37 @@ button {
   border: none;
 }
 
-.settings h2 {
+.projects-list button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+}
+
+.projects-list button img {
+  filter: drop-shadow(4px 4px 6px black);
+}
+
+.projects-list button:hover img {
+  filter: drop-shadow(4px 4px 6px #00bafe);
+}
+
+.settings-heading {
   font-size: larger;
   text-transform: uppercase;
-  color: black;
+  color: white;
   font-weight: bold;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.settings-heading button {
+  background: none;
+  border: none;
+  color: #00bafe;
+  font-size: 1rem;
 }
 
 .settings label {

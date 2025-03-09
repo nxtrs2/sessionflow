@@ -25,9 +25,9 @@ export const renderTick2 = (
           timeline.instrumentId === selectedInstrument.id
       )
     : timelines.some((timeline) => timeline.beat === tick.beatIndex);
-  const isTimelineEvent = timelines.some(
-    (timeline) => timeline.beat === tick.beatIndex
-  );
+  // const isTimelineEvent = timelines.some(
+  //   (timeline) => timeline.beat === tick.beatIndex
+  // );
   const filteredTimelines =
     selectedInstrument === null
       ? timelines
