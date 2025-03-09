@@ -48,6 +48,9 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       <h2>Demo Projects</h2>
       <div className="settings-section">
         <button
+          style={{
+            fontSize: "1em",
+          }}
           disabled={isPlaying}
           onClick={() => {
             handleLoadSongJSON("/data/song2.json");
@@ -70,7 +73,12 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           style={{ display: "none" }}
           id="fileInput"
         />
-        <button onClick={() => document.getElementById("fileInput")?.click()}>
+        <button
+          style={{
+            fontSize: "1em",
+          }}
+          onClick={() => document.getElementById("fileInput")?.click()}
+        >
           Load Master Track
         </button>
       </div>
@@ -86,6 +94,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                   <div key={project.id}>
                     <h3>{project.name}</h3>
                     <button
+                      style={{
+                        fontSize: "1em",
+                      }}
+                      disabled={isPlaying}
                       onClick={() => {
                         handleLoadSongJSON(project.data);
                       }}

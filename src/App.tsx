@@ -145,11 +145,19 @@ const App: React.FC = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) {
+        setIsLoggedIn(true);
+      }
     });
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -243,6 +251,9 @@ const App: React.FC = () => {
         release: 0.05,
       },
     }).toDestination();
+
+    // Set the initial volume
+    clickSynthRef.current.volume.value = -20;
 
     // Cleanup when the component unmounts
     return () => {
@@ -780,6 +791,7 @@ const App: React.FC = () => {
                     <button
                       disabled={loopEnd === loopStart || loopStart > loopEnd}
                       onClick={() => {
+                        console.log("Looping", loopStart, loopEnd);
                         setLoop(!loop);
                       }}
                       style={{ color: loop ? "limegreen" : "" }}
@@ -806,11 +818,13 @@ const App: React.FC = () => {
                         value={loopEnd || 0}
                         onChange={handleLoopEndChange}
                       >
-                        {markers.map((marker, index) => (
-                          <option key={index} value={marker.beat}>
-                            {marker.label}
-                          </option>
-                        ))}
+                        {markers
+                          .filter((marker) => marker.beat > loopStart)
+                          .map((marker, index) => (
+                            <option key={index} value={marker.beat}>
+                              {marker.label}
+                            </option>
+                          ))}
                         <option value={loopEnd}>End</option>
                       </select>
                     </label>
@@ -823,7 +837,7 @@ const App: React.FC = () => {
                         min="-20"
                         max="5"
                         step="1"
-                        defaultValue="-6"
+                        defaultValue="-20"
                         onChange={(e) => {
                           if (clickSynthRef.current) {
                             clickSynthRef.current.volume.value = parseInt(
