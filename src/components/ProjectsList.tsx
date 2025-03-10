@@ -4,27 +4,28 @@ import NewProject from "./NewProject";
 
 interface ProjectsListProps {
   isPlaying: boolean;
+  isLoggedIn: boolean;
   projects: Project[];
   projectLoaded: boolean;
   demoLoaded: boolean;
   setDemoLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
-  onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
   isPlaying,
+  isLoggedIn,
   projects,
   projectLoaded,
   demoLoaded,
   setDemoLoaded,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
-  onFileChange,
 }) => {
   const [showNewProjectDialog, setShowNewProjectDialog] =
     React.useState<boolean>(false);
+
   return (
     <div className="settings">
       {showNewProjectDialog && (
@@ -32,19 +33,33 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       )}
       <div className="settings-heading">Demo Projects</div>
       <div className="settings-section">
-        <button
-          style={{
-            fontSize: "1em",
-          }}
-          disabled={isPlaying}
-          onClick={() => {
-            handleLoadSongJSONFile("/data/song2.json");
-            setDemoLoaded(true);
-          }}
-        >
-          Signals
-        </button>
-        {/* <button
+        <div className="projects-list">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <button
+              style={{
+                fontSize: "1em",
+              }}
+              disabled={isPlaying}
+              onClick={() => {
+                handleLoadSongJSONFile("/data/song2.json");
+                setDemoLoaded(true);
+              }}
+            >
+              <img
+                // src={coverartUrls[projects.indexOf(project)]}
+                src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/demo/coverart-signals.jpeg`}
+                style={{ width: "100px", height: "100px" }}
+              />
+            </button>
+            <h3>Signals</h3>
+          </div>
+          {/* <button
         disabled={isPlaying}
         onClick={() => {
           handleLoadSongJSON("/data/song.json");
@@ -52,39 +67,27 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       >
         Untitled2
       </button> */}
-        <input
-          type="file"
-          accept="audio/*"
-          onChange={(e) => {
-            const file = e.target.files && e.target.files[0];
-            if (file) {
-              //uploadMP3File(file);
-            }
-          }}
-          style={{ display: "none" }}
-          id="fileInput"
-        />
-        <button
-          style={{
-            fontSize: "1em",
-          }}
-          onClick={() => document.getElementById("fileInput")?.click()}
-        >
-          Load Master Track
-        </button>
+        </div>
       </div>
 
       <div className="settings-heading">
-        Your Projects
+        {isLoggedIn
+          ? projects.length > 0
+            ? "Your Projects"
+            : "No Projects Found"
+          : "Log in to view your projects"}
+
         <div>
-          <button
-            onClick={() => {
-              setShowNewProjectDialog(true);
-            }}
-          >
-            New
-          </button>
-          {!demoLoaded && projectLoaded && (
+          {isLoggedIn && (
+            <button
+              onClick={() => {
+                setShowNewProjectDialog(true);
+              }}
+            >
+              New
+            </button>
+          )}
+          {!demoLoaded && projectLoaded && isLoggedIn && (
             <button
               onClick={() => {
                 // Add your new project creation logic here

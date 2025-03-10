@@ -30,7 +30,7 @@ import { Repeat2 } from "lucide-react";
 
 import {
   loadMasterTrackFromJson,
-  handleMasterTrackFileChange,
+  // handleMasterTrackFileChange,
   loadTracksFromInstruments,
 } from "./helpers/FileFunctions";
 import { generateBeatData, approximatelyEqual, loadSongFile } from "./utils";
@@ -355,11 +355,11 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleMasterTrackFileChange(e, setAudioSrc, setDuration, playersRef);
-    setFileLoaded(true);
-    setCanEdit(true);
-  };
+  // const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   handleMasterTrackFileChange(e, setAudioSrc, setDuration, playersRef);
+  //   setFileLoaded(true);
+  //   setCanEdit(true);
+  // };
 
   // const handleSongHasEnded = () => {
   //   const tObject = Tone.getTransport();
@@ -1012,13 +1012,13 @@ const App: React.FC = () => {
               <Suspense fallback={<p>Loading...</p>}>
                 <ProjectsList
                   isPlaying={isPlaying}
+                  isLoggedIn={isLoggedIn}
                   projects={projects}
                   projectLoaded={fileLoaded}
                   demoLoaded={demoLoaded}
                   setDemoLoaded={setDemoLoaded}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
-                  onFileChange={onFileChange}
                 />
               </Suspense>
             </div>
