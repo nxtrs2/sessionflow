@@ -1,12 +1,19 @@
-import * as Tone from "tone";
 import React, { ChangeEvent } from "react";
+import * as Tone from "tone";
+import { supabase } from "../supabase/supabaseClient";
+
 import {
   SetAudioSrc,
   SetDuration,
   Instrument,
   CustomPlayer,
   projectsURL,
+  UploadResponse,
 } from "../types";
+
+export const convertTitleToFilename = (title: string): string => {
+  return title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+};
 
 export const loadMasterTrackFromJson = (
   file: string,
@@ -141,3 +148,115 @@ export const handleMasterTrackFileChange = (
     return true;
   }
 };
+
+export async function uploadMP3File(
+  file: File,
+  projectTitle: string
+): Promise<UploadResponse> {
+  // const file = e.target.files && e.target.files[0];
+  const sanitisedProjectTitle = convertTitleToFilename(projectTitle);
+
+  try {
+    if (!file) {
+      throw new Error("No file provided.");
+    }
+    if (file.type !== "audio/mpeg") {
+      throw new Error("Only MP3 files are allowed.");
+    }
+
+    // Ensure the user is authenticated by checking the current session.
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("User is not authenticated.");
+    }
+
+    // Generate a unique file name.
+    const fileExt: string = file.name.split(".").pop()!;
+    const fileName: string = `${Math.random()
+      .toString(36)
+      .substr(2)}.${fileExt}`;
+    const filePath: string = fileName;
+
+    // Upload the file to the "project_files" bucket.
+    const { data, error } = await supabase.storage
+      .from("project_files")
+      .upload(
+        session.user.id + "/" + sanitisedProjectTitle + "/" + filePath,
+        file
+      );
+
+    if (error) {
+      throw error;
+    }
+    // console.log("File uploaded:", data);
+    return { success: true, filename: fileName, url: data.id };
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return { success: false, error: "Error uploading file." };
+  }
+}
+
+export async function deleteMP3File(url: string): Promise<boolean> {
+  try {
+    const { error } = await supabase.storage
+      .from("project_files")
+      .remove([url]);
+    if (error) {
+      throw error;
+    }
+    return true;
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    return false;
+  }
+}
+
+export async function uploadCoverArt(
+  file: File,
+  projectTitle: string
+): Promise<UploadResponse> {
+  const sanitisedProjectTitle = convertTitleToFilename(projectTitle);
+
+  try {
+    if (!file) {
+      throw new Error("No file provided.");
+    }
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Only image files are allowed.");
+    }
+
+    // Ensure the user is authenticated by checking the current session.
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("User is not authenticated.");
+    }
+
+    // Generate a unique file name.
+    const fileExt: string = file.name.split(".").pop()!;
+    const fileName: string = `${Math.random()
+      .toString(36)
+      .substring(2)}.${fileExt}`;
+    const filePath: string = fileName;
+
+    // Upload the file to the "project_files" bucket.
+    const { data, error } = await supabase.storage
+      .from("project_files")
+      .upload(
+        session.user.id + "/" + sanitisedProjectTitle + "/" + filePath,
+        file
+      );
+
+    if (error) {
+      throw error;
+    }
+    // console.log("File uploaded:", data);
+    return { success: true, filename: fileName, url: data.id };
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return { success: false, error: "Error uploading file." };
+  }
+}

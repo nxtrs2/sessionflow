@@ -1,8 +1,8 @@
 {
   "project": {
-    "title": "Signals",
+    "title": "Demo",
     "filename": "signals-master.mp3",
-    "url": "/demo/",
+    "url": "demo",
     "tempo": 144,
     "timesignature": "4/4",
     "numerator": 4,

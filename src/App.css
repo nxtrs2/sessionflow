@@ -377,6 +377,15 @@ button {
   border: none;
 }
 
+.projects-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  justify-content: center;
+  align-items: center;
+}
+
 .projects-list button {
   background: none;
   border: none;

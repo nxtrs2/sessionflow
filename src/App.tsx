@@ -13,6 +13,7 @@ import { Session } from "@supabase/supabase-js";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
 import { renderTick2 } from "./components/TimeLineRenderer";
+import { convertTitleToFilename } from "./helpers/FileFunctions";
 import {
   SongData,
   EventData,
@@ -194,8 +195,17 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (songData) {
+      const songPath =
+        songData.project.url === "demo"
+          ? "demo/" + songData.project.filename
+          : songData.project.url +
+            "/" +
+            convertTitleToFilename(songData.project.title) +
+            "/" +
+            songData.project.filename;
+
       try {
-        handleLoadMasterTrack(songData.project.url + songData.project.filename);
+        handleLoadMasterTrack(songPath);
       } catch (error) {
         console.error("Error loading song", error);
       }
@@ -337,12 +347,12 @@ const App: React.FC = () => {
     //  setLoading(true);
     setLoadingMsg("Loading Master Track");
     loadMasterTrackFromJson(
-      projectsURL + file,
+      projectsURL + "/" + file,
       setAudioSrc,
       setDuration,
       playersRef
     );
-    //  setLoading(false);
+    setLoading(false);
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {

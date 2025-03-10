@@ -1,5 +1,6 @@
 import React from "react";
 import { Project, SongData } from "../types";
+import NewProject from "./NewProject";
 
 interface ProjectsListProps {
   isPlaying: boolean;
@@ -22,8 +23,13 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   handleLoadSongJSON,
   onFileChange,
 }) => {
+  const [showNewProjectDialog, setShowNewProjectDialog] =
+    React.useState<boolean>(false);
   return (
     <div className="settings">
+      {showNewProjectDialog && (
+        <NewProject setShowNewProjectDialog={setShowNewProjectDialog} />
+      )}
       <div className="settings-heading">Demo Projects</div>
       <div className="settings-section">
         <button
@@ -49,7 +55,12 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         <input
           type="file"
           accept="audio/*"
-          onChange={onFileChange}
+          onChange={(e) => {
+            const file = e.target.files && e.target.files[0];
+            if (file) {
+              //uploadMP3File(file);
+            }
+          }}
           style={{ display: "none" }}
           id="fileInput"
         />
@@ -68,8 +79,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         <div>
           <button
             onClick={() => {
-              // Add your new project creation logic here
-              console.log("New Project button clicked");
+              setShowNewProjectDialog(true);
             }}
           >
             New
@@ -91,6 +101,9 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           <div className="projects-list">
             <>
               {projects.map((project) => {
+                const title = project.title
+                  .replace(/[^a-zA-Z0-9]/g, "_")
+                  .toLowerCase();
                 return (
                   <div
                     key={project.id}
@@ -112,7 +125,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                     >
                       <img
                         // src={coverartUrls[projects.indexOf(project)]}
-                        src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/coverart/${project.coverart}`}
+                        src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${title}/${project.coverart}`}
                         alt={`${project.title} cover art`}
                         style={{ width: "100px", height: "100px" }}
                       />

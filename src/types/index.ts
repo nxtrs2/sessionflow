@@ -113,3 +113,10 @@ export interface Project {
   url: string;
   coverart: string;
 }
+
+export interface UploadResponse {
+  success: boolean;
+  filename?: string;
+  url?: string;
+  error?: string;
+}
