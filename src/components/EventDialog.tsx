@@ -160,7 +160,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
                       padding: "0.5em",
                     }}
                   >
-                    {message ? message : "PREVIEW"}
+                    {message ? message : selectedInstrument?.name}
                   </p>
                   <p style={{ marginBottom: "1em" }}>
                     Change colours in Settings

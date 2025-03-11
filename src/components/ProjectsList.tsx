@@ -8,9 +8,11 @@ interface ProjectsListProps {
   projects: Project[];
   projectLoaded: boolean;
   demoLoaded: boolean;
+  setProjectId: React.Dispatch<React.SetStateAction<number | null>>;
   setDemoLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
+  handleSaveProject: () => void;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
@@ -19,9 +21,11 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   projects,
   projectLoaded,
   demoLoaded,
+  setProjectId,
   setDemoLoaded,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
+  handleSaveProject,
 }) => {
   const [showNewProjectDialog, setShowNewProjectDialog] =
     React.useState<boolean>(false);
@@ -90,8 +94,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           {!demoLoaded && projectLoaded && isLoggedIn && (
             <button
               onClick={() => {
-                // Add your new project creation logic here
-                console.log("Save Project button clicked");
+                handleSaveProject();
               }}
             >
               Save
@@ -122,6 +125,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                       }}
                       disabled={isPlaying}
                       onClick={() => {
+                        setProjectId(project.id);
                         setDemoLoaded(false);
                         handleLoadSongJSON(project.data);
                       }}

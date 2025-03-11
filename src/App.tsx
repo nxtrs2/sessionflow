@@ -50,7 +50,7 @@ import TransportControls from "./components/TransportControls";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
+  const [projectId, setProjectId] = useState<number | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
@@ -92,6 +92,7 @@ const App: React.FC = () => {
   const [masterPan, setMasterPan] = useState<number>(0);
   const [masterMute, setMasterMute] = useState<boolean>(false);
   const [masterSolo, setMasterSolo] = useState<boolean>(false);
+  const [masterFile, setMasterFile] = useState<string | null>(null);
   // const [skipStartBeat, setSkipStartBeat] = useState<number>(0);
   const [pulse, setPulse] = useState<boolean>(false);
 
@@ -209,6 +210,7 @@ const App: React.FC = () => {
       } catch (error) {
         console.error("Error loading song", error);
       }
+      setMasterFile(songData.project.filename);
       setTitle(songData.project.title);
       setNotes(songData.notes);
       setStructure(songData.structure);
@@ -344,7 +346,7 @@ const App: React.FC = () => {
   // }, [loopStart, loopEnd]);
 
   const handleLoadMasterTrack = (file: string) => {
-    //  setLoading(true);
+    setLoading(true);
     setLoadingMsg("Loading Master Track");
     loadMasterTrackFromJson(
       projectsURL + "/" + file,
@@ -553,13 +555,22 @@ const App: React.FC = () => {
   const handleEditEvent = (tick: TickData, deleteEvent: boolean) => {
     if (deleteEvent) {
       const confirmDelete = window.confirm(
-        `Are you sure you want to delete the event at beat ${tick.beatIndex}?`
+        `Are you sure you want to delete the event at beat ${tick.beatIndex}\nfor instrument? ${selectedInstrument?.name}`
       );
       if (confirmDelete) {
         setSongTimeLines((prevTimeLines) =>
-          prevTimeLines.filter((line) => line.beat !== tick.beatIndex)
+          prevTimeLines.filter(
+            (line) =>
+              line.beat !== tick.beatIndex ||
+              line.instrumentId !== selectedInstrument?.id
+          )
         );
-        console.log("Event deleted at beat", tick.beatIndex);
+        console.log(
+          "Event deleted at beat",
+          tick.beatIndex,
+          "for instrument",
+          selectedInstrument?.name
+        );
       }
     } else {
       const existingEvent = songTimeLines.find(
@@ -633,6 +644,55 @@ const App: React.FC = () => {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  };
+
+  const handleSaveProject = async () => {
+    if (session && projectId && masterFile) {
+      const songData: SongData = {
+        project: {
+          title,
+          url: session.user.id,
+          filename: masterFile,
+          skipBeats,
+          skipBeatsBy,
+          masterVolume,
+          masterPan,
+          masterMute,
+          masterSolo,
+          countIn,
+          numerator: timeSignature.numerator,
+          denominator: timeSignature.denominator,
+          tempo,
+        },
+        notes,
+        structure,
+        timeline: songTimeLines,
+        markers,
+        instruments,
+      };
+
+      try {
+        const { error } = await supabase
+          .from("projects")
+          .update({
+            user_id: session.user.id,
+            title,
+            filename: songData.project.filename,
+            url: session.user.id,
+            data: songData,
+          })
+          .eq("id", projectId);
+
+        if (error) {
+          throw error;
+        }
+
+        alert("Project updated successfully.");
+      } catch (error) {
+        console.error("Error updating project:", error);
+        alert("Error updating project.");
+      }
+    }
   };
 
   return (
@@ -870,11 +930,13 @@ const App: React.FC = () => {
                         onChange={handleLoopStartChange}
                       >
                         <option value="0">Start</option>
-                        {markers.map((marker, index) => (
-                          <option key={index} value={marker.beat}>
-                            {marker.label}
-                          </option>
-                        ))}
+                        {markers
+                          .sort((a, b) => a.beat - b.beat)
+                          .map((marker, index) => (
+                            <option key={index} value={marker.beat}>
+                              {marker.label} - {marker.beat}
+                            </option>
+                          ))}
                       </select>
                     </label>
                     <label>
@@ -887,7 +949,7 @@ const App: React.FC = () => {
                           .filter((marker) => marker.beat > loopStart)
                           .map((marker, index) => (
                             <option key={index} value={marker.beat}>
-                              {marker.label}
+                              {marker.label} - {marker.beat}
                             </option>
                           ))}
                         <option value={loopEnd}>End</option>
@@ -1017,8 +1079,10 @@ const App: React.FC = () => {
                   projectLoaded={fileLoaded}
                   demoLoaded={demoLoaded}
                   setDemoLoaded={setDemoLoaded}
+                  setProjectId={setProjectId}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
+                  handleSaveProject={handleSaveProject}
                 />
               </Suspense>
             </div>
