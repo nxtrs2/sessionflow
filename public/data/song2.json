@@ -58,160 +58,330 @@
   ],
   "timeline": [
     {
-      "beat": 16,
-      "instrument": "SYNTH1",
-      "instrumentId": 0,
-      "message": "SYNTH1 START",
-      "countOut": 0
-    },
-    {
-      "beat": 16,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
-      "message": "DRUMS START",
-      "countOut": 0
-    },
-    {
       "beat": 41,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
       "message": "DRUM ROLL IN",
-      "countOut": 4
+      "countOut": 4,
+      "instrument": "DRUMS",
+      "instrumentId": 1
     },
     {
       "beat": 46,
-      "instrument": "BASS",
-      "instrumentId": 2,
       "message": "BASS RUN",
-      "countOut": 0
+      "countOut": 0,
+      "instrument": "BASS",
+      "instrumentId": 2
     },
     {
       "beat": 48,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
       "message": "DRUM START",
-      "countOut": 0
-    },
-    {
-      "beat": 61,
-      "instrument": "SYNTH1",
-      "instrumentId": 0,
-      "message": "CYM CRASH!",
-      "countOut": 0
-    },
-    {
-      "beat": 63,
-      "instrument": "SYNTH1",
-      "instrumentId": 0,
-      "message": "CYM CRASH!",
-      "countOut": 0
-    },
-    {
-      "beat": 64,
-      "instrument": "SYNTH1",
-      "instrumentId": 0,
-      "message": "CYM CRASH!",
-      "countOut": 0
+      "countOut": 0,
+      "instrument": "DRUMS",
+      "instrumentId": 1
     },
     {
       "beat": 78,
-      "instrument": "DRUMS",
       "instrumentId": 1,
-      "message": "CYM CRASH!",
+      "message": "CYM CRASH",
       "countOut": 0
     },
     {
       "beat": 79,
-      "instrument": "DRUMS",
       "instrumentId": 1,
-      "message": "CYM CRASH!",
+      "message": "CYM CRASH",
       "countOut": 0
     },
-
     {
       "beat": 80,
-      "instrument": "DRUMS",
       "instrumentId": 1,
-      "message": "CYM CRASH!",
-      "countOut": 0
-    },
-    {
-      "beat": 93,
-
-      "instrument": "SYNTH1",
-      "instrumentId": 0,
-      "message": "CRASH",
+      "message": "CYM CRASH",
       "countOut": 0
     },
     {
       "beat": 95,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
       "message": "CRASH",
-      "countOut": 0
+      "countOut": 0,
+      "instrument": "DRUMS",
+      "instrumentId": 1
     },
     {
       "beat": 96,
+      "message": "CRASH",
+      "countOut": 0,
       "instrument": "DRUMS",
+      "instrumentId": 1
+    },
+    {
+      "beat": 110,
+      "message": "CRASH",
+      "countOut": 0,
+      "instrument": "DRUMS",
+      "instrumentId": 1
+    },
+    {
+      "beat": 111,
+      "message": "CRASH",
+      "countOut": 0,
+      "instrument": "DRUMS",
+      "instrumentId": 1
+    },
+    {
+      "beat": 112,
+      "message": "CRASH",
+      "countOut": 0,
+      "instrument": "DRUMS",
+      "instrumentId": 1
+    },
+    {
+      "beat": 45,
+      "instrumentId": 1,
+      "message": "DRUM ROLL",
+      "countOut": 0
+    },
+    {
+      "beat": 48,
+      "instrumentId": 2,
+      "message": "BASS START",
+      "countOut": 0
+    },
+    {
+      "beat": 61,
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
-      "beat": 210,
-      "instrument": "DRUMS",
+      "beat": 63,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 64,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 93,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 125,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 127,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 128,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 142,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 143,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 144,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 157,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 159,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 160,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 175,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 176,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 173,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 190,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 191,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 192,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 205,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 207,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 208,
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 214,
-      "instrument": "DRUMS",
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
       "beat": 217,
-      "instrument": "DRUMS",
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
-      "beat": 110,
-      "instrument": "DRUMS",
+      "beat": 219,
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
-      "beat": 111,
-      "instrument": "DRUMS",
+      "beat": 221,
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
     },
     {
-      "beat": 112,
-      "instrument": "DRUMS",
+      "beat": 223,
       "instrumentId": 1,
       "message": "CRASH",
       "countOut": 0
+    },
+    {
+      "beat": 224,
+      "instrumentId": 1,
+      "message": "CRASH & STOP",
+      "countOut": 0
+    },
+    {
+      "beat": 256,
+      "instrumentId": 2,
+      "message": "BASS START",
+      "countOut": 0
+    },
+    {
+      "beat": 284,
+      "instrumentId": 2,
+      "message": "BASS RUN",
+      "countOut": 0
+    },
+    {
+      "beat": 288,
+      "instrumentId": 1,
+      "message": "CRASH & START",
+      "countOut": 0
+    },
+    {
+      "beat": 297,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 299,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 301,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 303,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 304,
+      "instrumentId": 1,
+      "message": "OFF BEAT RIDE",
+      "countOut": 0
+    },
+    {
+      "beat": 356,
+      "instrumentId": 1,
+      "message": "DRUM ROLL IN",
+      "countOut": 8
     }
   ],
   "markers": [
     {
-      "beat": 36,
-      "label": "Marker 1"
+      "label": "BREAK START",
+      "beat": 224
     },
     {
-      "beat": 19,
-      "label": "Marker 2"
+      "label": "BREAK END",
+      "beat": 288
     },
     {
-      "beat": 40,
-      "label": "Marker 3"
+      "label": "OFF BEAT SECTION",
+      "beat": 304
+    },
+    {
+      "label": "END OFF BEAT",
+      "beat": 368
     }
   ]
 }
