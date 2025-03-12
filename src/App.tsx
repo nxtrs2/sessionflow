@@ -42,6 +42,7 @@ import Tabs from "./components/Tabs";
 const ProjectsList = React.lazy(() => import("./components/ProjectsList"));
 import Header from "./components/Header";
 import TransportControls from "./components/TransportControls";
+import Footer from "./components/Footer";
 
 // const supabase = createClient(
 //   "https://zjhdapoqakbbheerqvsm.supabase.co",
@@ -1102,6 +1103,7 @@ const App: React.FC = () => {
           />
         )}
       </Suspense>
+      <Footer />
     </div>
   );
 };

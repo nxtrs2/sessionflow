@@ -10,6 +10,12 @@ const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
   return (
     <div className="tab-links">
       <button
+        onClick={() => setActiveTab("projects")}
+        style={{ color: activeTab === "projects" ? "yellow" : "lightgray" }}
+      >
+        Projects
+      </button>
+      <button
         disabled={!fileLoaded}
         onClick={() => setActiveTab("playback")}
         style={{
@@ -62,12 +68,6 @@ const Tabs: React.FC<TabsProps> = ({ fileLoaded, activeTab, setActiveTab }) => {
         Notes
       </button> */}
 
-      <button
-        onClick={() => setActiveTab("projects")}
-        style={{ color: activeTab === "projects" ? "yellow" : "lightgray" }}
-      >
-        Projects
-      </button>
       {/* <button
                 onClick={() => setActiveTab('events')}
                 style={{ color: activeTab === 'events' ? 'yellow' : 'lightgray' }}

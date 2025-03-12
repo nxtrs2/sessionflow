@@ -141,6 +141,22 @@ body {
   border-bottom: 1px solid #000;
 }
 
+.app-footer {
+  width: 100%;
+  background: linear-gradient(to bottom, rgb(25, 25, 25), transparent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+}
+
+.app-footer a {
+  color: #00bafe;
+  text-decoration: none;
+}
+
 .app-content {
   display: flex;
   flex-direction: row;
@@ -786,6 +802,7 @@ select {
     justify-content: center;
     gap: 1rem;
   }
+
   .app-header {
     position: fixed;
     top: 0;
