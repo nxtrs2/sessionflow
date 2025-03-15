@@ -1,5 +1,6 @@
 import React from "react";
 import { Project, SongData } from "../types";
+// import { EditProject } from "./EditProject";
 import { useSession } from "../hooks/useSession";
 
 interface ProjectsListProps {
