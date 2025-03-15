@@ -20,9 +20,27 @@ const Profile: React.FC<ProfileProps> = ({ closeDialog }) => {
   return (
     <div className="dialog-overlay">
       <div className="dialog">
-        <h1>Profile</h1>
+        <h1>Logout?</h1>
         {/* <ChangePassword username={username} /> */}
-        <button onClick={handleLogout}>Logout</button>
+        <div>
+          <button
+            style={{
+              fontSize: "1em",
+            }}
+            type="button"
+            onClick={() => closeDialog()}
+          >
+            No
+          </button>
+          <button
+            style={{
+              fontSize: "1em",
+            }}
+            onClick={handleLogout}
+          >
+            Yes
+          </button>
+        </div>
       </div>
     </div>
   );

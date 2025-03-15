@@ -347,7 +347,9 @@ const App: React.FC = () => {
       setDuration,
       playersRef
     );
-    setLoading(false);
+    Tone.loaded().then(() => {
+      setLoading(false);
+    });
   };
 
   // const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
