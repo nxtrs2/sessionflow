@@ -1,39 +1,19 @@
-import React, { useState } from "react";
-import { LogOut } from "lucide-react";
-import Login from "./Login";
-import Register from "./Register";
-import { supabase } from "../supabase/supabaseClient"; // Adjust the import path as necessary
+import React from "react";
+import { User } from "lucide-react";
 
+import { useSession } from "../hooks/useSession";
 interface HeaderProps {
-  isLoggedIn: boolean;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowUserProfile: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setIsLoggedIn(false);
-    } else {
-      console.error("Error logging out:", error.message);
-    }
-  };
-
+const Header: React.FC<HeaderProps> = ({
+  setShowUserProfile,
+  setShowLogin,
+}) => {
+  const { isLoggedIn } = useSession();
   return (
     <div className="app-header">
-      {showLogin && !isLoggedIn && (
-        <Login
-          setIsLoggedIn={setIsLoggedIn}
-          setShowLogin={setShowLogin}
-          setShowRegister={setShowRegister}
-        />
-      )}
-      {showRegister && !isLoggedIn && (
-        <Register setShowRegister={setShowRegister} />
-      )}
       <h1>Session Flow</h1>
 
       <div className="header-right">
@@ -41,9 +21,9 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
           <button
             className="user-icon"
             title="User Profile"
-            onClick={handleLogout}
+            onClick={() => setShowUserProfile(true)}
           >
-            <LogOut size={18} />
+            <User size={18} />
           </button>
         ) : (
           <button className="sign-in-button" onClick={() => setShowLogin(true)}>

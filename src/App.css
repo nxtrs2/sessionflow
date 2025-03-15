@@ -142,6 +142,10 @@ body {
 }
 
 .app-footer {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: gray;
   width: 100%;
   background: linear-gradient(to bottom, rgb(25, 25, 25), transparent);
   display: flex;
@@ -153,7 +157,7 @@ body {
 }
 
 .app-footer a {
-  color: #00bafe;
+  color: #00bafe88;
   text-decoration: none;
 }
 

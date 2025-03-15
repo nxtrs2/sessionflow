@@ -9,7 +9,9 @@ import React, {
 import * as Tone from "tone";
 import "./App.css";
 import { supabase } from "./supabase/supabaseClient";
-import { Session } from "@supabase/supabase-js";
+// import { Session } from "@supabase/supabase-js";
+
+import { useSession } from "./hooks/useSession";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
 import { renderTick2 } from "./components/TimeLineRenderer";
@@ -43,6 +45,9 @@ const ProjectsList = React.lazy(() => import("./components/ProjectsList"));
 import Header from "./components/Header";
 import TransportControls from "./components/TransportControls";
 import Footer from "./components/Footer";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Profile from "./components/Profile";
 
 // const supabase = createClient(
 //   "https://zjhdapoqakbbheerqvsm.supabase.co",
@@ -50,12 +55,16 @@ import Footer from "./components/Footer";
 // );
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { session, isLoggedIn } = useSession();
+
   const [projectId, setProjectId] = useState<number | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
-  // Tone.Player reference
+
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [showRegister, setShowRegister] = useState<boolean>(false);
+  const [showProfile, setShowProfile] = useState<boolean>(false);
+
   const [activeTab, setActiveTab] = useState<string>("track");
   // const playerRef = useRef<Tone.Player | undefined>(undefined);
   const playersRef = useRef<Tone.Players | null>(null);
@@ -150,30 +159,10 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        setIsLoggedIn(true);
-      }
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
     const fetchProjects = async () => {
       if (session) {
         try {
+          setLoading(true);
           const { data, error } = await supabase
             .from("projects")
             .select("*")
@@ -189,6 +178,9 @@ const App: React.FC = () => {
         } finally {
           setLoading(false);
         }
+      } else {
+        setProjects([]);
+        setLoading(false);
       }
     };
 
@@ -699,7 +691,14 @@ const App: React.FC = () => {
   return (
     <div className="app-container">
       {loading && <Loader message={loadingMsg} />}
-      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Header setShowUserProfile={setShowProfile} setShowLogin={setShowLogin} />
+      {showLogin && !isLoggedIn && (
+        <Login setShowLogin={setShowLogin} setShowRegister={setShowRegister} />
+      )}
+      {showRegister && !isLoggedIn && (
+        <Register setShowRegister={setShowRegister} />
+      )}
+      {showProfile && <Profile closeDialog={() => setShowProfile(false)} />}
       <div className="app-content">
         <div className="timeline-sidebar">
           <div

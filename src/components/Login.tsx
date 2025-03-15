@@ -1,32 +1,28 @@
 import React, { useState } from "react";
-import { supabase } from "../supabase/supabaseClient";
+
+import { useSession } from "../hooks/useSession";
 
 interface LoginProps {
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
   setShowRegister: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Login: React.FC<LoginProps> = ({
-  setIsLoggedIn,
   setShowLogin,
   setShowRegister,
 }: LoginProps) => {
+  const { signIn } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await signIn(email, password);
     if (error) {
       setError(error.message);
     } else {
       setError(null);
-      setIsLoggedIn(true);
     }
   };
 
