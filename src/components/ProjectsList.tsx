@@ -1,15 +1,15 @@
 import React from "react";
 import { Project, SongData } from "../types";
-import NewProject from "./NewProject";
+import { useSession } from "../hooks/useSession";
 
 interface ProjectsListProps {
   isPlaying: boolean;
-  isLoggedIn: boolean;
   projects: Project[];
   projectLoaded: boolean;
   demoLoaded: boolean;
   setProjectId: React.Dispatch<React.SetStateAction<number | null>>;
   setDemoLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowNewProjectDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
   handleSaveProject: () => void;
@@ -17,24 +17,19 @@ interface ProjectsListProps {
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
   isPlaying,
-  isLoggedIn,
   projects,
   projectLoaded,
   demoLoaded,
   setProjectId,
   setDemoLoaded,
+  setShowNewProjectDialog,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
   handleSaveProject,
 }) => {
-  const [showNewProjectDialog, setShowNewProjectDialog] =
-    React.useState<boolean>(false);
-
+  const { isLoggedIn } = useSession();
   return (
     <div className="settings">
-      {showNewProjectDialog && (
-        <NewProject setShowNewProjectDialog={setShowNewProjectDialog} />
-      )}
       <div className="settings-heading">Demo Projects</div>
       <div className="settings-section">
         <div className="projects-list">
@@ -110,6 +105,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                 const title = project.title
                   .replace(/[^a-zA-Z0-9]/g, "_")
                   .toLowerCase();
+
                 return (
                   <div
                     key={project.id}
@@ -131,8 +127,11 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                       }}
                     >
                       <img
-                        // src={coverartUrls[projects.indexOf(project)]}
-                        src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${title}/${project.coverart}`}
+                        src={
+                          project.coverart
+                            ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${title}/${project.coverart}`
+                            : "/not-found.jpg"
+                        }
                         alt={`${project.title} cover art`}
                         style={{ width: "100px", height: "100px" }}
                       />

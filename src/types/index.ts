@@ -103,6 +103,7 @@ export type SetIsPlaying = (isPlaying: boolean) => void;
 export type SetShowCountIn = (showCountIn: boolean) => void;
 export type SetCurrentTime = (time: number) => void;
 export type SetSongHasEnded = () => void;
+export type SetProjects = (projects: Project[]) => void;
 
 export interface Project {
   id: number;
@@ -116,7 +117,7 @@ export interface Project {
 
 export interface UploadResponse {
   success: boolean;
-  filename?: string;
+  filename?: string | null;
   url?: string;
   error?: string;
 }

@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { supabase } from "../supabase/supabaseClient";
 import { uploadMP3File, uploadCoverArt } from "../helpers/FileFunctions";
 import { SongData, UploadResponse } from "../types";
+import { supabase } from "../supabase/supabaseClient";
+import { useSession } from "../hooks/useSession";
 
 interface NewProjectProps {
-  setShowNewProjectDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  openDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchProjects: () => void;
 }
 
-const NewProject: React.FC<NewProjectProps> = ({ setShowNewProjectDialog }) => {
+const NewProject: React.FC<NewProjectProps> = ({
+  openDialog,
+  fetchProjects,
+}) => {
+  const { session } = useSession();
   const [title, setTitle] = useState("");
   const [tempo, setTempo] = useState(144);
   const [numerator, setNumerator] = useState(4);
@@ -21,9 +27,14 @@ const NewProject: React.FC<NewProjectProps> = ({ setShowNewProjectDialog }) => {
     setUploading(true);
     if (!masterFile) return;
 
+    if (!session?.user.id) {
+      console.error("User ID not found");
+      return;
+    }
+
     let coverArtUpload: UploadResponse = {
       success: false,
-      filename: "not-found.jpg",
+      filename: null,
       url: "",
       error: "",
     };
@@ -43,20 +54,13 @@ const NewProject: React.FC<NewProjectProps> = ({ setShowNewProjectDialog }) => {
       return;
     }
 
-    const { filename = "", url = "" } = upload;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      throw new Error("User is not authenticated.");
-    }
+    const { filename } = upload;
 
     const songData: SongData = {
       project: {
         title,
-        filename,
-        url,
+        filename: filename || "",
+        url: session.user.id,
         tempo,
         numerator,
         denominator,
@@ -77,10 +81,10 @@ const NewProject: React.FC<NewProjectProps> = ({ setShowNewProjectDialog }) => {
 
     const { error: insertError } = await supabase.from("projects").insert([
       {
-        user_id: session?.user.id,
+        user_id: session.user.id,
         title,
         filename: filename,
-        url: session?.user.id,
+        url: session.user.id,
         data: songData,
         coverart: coverArtUpload?.filename || null,
       },
@@ -89,8 +93,9 @@ const NewProject: React.FC<NewProjectProps> = ({ setShowNewProjectDialog }) => {
     if (insertError) {
       console.error("Error inserting record:", insertError);
     } else {
-      console.log("Record inserted successfully");
-      setShowNewProjectDialog(false);
+      // console.log("Record inserted successfully");
+      fetchProjects();
+      openDialog(false);
     }
     setUploading(false);
   };
@@ -195,10 +200,7 @@ const NewProject: React.FC<NewProjectProps> = ({ setShowNewProjectDialog }) => {
             )}
           </div>
           <div className="dialog-actions">
-            <button
-              type="button"
-              onClick={() => setShowNewProjectDialog(false)}
-            >
+            <button type="button" onClick={() => openDialog(false)}>
               Cancel
             </button>
             <button

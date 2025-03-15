@@ -48,6 +48,7 @@ import Footer from "./components/Footer";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
+import NewProject from "./components/NewProject";
 
 // const supabase = createClient(
 //   "https://zjhdapoqakbbheerqvsm.supabase.co",
@@ -64,6 +65,8 @@ const App: React.FC = () => {
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState<boolean>(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
+  const [showNewProjectDialog, setShowNewProjectDialog] =
+    useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState<string>("track");
   // const playerRef = useRef<Tone.Player | undefined>(undefined);
@@ -158,32 +161,32 @@ const App: React.FC = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      if (session) {
-        try {
-          setLoading(true);
-          const { data, error } = await supabase
-            .from("projects")
-            .select("*")
-            .eq("user_id", session.user.id);
+  const fetchProjects = async () => {
+    if (session) {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("user_id", session.user.id);
 
-          if (error) {
-            throw error;
-          }
-
-          setProjects(data);
-        } catch (error) {
-          console.error("Error fetching projects:", error);
-        } finally {
-          setLoading(false);
+        if (error) {
+          throw error;
         }
-      } else {
-        setProjects([]);
+
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      } finally {
         setLoading(false);
       }
-    };
+    } else {
+      setProjects([]);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProjects();
   }, [session]);
 
@@ -701,6 +704,15 @@ const App: React.FC = () => {
         <Register setShowRegister={setShowRegister} />
       )}
       {showProfile && <Profile closeDialog={() => setShowProfile(false)} />}
+
+      {showNewProjectDialog && (
+        <Suspense fallback={<Loader message="Loading..." />}>
+          <NewProject
+            openDialog={() => setShowNewProjectDialog(false)}
+            fetchProjects={fetchProjects}
+          />
+        </Suspense>
+      )}
       <div className="app-content">
         <div className="timeline-sidebar">
           <div
@@ -1076,12 +1088,12 @@ const App: React.FC = () => {
               <Suspense fallback={<p>Loading...</p>}>
                 <ProjectsList
                   isPlaying={isPlaying}
-                  isLoggedIn={isLoggedIn}
                   projects={projects}
                   projectLoaded={fileLoaded}
                   demoLoaded={demoLoaded}
                   setDemoLoaded={setDemoLoaded}
                   setProjectId={setProjectId}
+                  setShowNewProjectDialog={setShowNewProjectDialog}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
                   handleSaveProject={handleSaveProject}
