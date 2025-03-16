@@ -401,8 +401,13 @@ button {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-
   justify-content: center;
+  align-items: center;
+}
+
+.projects-list-item {
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
@@ -435,8 +440,17 @@ button {
 .settings-heading button {
   background: none;
   border: none;
+  padding: 5px;
   color: #00bafe;
   font-size: 1rem;
+}
+
+.settings-heading button:hover {
+  color: white;
+}
+
+.settings-heading button:disabled {
+  color: rgb(93, 93, 93);
 }
 
 .settings label {

@@ -1097,6 +1097,7 @@ const App: React.FC = () => {
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
                   handleSaveProject={handleSaveProject}
+                  fetchProjects={fetchProjects}
                 />
               </Suspense>
             </div>

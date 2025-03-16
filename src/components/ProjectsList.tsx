@@ -1,7 +1,9 @@
 import React from "react";
 import { Project, SongData } from "../types";
-// import { EditProject } from "./EditProject";
+import EditProject from "./EditProject";
 import { useSession } from "../hooks/useSession";
+import { Edit2, Trash2Icon, Save, File } from "lucide-react";
+import { convertTitleToFilename } from "../helpers/FileFunctions";
 
 interface ProjectsListProps {
   isPlaying: boolean;
@@ -14,6 +16,7 @@ interface ProjectsListProps {
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
   handleSaveProject: () => void;
+  fetchProjects: () => void;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
@@ -27,10 +30,22 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   handleLoadSongJSONFile,
   handleLoadSongJSON,
   handleSaveProject,
+  fetchProjects,
 }) => {
   const { isLoggedIn } = useSession();
+  const [showEditProject, setShowEditProject] = React.useState(false);
+  const [selectedProject, setSelectedProject] = React.useState<Project | null>(
+    null
+  );
   return (
     <div className="settings">
+      {showEditProject && selectedProject && (
+        <EditProject
+          project={selectedProject}
+          openDialog={setShowEditProject}
+          fetchProjects={fetchProjects}
+        />
+      )}
       <div className="settings-heading">Demo Projects</div>
       <div className="settings-section">
         <div className="projects-list">
@@ -80,21 +95,46 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         <div>
           {isLoggedIn && (
             <button
+              disabled={isPlaying}
               onClick={() => {
                 setShowNewProjectDialog(true);
               }}
             >
-              New
+              <File size={18} />
             </button>
           )}
-          {!demoLoaded && projectLoaded && isLoggedIn && (
-            <button
-              onClick={() => {
-                handleSaveProject();
-              }}
-            >
-              Save
-            </button>
+          {!demoLoaded && projectLoaded && isLoggedIn && selectedProject && (
+            <>
+              <button
+                disabled={isPlaying}
+                onClick={() => {
+                  handleSaveProject();
+                }}
+              >
+                <Save size={18} />
+              </button>
+
+              <button
+                disabled={isPlaying}
+                onClick={() => {
+                  setShowEditProject(true);
+                }}
+              >
+                <Edit2 size={18} />
+              </button>
+
+              <button
+                disabled={isPlaying}
+                onClick={() => {
+                  handleSaveProject();
+                }}
+                style={{
+                  color: isPlaying ? "rgb(93, 93, 93)" : "red",
+                }}
+              >
+                <Trash2Icon size={18} />
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -103,25 +143,20 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           <div className="projects-list">
             <>
               {projects.map((project) => {
-                const title = project.title
-                  .replace(/[^a-zA-Z0-9]/g, "_")
-                  .toLowerCase();
-
+                const title = convertTitleToFilename(project.title);
                 return (
-                  <div
-                    key={project.id}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
+                  <div key={project.id} className="projects-list-item">
                     <button
                       style={{
                         fontSize: "1em",
+                        outline:
+                          selectedProject?.id === project.id
+                            ? "2px solid green"
+                            : "none",
                       }}
                       disabled={isPlaying}
                       onClick={() => {
+                        setSelectedProject(project);
                         setProjectId(project.id);
                         setDemoLoaded(false);
                         handleLoadSongJSON(project.data);
@@ -137,6 +172,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                         style={{ width: "100px", height: "100px" }}
                       />
                     </button>
+
                     <h3>{project.title}</h3>
                   </div>
                 );
