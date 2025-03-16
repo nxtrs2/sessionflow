@@ -148,6 +148,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                     );
                     if (confirmDelete) {
                       handleDeleteProject(selectedProject);
+                      setSelectedProject(null);
                       fetchProjects();
                     }
                   }

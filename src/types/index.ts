@@ -107,7 +107,7 @@ export type SetProjects = (projects: Project[]) => void;
 
 export interface Project {
   id: number;
-  user_id: string | null;
+  user_id: string;
   title: string;
   data: SongData;
   filename: string;

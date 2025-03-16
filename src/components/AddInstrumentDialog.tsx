@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { Instrument } from "../types";
+import { Instrument, Project } from "../types";
 
 interface DialogProps {
   //   selectedInstrument: Instrument;
+  project: Project;
   instCount: number;
   handleUpdateInstrument: (newInstrument: Instrument) => void;
   setAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddInstrumentDialog: React.FC<DialogProps> = ({
+  // project,
   instCount,
   handleUpdateInstrument,
   setAddInstrument,
