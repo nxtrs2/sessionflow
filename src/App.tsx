@@ -248,7 +248,9 @@ const App: React.FC = () => {
           instruments,
           playersRef,
           setLoading,
-          setLoadingMsg
+          setLoadingMsg,
+          session ? session.user.id : "",
+          convertTitleToFilename(title)
         );
       }
       // setLoopEnd(duration);
@@ -588,6 +590,7 @@ const App: React.FC = () => {
     instrument: Instrument,
     deleteInstrument: boolean
   ) => {
+    console.log("Instrument updated:", instrument);
     if (deleteInstrument) {
       setSongTimeLines((prevTimeLines) =>
         prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
@@ -1000,6 +1003,7 @@ const App: React.FC = () => {
                 {audioSrc && playersRef && (
                   <>
                     <Instruments
+                      projectTitle={title}
                       masterSolo={masterSolo}
                       setMasterSolo={setMasterSolo}
                       masterMute={masterMute}

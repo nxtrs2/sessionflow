@@ -52,7 +52,9 @@ export const loadTracksFromInstruments = (
   instruments: Instrument[],
   playersRef: React.MutableRefObject<Tone.Players | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loadingMsg: React.Dispatch<React.SetStateAction<string>>
+  loadingMsg: React.Dispatch<React.SetStateAction<string>>,
+  user_id: string | undefined,
+  projectTitle: string | undefined
 ) => {
   if (!playersRef.current) {
     console.error("No master track loaded.");
@@ -64,7 +66,16 @@ export const loadTracksFromInstruments = (
   if (playersRef.current) {
     instruments.forEach((inst) => {
       if (inst.url && inst.filename) {
-        const trackUrl = projectsURL + inst.url + inst.filename;
+        const trackUrl =
+          user_id && projectTitle
+            ? projectsURL +
+              "/" +
+              user_id +
+              "/" +
+              projectTitle +
+              "/" +
+              inst.filename
+            : projectsURL + inst.url + inst.filename;
         if (!playersRef.current?.has(inst.id.toString())) {
           playersRef.current?.add(inst.id.toString(), trackUrl, () => {
             const player = playersRef.current!.player(
@@ -177,7 +188,7 @@ export async function uploadMP3File(
     const fileExt: string = file.name.split(".").pop()!;
     const fileName: string = `${Math.random()
       .toString(36)
-      .substr(2)}.${fileExt}`;
+      .substring(2)}.${fileExt}`;
     const filePath: string = fileName;
 
     // Upload the file to the "project_files" bucket.
@@ -191,7 +202,7 @@ export async function uploadMP3File(
     if (error) {
       throw error;
     }
-    // console.log("File uploaded:", data);
+    // console.log("File uploaded:", data, fileName);
     return { success: true, filename: fileName, url: data.id };
   } catch (error) {
     console.error("Error uploading file:", error);

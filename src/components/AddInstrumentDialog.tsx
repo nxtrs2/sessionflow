@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { Instrument } from "../types";
+import { uploadMP3File } from "../helpers/FileFunctions";
 
 interface DialogProps {
   //   selectedInstrument: Instrument;
-  // project: Project;
+  projectTitle: string;
+  user_id?: string;
   instCount: number;
   handleUpdateInstrument: (newInstrument: Instrument) => void;
   setAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddInstrumentDialog: React.FC<DialogProps> = ({
-  // project,
+  projectTitle,
+  user_id,
   instCount,
   handleUpdateInstrument,
   setAddInstrument,
@@ -30,11 +33,64 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
   const [newColor, setNewColor] = useState<string>("#000000");
   const [newBgColor, setNewBgColor] = useState<string>("#FFFFFF");
   const [instName, setInstName] = useState<string>("");
+  const [instFile, setInstFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUploading(true);
+    if (!instFile) {
+      handleUpdateInstrument(newInst);
+      setAddInstrument(false);
+      return;
+    }
+
+    if (!user_id) {
+      console.error("User ID not found");
+      setUploading(false);
+      return;
+    }
+
+    const uploadFile = await uploadMP3File(instFile, projectTitle);
+
+    if (!uploadFile.success) {
+      console.error("Error uploading file:", uploadFile.error);
+      setUploading(false);
+      return;
+    }
+
+    const { filename } = uploadFile;
+
+    if (!filename) {
+      console.error("Filename not found");
+      setUploading(false);
+      return;
+    }
+
+    // console.log("File uploaded:", filename);
+
+    handleUpdateInstrument({
+      ...newInst,
+      filename,
+      url: user_id,
+    });
+    setAddInstrument(false);
+  };
+
   return (
     <div className="dialog-overlay">
       <div className="dialog">
         <h2>Add New Instrument</h2>
-        <form onSubmit={(e) => e.preventDefault()}>
+        {instFile && (
+          <div className="media-player">
+            <audio controls style={{ width: "100%" }}>
+              <source src={URL.createObjectURL(instFile)} type="audio/mp3" />
+              Your browser does not support the audio element.
+            </audio>
+            {instFile.name}
+          </div>
+        )}
+        <form onSubmit={handleFormSubmit}>
           <div className="settings-section">
             <div>
               <input
@@ -90,19 +146,29 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    // Handle file upload logic here
-                    console.log(file);
+                    setInstFile(file);
                   }
                 }}
               />
-              <button
-                type="button"
-                onClick={() => {
-                  document.getElementById("track-upload")?.click();
-                }}
-              >
-                Add Track
-              </button>
+              {!instFile ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById("track-upload")?.click();
+                  }}
+                >
+                  Add Track
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInstFile(null);
+                  }}
+                >
+                  Remove Track
+                </button>
+              )}
             </div>
           </div>
           <div style={{ marginTop: "1em" }}>Track File is Optional</div>
@@ -114,12 +180,12 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
             <button
               disabled={!instName}
               type="submit"
-              onClick={() => {
-                handleUpdateInstrument(newInst);
-                setAddInstrument(false);
+              style={{
+                opacity: !instName ? 0.5 : 1,
+                cursor: !instName ? "not-allowed" : "pointer",
               }}
             >
-              Add
+              {uploading ? "Uploading..." : "Add"}
             </button>
           </div>
         </form>

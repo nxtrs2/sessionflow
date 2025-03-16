@@ -4,8 +4,10 @@ import { Instrument, CustomPlayer } from "../types";
 import { Trash, Plus, X } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 import AddInstrumentDialog from "./AddInstrumentDialog";
+import { useSession } from "../hooks/useSession";
 
 interface InstrumentsProps {
+  projectTitle: string;
   masterMute: boolean;
   setMasterMute: React.Dispatch<React.SetStateAction<boolean>>;
   masterSolo: boolean;
@@ -19,6 +21,7 @@ interface InstrumentsProps {
 }
 
 const Instruments: React.FC<InstrumentsProps> = ({
+  projectTitle,
   masterMute,
   setMasterMute,
   masterSolo,
@@ -27,6 +30,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
   handleInstrumentsUpdate,
   playersRef,
 }) => {
+  const { session } = useSession();
   const [selectedInstrument, setSelectedInstrument] =
     useState<Instrument | null>(null);
   const [addInstrument, setAddInstrument] = useState<boolean>(false);
@@ -55,6 +59,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
       <h2>Instruments</h2>
       {addInstrument && (
         <AddInstrumentDialog
+          projectTitle={projectTitle}
+          user_id={session?.user.id}
           instCount={instruments.length}
           handleUpdateInstrument={handleUpdateInstrument}
           setAddInstrument={setAddInstrument}
