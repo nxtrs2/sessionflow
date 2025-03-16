@@ -2,8 +2,11 @@ import React from "react";
 import { Project, SongData } from "../types";
 import EditProject from "./EditProject";
 import { useSession } from "../hooks/useSession";
-import { Edit2, Trash2Icon, Save, File } from "lucide-react";
-import { convertTitleToFilename } from "../helpers/FileFunctions";
+import { Edit2, Trash2Icon, Save, File, RefreshCcw } from "lucide-react";
+import {
+  convertTitleToFilename,
+  handleDeleteProject,
+} from "../helpers/FileFunctions";
 
 interface ProjectsListProps {
   isPlaying: boolean;
@@ -37,6 +40,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
     null
   );
+
   return (
     <div className="settings">
       {showEditProject && selectedProject && (
@@ -91,6 +95,18 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             ? "Your Projects"
             : "No Projects Found"
           : "Log in to view your projects"}
+        <button
+          style={{
+            fontSize: "1em",
+            marginLeft: "auto",
+          }}
+          disabled={isPlaying}
+          onClick={() => {
+            fetchProjects();
+          }}
+        >
+          <RefreshCcw size={18} />
+        </button>
 
         <div>
           {isLoggedIn && (
@@ -126,7 +142,15 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               <button
                 disabled={isPlaying}
                 onClick={() => {
-                  handleSaveProject();
+                  if (selectedProject) {
+                    const confirmDelete = window.confirm(
+                      `Are you sure you want to delete the project "${selectedProject.title}"?`
+                    );
+                    if (confirmDelete) {
+                      handleDeleteProject(selectedProject);
+                      fetchProjects();
+                    }
+                  }
                 }}
                 style={{
                   color: isPlaying ? "rgb(93, 93, 93)" : "red",
@@ -154,7 +178,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                             ? "2px solid green"
                             : "none",
                       }}
-                      disabled={isPlaying}
+                      disabled={isPlaying || selectedProject?.id === project.id}
                       onClick={() => {
                         setSelectedProject(project);
                         setProjectId(project.id);

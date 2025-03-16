@@ -162,6 +162,7 @@ const App: React.FC = () => {
   }, []);
 
   const fetchProjects = async () => {
+    setLoadingMsg("Loading Projects");
     if (session) {
       try {
         setLoading(true);

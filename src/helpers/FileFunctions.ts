@@ -9,6 +9,7 @@ import {
   CustomPlayer,
   projectsURL,
   UploadResponse,
+  Project,
 } from "../types";
 
 export const convertTitleToFilename = (title: string): string => {
@@ -34,7 +35,7 @@ export const loadMasterTrackFromJson = (
     master: songUrl,
   }).toDestination();
 
-  newPlayers.player("master").mute = true;
+  // newPlayers.player("master").mute = true;
 
   Tone.loaded().then(() => {
     const masterPlayer = newPlayers.player("master") as CustomPlayer;
@@ -258,5 +259,55 @@ export async function uploadCoverArt(
   } catch (error) {
     console.error("Error uploading file:", error);
     return { success: false, error: "Error uploading file." };
+  }
+}
+
+export async function handleDeleteProject(project: Project): Promise<boolean> {
+  // Build the folder path where the master file(s) are stored.
+  const title = convertTitleToFilename(project.title);
+  const folderPath = `${project.user_id}/${title}`;
+
+  // 1. Delete all files in the "project_files" bucket under the folder {title}.
+  const { data: files, error: listError } = await supabase.storage
+    .from("project_files")
+    .list(folderPath, { limit: 100 });
+
+  if (listError) {
+    console.error("Error listing files in folder:", listError);
+  }
+
+  if (files && files.length > 0) {
+    // Construct full paths for each file.
+    const filePaths = files.map((file) => `${folderPath}/${file.name}`);
+    const { error: removeError } = await supabase.storage
+      .from("project_files")
+      .remove(filePaths);
+    if (removeError) {
+      console.error("Error deleting master files:", removeError);
+    }
+  }
+
+  // 2. Delete the cover art file if it exists.
+  if (project.coverart) {
+    const { error: coverArtError } = await supabase.storage
+      .from("cover-art")
+      .remove([project.coverart]);
+    if (coverArtError) {
+      console.error("Error deleting cover art:", coverArtError);
+    }
+  }
+
+  // 3. Delete the project record from the "projects" table.
+  const { error: deleteError } = await supabase
+    .from("projects")
+    .delete()
+    .eq("id", project.id);
+
+  if (deleteError) {
+    console.error("Error deleting project from database:", deleteError);
+    return false;
+  } else {
+    console.log("Project deleted successfully.");
+    return true;
   }
 }
