@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Instrument, Project } from "../types";
+import { Instrument } from "../types";
 
 interface DialogProps {
   //   selectedInstrument: Instrument;
-  project: Project;
+  // project: Project;
   instCount: number;
   handleUpdateInstrument: (newInstrument: Instrument) => void;
   setAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
