@@ -52,8 +52,7 @@ import NewProject from "./components/NewProject";
 const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
   const { updateProjectSongData, currentProject } = useProjects();
-  // const [projectId, setProjectId] = useState<number | null>(null);
-  // const [projects, setProjects] = useState<Project[]>([]);
+
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
 
   const [showLogin, setShowLogin] = useState<boolean>(false);
@@ -62,7 +61,7 @@ const App: React.FC = () => {
   const [showNewProjectDialog, setShowNewProjectDialog] =
     useState<boolean>(false);
 
-  const [activeTab, setActiveTab] = useState<string>("track");
+  const [activeTab, setActiveTab] = useState<string>("projects");
   // const playerRef = useRef<Tone.Player | undefined>(undefined);
   const playersRef = useRef<Tone.Players | null>(null);
 
@@ -70,9 +69,6 @@ const App: React.FC = () => {
 
   const [beatData, setBeatData] = useState<BeatData[]>([]);
 
-  // Audio file source and duration
-  // const [file, setFile] = useState<File | null>(null);
-  // const [title, setTitle] = useState<string>("");
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [duration, setDuration] = useState<number>(0);
 
@@ -99,8 +95,7 @@ const App: React.FC = () => {
   const [masterPan, setMasterPan] = useState<number>(0);
   const [masterMute, setMasterMute] = useState<boolean>(false);
   const [masterSolo, setMasterSolo] = useState<boolean>(false);
-  // const [masterFile, setMasterFile] = useState<string | null>(null);
-  // const [skipStartBeat, setSkipStartBeat] = useState<number>(0);
+
   const [pulse, setPulse] = useState<boolean>(false);
 
   // Global tempo and time signature state
@@ -623,6 +618,48 @@ const App: React.FC = () => {
     }
   };
 
+  const handleResetApp = () => {
+    setSongData(null);
+    setNotes("");
+    setStructure([]);
+    setMarkers([]);
+    setSongTimeLines([]);
+    setExistingEvent(undefined);
+    setCurrentTickData(null);
+    setInstruments([]);
+    setSelectedInstrument(null);
+    setFileLoaded(false);
+    setDemoLoaded(false);
+    setAudioSrc(null);
+    setDuration(0);
+    setIsPlaying(false);
+    setShowCountIn(false);
+    setLoop(false);
+    setLoopStart(0);
+    setLoopEnd(0);
+    setGoToBeat(0);
+    setSkipBeatsBy(1);
+    setSkipBeats(0);
+    setMasterVolume(-6);
+    setMasterPan(0);
+    setMasterMute(false);
+    setMasterSolo(false);
+    setTempo(130);
+    setTimeSignature({ numerator: 4, denominator: 4 });
+    setCanEdit(false);
+    setPulse(false);
+    setBeatData([]);
+    setMarkers([]);
+    setSongTimeLines([]);
+    setInstruments([]);
+    setSelectedInstrument(null);
+    setShowMessage(false);
+    setMessage("");
+    setMessageCountOut(0);
+    setLoading(false);
+    setLoadingMsg("");
+  };
+
   return (
     <div className="app-container">
       {loading && <Loader message={loadingMsg} />}
@@ -633,7 +670,12 @@ const App: React.FC = () => {
       {showRegister && !isLoggedIn && (
         <Register setShowRegister={setShowRegister} />
       )}
-      {showProfile && <Profile closeDialog={() => setShowProfile(false)} />}
+      {showProfile && (
+        <Profile
+          closeDialog={() => setShowProfile(false)}
+          handleResetApp={handleResetApp}
+        />
+      )}
 
       {showNewProjectDialog && (
         <Suspense fallback={<Loader message="Loading..." />}>

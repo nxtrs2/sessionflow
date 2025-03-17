@@ -1,16 +1,20 @@
 import React from "react";
 import { useSession } from "../hooks/useSession";
+import { SongData } from "../types";
+import { SettingsIcon } from "lucide-react";
 
 interface ProfileProps {
   closeDialog: () => void;
+  handleResetApp: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ closeDialog }) => {
+const Profile: React.FC<ProfileProps> = ({ closeDialog, handleResetApp }) => {
   const { signOut } = useSession();
 
   const handleLogout = async () => {
     const { error } = await signOut();
     if (!error) {
+      handleResetApp();
       closeDialog();
     } else {
       console.error("Error logging out:", error.message);
