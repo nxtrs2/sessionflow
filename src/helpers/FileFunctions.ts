@@ -205,20 +205,20 @@ export async function uploadMP3File(
   }
 }
 
-export async function deleteMP3File(url: string): Promise<boolean> {
-  try {
-    const { error } = await supabase.storage
-      .from("project_files")
-      .remove([url]);
-    if (error) {
-      throw error;
-    }
-    return true;
-  } catch (error) {
-    console.error("Error deleting file:", error);
-    return false;
-  }
-}
+// export async function deleteMP3File(url: string): Promise<boolean> {
+//   try {
+//     const { error } = await supabase.storage
+//       .from("project_files")
+//       .remove([url]);
+//     if (error) {
+//       throw error;
+//     }
+//     return true;
+//   } catch (error) {
+//     console.error("Error deleting file:", error);
+//     return false;
+//   }
+// }
 
 export async function uploadCoverArt(
   file: File,
@@ -260,41 +260,5 @@ export async function uploadCoverArt(
   } catch (error) {
     console.error("Error uploading file:", error);
     return { success: false, error: "Error uploading file." };
-  }
-}
-
-export async function handleDeleteProject(project: Project): Promise<boolean> {
-  const title = convertTitleToFilename(project.title);
-  const folderPath = `${project.user_id}/${title}`;
-
-  const { data: files, error: listError } = await supabase.storage
-    .from("project_files")
-    .list(folderPath, { limit: 100 });
-
-  if (listError) {
-    console.error("Error listing files in folder:", listError);
-  }
-
-  if (files && files.length > 0) {
-    const filePaths = files.map((file) => `${folderPath}/${file.name}`);
-    const { error: removeError } = await supabase.storage
-      .from("project_files")
-      .remove(filePaths);
-    if (removeError) {
-      console.error("Error deleting master files:", removeError);
-    }
-  }
-
-  const { error: deleteError } = await supabase
-    .from("projects")
-    .delete()
-    .eq("id", project.id);
-
-  if (deleteError) {
-    console.error("Error deleting project from database:", deleteError);
-    return false;
-  } else {
-    console.log("Project deleted successfully.");
-    return true;
   }
 }

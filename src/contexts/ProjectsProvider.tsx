@@ -313,30 +313,40 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
     }
   };
 
-  // Delete a project
-  const deleteProject = async (projectId: number) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase
-        .from("projects")
-        .delete()
-        .eq("id", projectId);
+  const deleteProject = async () => {
+    const folderPath = `${currentProject?.user_id}/${currentProject?.id}`;
 
-      if (error) {
-        throw error;
+    const { data: files, error: listError } = await supabase.storage
+      .from("project_files")
+      .list(folderPath, { limit: 100 });
+
+    if (listError) {
+      console.error("Error listing files in folder:", listError);
+    }
+
+    if (files && files.length > 0) {
+      const filePaths = files.map((file) => `${folderPath}/${file.name}`);
+      const { error: removeError } = await supabase.storage
+        .from("project_files")
+        .remove(filePaths);
+      if (removeError) {
+        console.error("Error deleting master files:", removeError);
       }
+    }
 
-      // Remove the project from state
-      setProjects((prev) => prev.filter((p) => p.id !== projectId));
+    const { error: deleteError } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", currentProject?.id);
 
-      // Clear the current project if it was deleted
-      if (currentProject?.id === projectId) {
-        setCurrentProject(null);
-      }
-    } catch (error) {
-      console.error("Error deleting project:", error);
-    } finally {
-      setLoading(false);
+    if (deleteError) {
+      console.error("Error deleting project from database:", deleteError);
+      return false;
+    } else {
+      console.log("Project deleted successfully.");
+      setCurrentProject(null);
+      fetchProjects();
+      return true;
     }
   };
 

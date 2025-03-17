@@ -186,7 +186,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                       setSelectedInstrument(inst);
                     }}
                   >
-                    {inst.name} {inst.id}
+                    {inst.name}
                   </div>
                   {!inst.filename && (
                     <div className="instrument-buttons">

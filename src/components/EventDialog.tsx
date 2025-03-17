@@ -68,7 +68,10 @@ const EventDialog: React.FC<EventDialogProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newEvent: EventData = {
-      beat: tickData.beatIndex,
+      beat:
+        tickData.beatIndex > countOut
+          ? tickData.beatIndex - countOut
+          : tickData.beatIndex,
       instrumentId: selectedInstrument.id,
       message,
       countOut,

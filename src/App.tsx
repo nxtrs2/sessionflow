@@ -170,8 +170,6 @@ const App: React.FC = () => {
       } catch (error) {
         console.error("Error loading song", error);
       }
-      // setMasterFile(currentProject?.filename);
-      // setTitle(songData.project.title);
       setNotes(songData.notes);
       setStructure(songData.structure);
       setSongTimeLines(songData.timeline);
@@ -208,7 +206,7 @@ const App: React.FC = () => {
       setLoopEnd(newBeatData.length - 1);
       setBeatData(newBeatData);
     }
-  }, [duration, tempo, timeSignature]);
+  }, [duration, tempo, timeSignature, songTimeLines]);
 
   useEffect(() => {
     if (instruments.length > 0) {

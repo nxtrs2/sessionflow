@@ -22,7 +22,7 @@ export interface ProjectsContextProps {
     newCoverArt?: File;
   }) => Promise<void>;
   updateProjectSongData: (songData: SongData) => Promise<void>;
-  deleteProject: (projectId: number) => Promise<void>;
+  deleteProject: () => Promise<boolean>;
 }
 
 export const ProjectsContext = createContext<ProjectsContextProps | undefined>(
