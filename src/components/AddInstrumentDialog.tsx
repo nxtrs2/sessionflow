@@ -7,6 +7,7 @@ interface DialogProps {
   user_id?: string;
   instCount: number;
   handleUpdateInstrument: (newInstrument: Instrument) => void;
+  handleUpdateProjectSongData: () => void;
   setAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -14,6 +15,7 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
   user_id,
   instCount,
   handleUpdateInstrument,
+  handleUpdateProjectSongData,
   setAddInstrument,
 }) => {
   const { currentProject } = useProjects();
@@ -76,6 +78,8 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
       filename,
       url: user_id,
     });
+
+    handleUpdateProjectSongData();
     setAddInstrument(false);
   };
 

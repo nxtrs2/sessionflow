@@ -592,7 +592,7 @@ const App: React.FC = () => {
   //   downloadAnchorNode.remove();
   // };
 
-  const handleSaveProject = async () => {
+  const handleUpdateProjectSongData = async () => {
     if (session && currentProject) {
       const songData: SongData = {
         project: {
@@ -975,6 +975,8 @@ const App: React.FC = () => {
                       instruments={instruments}
                       handleInstrumentsUpdate={handleInstrumentsUpdate}
                       playersRef={playersRef}
+                      handleUpdateProjectSongData={handleUpdateProjectSongData}
+                      handleLoadSongJSON={handleLoadSongJSON}
                     />
                   </>
                 )}
@@ -1063,7 +1065,7 @@ const App: React.FC = () => {
                   setShowNewProjectDialog={setShowNewProjectDialog}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
-                  handleSaveProject={handleSaveProject}
+                  handleUpdateProjectSongData={handleUpdateProjectSongData}
                 />
               </Suspense>
             </div>

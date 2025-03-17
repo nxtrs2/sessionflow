@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as Tone from "tone";
-import { Instrument, CustomPlayer } from "../types";
+import { Instrument, CustomPlayer, SongData } from "../types";
 import { Trash, Plus, X } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 import AddInstrumentDialog from "./AddInstrumentDialog";
@@ -17,6 +17,8 @@ interface InstrumentsProps {
     deleteInstrument: boolean
   ) => void;
   playersRef: React.MutableRefObject<Tone.Players | null>;
+  handleUpdateProjectSongData: () => void;
+  handleLoadSongJSON: (data: SongData) => void;
 }
 
 const Instruments: React.FC<InstrumentsProps> = ({
@@ -27,6 +29,8 @@ const Instruments: React.FC<InstrumentsProps> = ({
   instruments,
   handleInstrumentsUpdate,
   playersRef,
+  handleUpdateProjectSongData,
+  handleLoadSongJSON,
 }) => {
   const { session } = useSession();
   const [selectedInstrument, setSelectedInstrument] =
@@ -61,6 +65,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
           instCount={instruments.length}
           handleUpdateInstrument={handleUpdateInstrument}
           setAddInstrument={setAddInstrument}
+          handleUpdateProjectSongData={handleUpdateProjectSongData}
         />
       )}
       {playersRef.current && playersRef.current.player("master") && (

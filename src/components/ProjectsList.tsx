@@ -13,7 +13,7 @@ interface ProjectsListProps {
   setShowNewProjectDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
-  handleSaveProject: () => void;
+  handleUpdateProjectSongData: () => void;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
@@ -24,7 +24,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   setShowNewProjectDialog,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
-  handleSaveProject,
+  handleUpdateProjectSongData,
 }) => {
   const { isLoggedIn } = useSession();
   const {
@@ -118,7 +118,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               <button
                 disabled={isPlaying}
                 onClick={() => {
-                  handleSaveProject();
+                  handleUpdateProjectSongData();
                 }}
               >
                 <Save size={18} />
