@@ -1,8 +1,5 @@
 import React from "react";
 import { useSession } from "../hooks/useSession";
-import { SongData } from "../types";
-import { SettingsIcon } from "lucide-react";
-
 interface ProfileProps {
   closeDialog: () => void;
   handleResetApp: () => void;

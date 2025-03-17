@@ -9,7 +9,6 @@ import {
   CustomPlayer,
   projectsURL,
   UploadResponse,
-  Project,
 } from "../types";
 
 export const convertTitleToFilename = (title: string): string => {
