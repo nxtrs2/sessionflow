@@ -76,7 +76,7 @@ export const loadTracksFromInstruments = (
               inst.filename
             : projectsURL + inst.url + inst.filename;
         if (!playersRef.current?.has(inst.id.toString())) {
-          console.log("Adding player:", inst.id, trackUrl);
+          // console.log("Adding player:", inst.id, trackUrl);
           playersRef.current?.add(inst.id.toString(), trackUrl, () => {
             const player = playersRef.current!.player(
               inst.id.toString()

@@ -30,7 +30,6 @@ const Instruments: React.FC<InstrumentsProps> = ({
   handleInstrumentsUpdate,
   playersRef,
   handleUpdateProjectSongData,
-  handleLoadSongJSON,
 }) => {
   const { session } = useSession();
   const [selectedInstrument, setSelectedInstrument] =

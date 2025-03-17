@@ -1,8 +1,9 @@
 import React from "react";
-import { SongData } from "../types";
+import { Project, SongData } from "../types";
 import EditProject from "./EditProject";
 import { useSession } from "../hooks/useSession";
 import { useProjects } from "../hooks/useProjects";
+import usePrompt from "../hooks/usePrompt";
 import { Edit2, Trash2Icon, Save, File, RefreshCcw } from "lucide-react";
 
 interface ProjectsListProps {
@@ -27,17 +28,64 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   handleUpdateProjectSongData,
 }) => {
   const { isLoggedIn } = useSession();
+  const { prompt, Prompt } = usePrompt();
   const {
     projects,
     currentProject,
+    projectNeedSave,
+    setProjectNeedSave,
     setCurrentProject,
     fetchProjects,
     deleteProject,
   } = useProjects();
   const [showEditProject, setShowEditProject] = React.useState(false);
 
+  const handleLoadProject = async (project: Project) => {
+    if (projectNeedSave) {
+      const confirmLoad = await prompt(
+        "You have unsaved changes. Proceed without saving?"
+      );
+      if (!confirmLoad) {
+        return;
+      }
+      setProjectNeedSave(false);
+    }
+    setCurrentProject(project);
+    setDemoLoaded(false);
+    handleLoadSongJSON(project.data);
+  };
+
+  const handleLoadDemoProject = async (url: string) => {
+    if (projectNeedSave) {
+      const confirmLoad = await prompt(
+        "You have unsaved changes. Proceed loading Demo?"
+      );
+      if (!confirmLoad) {
+        return;
+      }
+      setProjectNeedSave(false);
+    }
+    setCurrentProject(null);
+    handleLoadSongJSONFile(url);
+    setDemoLoaded(true);
+  };
+
+  const handleNewProject = async () => {
+    if (projectNeedSave) {
+      const confirmLoad = await prompt("You have unsaved changes. Proceed?");
+      if (!confirmLoad) {
+        return;
+      }
+      setProjectNeedSave(false);
+    }
+    setCurrentProject(null);
+    setDemoLoaded(false);
+    setShowNewProjectDialog(true);
+  };
+
   return (
     <div className="settings">
+      <Prompt />
       {showEditProject && currentProject && (
         <EditProject openDialog={setShowEditProject} />
       )}
@@ -57,9 +105,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               }}
               disabled={isPlaying}
               onClick={() => {
-                setCurrentProject(null);
-                handleLoadSongJSONFile("/data/song2.json");
-                setDemoLoaded(true);
+                handleLoadDemoProject("/data/song2.json");
               }}
             >
               <img
@@ -107,7 +153,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             <button
               disabled={isPlaying}
               onClick={() => {
-                setShowNewProjectDialog(true);
+                handleNewProject();
               }}
             >
               <File size={18} />
@@ -116,7 +162,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           {!demoLoaded && projectLoaded && isLoggedIn && currentProject && (
             <>
               <button
-                disabled={isPlaying}
+                disabled={isPlaying || !projectNeedSave}
                 onClick={() => {
                   handleUpdateProjectSongData();
                 }}
@@ -172,9 +218,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                       }}
                       disabled={isPlaying || currentProject?.id === project.id}
                       onClick={() => {
-                        setCurrentProject(project);
-                        setDemoLoaded(false);
-                        handleLoadSongJSON(project.data);
+                        handleLoadProject(project);
                       }}
                     >
                       <img

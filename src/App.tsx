@@ -51,7 +51,8 @@ import NewProject from "./components/NewProject";
 
 const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
-  const { updateProjectSongData, currentProject } = useProjects();
+  const { setProjectNeedSave, updateProjectSongData, currentProject } =
+    useProjects();
 
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
 
@@ -302,7 +303,7 @@ const App: React.FC = () => {
   // }, [loopStart, loopEnd]);
 
   const handleLoadMasterTrack = (file: string) => {
-    console.log("Loading Master Track:", file);
+    // console.log("Loading Master Track:", file);
     setLoading(true);
     setLoadingMsg("Loading Master Track");
 
@@ -340,6 +341,7 @@ const App: React.FC = () => {
       numerator: parseInt(e.target.value),
       denominator: timeSignature.denominator,
     });
+    setProjectNeedSave(true);
   };
 
   const handleTimeSignatureDenominatorChange = (
@@ -350,6 +352,7 @@ const App: React.FC = () => {
       numerator: timeSignature.numerator,
       denominator: parseInt(e.target.value),
     });
+    setProjectNeedSave(true);
   };
 
   const handleLoopStartChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -498,6 +501,7 @@ const App: React.FC = () => {
         }
       }
     }
+    setProjectNeedSave(true);
   };
 
   const handleEditEvent = (tick: TickData, deleteEvent: boolean) => {
@@ -531,6 +535,7 @@ const App: React.FC = () => {
       setShowEditEventDialog(true);
       console.log("Edit Event", tick, deleteEvent, existingEvent);
     }
+    setProjectNeedSave(true);
   };
 
   const handleInstrumentsUpdate = (
@@ -559,6 +564,7 @@ const App: React.FC = () => {
         }
       });
     }
+    setProjectNeedSave(true);
   };
 
   // const exportSongData = () => {
@@ -615,10 +621,12 @@ const App: React.FC = () => {
       };
 
       await updateProjectSongData(songData);
+      setProjectNeedSave(false);
     }
   };
 
   const handleResetApp = () => {
+    setProjectNeedSave(false);
     setSongData(null);
     setNotes("");
     setStructure([]);

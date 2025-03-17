@@ -18,6 +18,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMsg, setLoadingMsg] = useState<string>("");
+  const [projectNeedSave, setProjectNeedSave] = useState<boolean>(false);
 
   // Fetch projects from Supabase
   const fetchProjects = async () => {
@@ -361,8 +362,10 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
     currentProject,
     loading,
     loadingMsg,
+    projectNeedSave,
     fetchProjects,
     setCurrentProject,
+    setProjectNeedSave,
     createProject,
     updateProject,
     updateProjectSongData,

@@ -6,6 +6,8 @@ export interface ProjectsContextProps {
   currentProject: Project | null;
   loading: boolean;
   loadingMsg: string;
+  projectNeedSave: boolean;
+  setProjectNeedSave: (value: boolean) => void;
   fetchProjects: () => Promise<void>;
   setCurrentProject: (project: Project | null) => void;
   createProject: (params: {
