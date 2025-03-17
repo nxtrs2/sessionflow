@@ -8,14 +8,14 @@ import React, {
 
 import * as Tone from "tone";
 import "./App.css";
-import { supabase } from "./supabase/supabaseClient";
+// import { supabase } from "./supabase/supabaseClient";
 // import { Session } from "@supabase/supabase-js";
 
 import { useSession } from "./hooks/useSession";
+import { useProjects } from "./hooks/useProjects";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
 import { renderTick2 } from "./components/TimeLineRenderer";
-import { convertTitleToFilename } from "./helpers/FileFunctions";
 import {
   SongData,
   EventData,
@@ -26,7 +26,6 @@ import {
   Structure,
   Instrument,
   projectsURL,
-  Project,
 } from "./types";
 import { Repeat2 } from "lucide-react";
 
@@ -50,16 +49,11 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import NewProject from "./components/NewProject";
 
-// const supabase = createClient(
-//   "https://zjhdapoqakbbheerqvsm.supabase.co",
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaGRhcG9xYWtiYmhlZXJxdnNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0MTYwMzksImV4cCI6MjA1NTk5MjAzOX0.zK1RcWP23BofCvpt2gcvE2psWMADHRQBT-HduaUX2SE"
-// );
-
 const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
-
-  const [projectId, setProjectId] = useState<number | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { updateProjectSongData, currentProject } = useProjects();
+  // const [projectId, setProjectId] = useState<number | null>(null);
+  // const [projects, setProjects] = useState<Project[]>([]);
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
 
   const [showLogin, setShowLogin] = useState<boolean>(false);
@@ -78,7 +72,7 @@ const App: React.FC = () => {
 
   // Audio file source and duration
   // const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState<string>("");
+  // const [title, setTitle] = useState<string>("");
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [duration, setDuration] = useState<number>(0);
 
@@ -105,7 +99,7 @@ const App: React.FC = () => {
   const [masterPan, setMasterPan] = useState<number>(0);
   const [masterMute, setMasterMute] = useState<boolean>(false);
   const [masterSolo, setMasterSolo] = useState<boolean>(false);
-  const [masterFile, setMasterFile] = useState<string | null>(null);
+  // const [masterFile, setMasterFile] = useState<string | null>(null);
   // const [skipStartBeat, setSkipStartBeat] = useState<number>(0);
   const [pulse, setPulse] = useState<boolean>(false);
 
@@ -161,54 +155,23 @@ const App: React.FC = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  const fetchProjects = async () => {
-    setLoadingMsg("Loading Projects");
-    if (session) {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("projects")
-          .select("*")
-          .eq("user_id", session.user.id);
-
-        if (error) {
-          throw error;
-        }
-
-        setProjects(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setProjects([]);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProjects();
-  }, [session]);
-
   useEffect(() => {
     if (songData) {
-      const songPath =
-        songData.project.url === "demo"
-          ? "demo/" + songData.project.filename
-          : songData.project.url +
-            "/" +
-            convertTitleToFilename(songData.project.title) +
-            "/" +
-            songData.project.filename;
+      const songPath = demoLoaded
+        ? "demo/signals-master.mp3"
+        : session?.user.id +
+          "/" +
+          currentProject?.id +
+          "/" +
+          currentProject?.filename;
 
       try {
         handleLoadMasterTrack(songPath);
       } catch (error) {
         console.error("Error loading song", error);
       }
-      setMasterFile(songData.project.filename);
-      setTitle(songData.project.title);
+      // setMasterFile(currentProject?.filename);
+      // setTitle(songData.project.title);
       setNotes(songData.notes);
       setStructure(songData.structure);
       setSongTimeLines(songData.timeline);
@@ -232,7 +195,6 @@ const App: React.FC = () => {
   }, [songData]);
 
   useEffect(() => {
-    // console.log("timesignature changed", timeSignature);
     if (duration && tempo && timeSignature) {
       const newBeatData = generateBeatData(
         duration,
@@ -243,21 +205,23 @@ const App: React.FC = () => {
         songTimeLines
       );
 
-      if (instruments.length > 0) {
-        loadTracksFromInstruments(
-          instruments,
-          playersRef,
-          setLoading,
-          setLoadingMsg,
-          session ? session.user.id : "",
-          convertTitleToFilename(title)
-        );
-      }
-      // setLoopEnd(duration);
       setLoopEnd(newBeatData.length - 1);
       setBeatData(newBeatData);
     }
-  }, [duration, tempo, timeSignature, instruments]);
+  }, [duration, tempo, timeSignature]);
+
+  useEffect(() => {
+    if (instruments.length > 0) {
+      loadTracksFromInstruments(
+        instruments,
+        playersRef,
+        setLoading,
+        setLoadingMsg,
+        session ? session.user.id : "",
+        currentProject?.id.toString()
+      );
+    }
+  }, [instruments]);
 
   // When tempo changes, update Tone.Transport BPM.
   useEffect(() => {
@@ -345,8 +309,10 @@ const App: React.FC = () => {
   // }, [loopStart, loopEnd]);
 
   const handleLoadMasterTrack = (file: string) => {
+    console.log("Loading Master Track:", file);
     setLoading(true);
     setLoadingMsg("Loading Master Track");
+
     loadMasterTrackFromJson(
       projectsURL + "/" + file,
       setAudioSrc,
@@ -357,19 +323,6 @@ const App: React.FC = () => {
       setLoading(false);
     });
   };
-
-  // const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   handleMasterTrackFileChange(e, setAudioSrc, setDuration, playersRef);
-  //   setFileLoaded(true);
-  //   setCanEdit(true);
-  // };
-
-  // const handleSongHasEnded = () => {
-  //   const tObject = Tone.getTransport();
-  //   tObject.stop();
-  //   setSongEnded(true);
-  //   setIsPlaying(false);
-  // };
 
   // Tempo input change
   const handleTempoChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -493,6 +446,7 @@ const App: React.FC = () => {
   const handleLoadSongJSONFile = async (file: string) => {
     setLoading(true);
     setLoadingMsg("Loading Project File");
+    console.log("Loading Project File:", file);
 
     const loaded = await loadSongFile(file, setSongData, setFileLoaded);
     if (!loaded) {
@@ -614,47 +568,41 @@ const App: React.FC = () => {
     }
   };
 
-  const exportSongData = () => {
-    const songData: SongData = {
-      project: {
-        title,
-        url: "/data",
-        filename: "song.json",
-        skipBeats,
-        skipBeatsBy,
-        masterVolume,
-        masterPan,
-        masterMute,
-        masterSolo,
-        countIn,
-        numerator: timeSignature.numerator,
-        denominator: timeSignature.denominator,
-        tempo,
-      },
-      notes,
-      structure,
-      timeline: songTimeLines,
-      markers,
-      instruments,
-    };
-    const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(songData, null, 2));
-    const downloadAnchorNode = document.createElement("a");
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "song.json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  };
+  // const exportSongData = () => {
+  //   const songData: SongData = {
+  //     project: {
+  //       skipBeats,
+  //       skipBeatsBy,
+  //       masterVolume,
+  //       masterPan,
+  //       masterMute,
+  //       masterSolo,
+  //       countIn,
+  //       numerator: timeSignature.numerator,
+  //       denominator: timeSignature.denominator,
+  //       tempo,
+  //     },
+  //     notes,
+  //     structure,
+  //     timeline: songTimeLines,
+  //     markers,
+  //     instruments,
+  //   };
+  //   const dataStr =
+  //     "data:text/json;charset=utf-8," +
+  //     encodeURIComponent(JSON.stringify(songData, null, 2));
+  //   const downloadAnchorNode = document.createElement("a");
+  //   downloadAnchorNode.setAttribute("href", dataStr);
+  //   downloadAnchorNode.setAttribute("download", "song.json");
+  //   document.body.appendChild(downloadAnchorNode); // required for firefox
+  //   downloadAnchorNode.click();
+  //   downloadAnchorNode.remove();
+  // };
 
   const handleSaveProject = async () => {
-    if (session && projectId && masterFile) {
+    if (session && currentProject) {
       const songData: SongData = {
         project: {
-          title,
-          url: session.user.id,
-          filename: masterFile,
           skipBeats,
           skipBeatsBy,
           masterVolume,
@@ -673,27 +621,7 @@ const App: React.FC = () => {
         instruments,
       };
 
-      try {
-        const { error } = await supabase
-          .from("projects")
-          .update({
-            user_id: session.user.id,
-            title,
-            filename: songData.project.filename,
-            url: session.user.id,
-            data: songData,
-          })
-          .eq("id", projectId);
-
-        if (error) {
-          throw error;
-        }
-
-        alert("Project updated successfully.");
-      } catch (error) {
-        console.error("Error updating project:", error);
-        alert("Error updating project.");
-      }
+      await updateProjectSongData(songData);
     }
   };
 
@@ -711,10 +639,7 @@ const App: React.FC = () => {
 
       {showNewProjectDialog && (
         <Suspense fallback={<Loader message="Loading..." />}>
-          <NewProject
-            openDialog={() => setShowNewProjectDialog(false)}
-            fetchProjects={fetchProjects}
-          />
+          <NewProject openDialog={() => setShowNewProjectDialog(false)} />
         </Suspense>
       )}
       <div className="app-content">
@@ -755,7 +680,7 @@ const App: React.FC = () => {
               )}
             </div>
             <div className="timeline-title">
-              {fileLoaded && <h2>{title}</h2>}
+              {fileLoaded && currentProject && <h2>{currentProject.title}</h2>}
             </div>
             {showCountIn && (
               <CountIn
@@ -1003,7 +928,6 @@ const App: React.FC = () => {
                 {audioSrc && playersRef && (
                   <>
                     <Instruments
-                      projectTitle={title}
                       masterSolo={masterSolo}
                       setMasterSolo={setMasterSolo}
                       masterMute={masterMute}
@@ -1019,7 +943,7 @@ const App: React.FC = () => {
           )}
           {activeTab === "settings" && (
             <div className="main-content">
-              {fileLoaded && (
+              {/* {fileLoaded && (
                 <div className="file-info">
                   <h2 style={{ color: "white" }}>
                     {title ? title : "Track Title"}
@@ -1027,7 +951,7 @@ const App: React.FC = () => {
 
                   <button onClick={exportSongData}>Export Song Data</button>
                 </div>
-              )}
+              )} */}
               {audioSrc && (
                 <>
                   <div className="settings">
@@ -1093,16 +1017,13 @@ const App: React.FC = () => {
               <Suspense fallback={<p>Loading...</p>}>
                 <ProjectsList
                   isPlaying={isPlaying}
-                  projects={projects}
                   projectLoaded={fileLoaded}
                   demoLoaded={demoLoaded}
                   setDemoLoaded={setDemoLoaded}
-                  setProjectId={setProjectId}
                   setShowNewProjectDialog={setShowNewProjectDialog}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
                   handleSaveProject={handleSaveProject}
-                  fetchProjects={fetchProjects}
                 />
               </Suspense>
             </div>

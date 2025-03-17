@@ -7,7 +7,6 @@ import AddInstrumentDialog from "./AddInstrumentDialog";
 import { useSession } from "../hooks/useSession";
 
 interface InstrumentsProps {
-  projectTitle: string;
   masterMute: boolean;
   setMasterMute: React.Dispatch<React.SetStateAction<boolean>>;
   masterSolo: boolean;
@@ -21,7 +20,6 @@ interface InstrumentsProps {
 }
 
 const Instruments: React.FC<InstrumentsProps> = ({
-  projectTitle,
   masterMute,
   setMasterMute,
   masterSolo,
@@ -59,7 +57,6 @@ const Instruments: React.FC<InstrumentsProps> = ({
       <h2>Instruments</h2>
       {addInstrument && (
         <AddInstrumentDialog
-          projectTitle={projectTitle}
           user_id={session?.user.id}
           instCount={instruments.length}
           handleUpdateInstrument={handleUpdateInstrument}
@@ -189,7 +186,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                       setSelectedInstrument(inst);
                     }}
                   >
-                    {inst.name}
+                    {inst.name} {inst.id}
                   </div>
                   {!inst.filename && (
                     <div className="instrument-buttons">

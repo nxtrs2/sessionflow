@@ -39,9 +39,6 @@ export interface MarkerData {
 
 export interface SongData {
   project: {
-    title: string;
-    filename: string;
-    url: string;
     tempo: number;
     numerator: number;
     denominator: number;

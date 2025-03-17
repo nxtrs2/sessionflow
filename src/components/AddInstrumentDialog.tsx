@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Instrument } from "../types";
 import { uploadMP3File } from "../helpers/FileFunctions";
+import { useProjects } from "../hooks/useProjects";
 
 interface DialogProps {
-  //   selectedInstrument: Instrument;
-  projectTitle: string;
   user_id?: string;
   instCount: number;
   handleUpdateInstrument: (newInstrument: Instrument) => void;
@@ -12,12 +11,12 @@ interface DialogProps {
 }
 
 const AddInstrumentDialog: React.FC<DialogProps> = ({
-  projectTitle,
   user_id,
   instCount,
   handleUpdateInstrument,
   setAddInstrument,
 }) => {
+  const { currentProject } = useProjects();
   const [newInst, setNewInst] = useState<Instrument>({
     id: instCount + 1,
     name: "",
@@ -45,13 +44,16 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
       return;
     }
 
-    if (!user_id) {
+    if (!user_id || !currentProject) {
       console.error("User ID not found");
       setUploading(false);
       return;
     }
 
-    const uploadFile = await uploadMP3File(instFile, projectTitle);
+    const uploadFile = await uploadMP3File(
+      instFile,
+      currentProject.id.toString()
+    );
 
     if (!uploadFile.success) {
       console.error("Error uploading file:", uploadFile.error);

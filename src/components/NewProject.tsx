@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import { uploadMP3File, uploadCoverArt } from "../helpers/FileFunctions";
-import { SongData, UploadResponse } from "../types";
-import { supabase } from "../supabase/supabaseClient";
-import { useSession } from "../hooks/useSession";
+// import { uploadMP3File, uploadCoverArt } from "../helpers/FileFunctions";
+// import { SongData, UploadResponse } from "../types";
+// import { supabase } from "../supabase/supabaseClient";
+// import { useSession } from "../hooks/useSession";
+import { useProjects } from "../hooks/useProjects";
 
 interface NewProjectProps {
   openDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  fetchProjects: () => void;
 }
 
-const NewProject: React.FC<NewProjectProps> = ({
-  openDialog,
-  fetchProjects,
-}) => {
-  const { session } = useSession();
+const NewProject: React.FC<NewProjectProps> = ({ openDialog }) => {
+  // const { session } = useSession();
+  const { createProject } = useProjects();
   const [title, setTitle] = useState("");
   const [tempo, setTempo] = useState(144);
   const [numerator, setNumerator] = useState(4);
@@ -25,80 +23,104 @@ const NewProject: React.FC<NewProjectProps> = ({
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploading(true);
-    if (!masterFile) return;
-
-    if (!session?.user.id) {
-      console.error("User ID not found");
+    if (!masterFile) {
+      console.error("Master file is required");
+      setUploading(false);
       return;
     }
-
-    let coverArtUpload: UploadResponse = {
-      success: false,
-      filename: null,
-      url: "",
-      error: "",
-    };
-
-    const upload = await uploadMP3File(masterFile, title);
-
-    if (coverArt) {
-      coverArtUpload = await uploadCoverArt(coverArt, title);
-      if (!coverArtUpload.success) {
-        console.error("Error uploading cover art:", coverArtUpload.error);
-        return;
-      }
-    }
-
-    if (!upload.success) {
-      console.error("Error uploading file:", upload.error);
-      return;
-    }
-
-    const { filename } = upload;
-
-    const songData: SongData = {
-      project: {
+    try {
+      await createProject({
         title,
-        filename: filename || "",
-        url: session.user.id,
+        masterFile,
+        coverArt: coverArt || undefined,
         tempo,
         numerator,
         denominator,
-        countIn: 0,
-        skipBeatsBy: 0,
-        skipBeats: 0,
-        masterVolume: 40,
-        masterPan: 0,
-        masterMute: false,
-        masterSolo: false,
-      },
-      notes: "",
-      structure: [],
-      instruments: [],
-      timeline: [],
-      markers: [],
-    };
-
-    const { error: insertError } = await supabase.from("projects").insert([
-      {
-        user_id: session.user.id,
-        title,
-        filename: filename,
-        url: session.user.id,
-        data: songData,
-        coverart: coverArtUpload?.filename || null,
-      },
-    ]);
-
-    if (insertError) {
-      console.error("Error inserting record:", insertError);
-    } else {
-      // console.log("Record inserted successfully");
-      fetchProjects();
+      });
       openDialog(false);
+    } catch (error) {
+      console.error("Error creating project:", error);
     }
     setUploading(false);
   };
+
+  // const handleFormSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setUploading(true);
+  //   if (!masterFile) return;
+
+  //   if (!session?.user.id) {
+  //     console.error("User ID not found");
+  //     return;
+  //   }
+
+  //   let coverArtUpload: UploadResponse = {
+  //     success: false,
+  //     filename: null,
+  //     url: "",
+  //     error: "",
+  //   };
+
+  //   const upload = await uploadMP3File(masterFile, title);
+
+  //   if (coverArt) {
+  //     coverArtUpload = await uploadCoverArt(coverArt, title);
+  //     if (!coverArtUpload.success) {
+  //       console.error("Error uploading cover art:", coverArtUpload.error);
+  //       return;
+  //     }
+  //   }
+
+  //   if (!upload.success) {
+  //     console.error("Error uploading file:", upload.error);
+  //     return;
+  //   }
+
+  //   const { filename } = upload;
+
+  //   const songData: SongData = {
+  //     project: {
+  //       title,
+  //       filename: filename || "",
+  //       url: session.user.id,
+  //       tempo,
+  //       numerator,
+  //       denominator,
+  //       countIn: 0,
+  //       skipBeatsBy: 0,
+  //       skipBeats: 0,
+  //       masterVolume: 40,
+  //       masterPan: 0,
+  //       masterMute: false,
+  //       masterSolo: false,
+  //     },
+  //     notes: "",
+  //     structure: [],
+  //     instruments: [],
+  //     timeline: [],
+  //     markers: [],
+  //   };
+
+  //   const { error: insertError } = await supabase.from("projects").insert([
+  //     {
+  //       user_id: session.user.id,
+  //       title,
+  //       filename: filename,
+  //       url: session.user.id,
+  //       data: songData,
+  //       coverart: coverArtUpload?.filename || null,
+  //     },
+  //   ]);
+
+  //   if (insertError) {
+  //     console.error("Error inserting record:", insertError);
+  //   } else {
+  //     // console.log("Record inserted successfully");
+  //     fetchProjects();
+  //     openDialog(false);
+  //   }
+  //   setUploading(false);
+  // };
 
   return (
     <div className="dialog-overlay">

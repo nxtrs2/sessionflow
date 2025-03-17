@@ -1,106 +1,118 @@
 import React, { useState } from "react";
 import {
-  uploadMP3File,
-  uploadCoverArt,
+  // uploadMP3File,
+  // uploadCoverArt,
   convertTitleToFilename,
 } from "../helpers/FileFunctions";
-import { supabase } from "../supabase/supabaseClient";
-import { useSession } from "../hooks/useSession";
-import { Project } from "../types";
+// import { supabase } from "../supabase/supabaseClient";
+// import { useSession } from "../hooks/useSession";
+import { useProjects } from "../hooks/useProjects";
+// import { Project } from "../types";
 
 interface EditProjectProps {
-  project: Project;
   openDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  fetchProjects: () => void;
 }
 
-const EditProject: React.FC<EditProjectProps> = ({
-  project,
-  openDialog,
-  fetchProjects,
-}) => {
-  const { session } = useSession();
-  const [title, setTitle] = useState(project.title);
+const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
+  // const { session } = useSession();
+  const { updateProject, currentProject } = useProjects();
+  const [title, setTitle] = useState(currentProject?.title);
   const [newMasterFile, setNewMasterFile] = useState<File | null>(null);
   const [newCoverArt, setNewCoverArt] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const sanitisedTitle = convertTitleToFilename(title);
-  const masterFileUrl = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${sanitisedTitle}/${project.filename}`;
+  const sanitisedTitle = convertTitleToFilename(title || "");
+  const masterFileUrl = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${currentProject?.user_id}/${sanitisedTitle}/${currentProject?.filename}`;
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploading(true);
 
-    if (!session?.user.id) {
-      console.error("User ID not found");
-      setUploading(false);
-      return;
-    }
-
-    let masterFileName = project.filename;
-    let coverArtFileName = project.coverart;
-
-    // If a new master file is provided, delete the old one and upload the new file.
-    if (newMasterFile) {
-      // Delete the old master file from Supabase storage.
-      const { error: deleteMasterError } = await supabase.storage
-        .from("project_files") // adjust bucket name as needed
-        .remove([project.filename]);
-
-      if (deleteMasterError) {
-        console.error("Error deleting old master file:", deleteMasterError);
-        // Optionally decide to stop execution or proceed
-      }
-
-      // Upload the new master file.
-      const upload = await uploadMP3File(newMasterFile, title);
-      if (!upload.success) {
-        console.error("Error uploading new master file:", upload.error);
-        setUploading(false);
-        return;
-      }
-      masterFileName = upload.filename || "";
-    }
-
-    // If a new cover art file is provided, delete the old cover art (if it exists) and upload the new one.
-    if (newCoverArt) {
-      if (project.coverart) {
-        const { error: deleteCoverError } = await supabase.storage
-          .from("cover-art") // adjust bucket name as needed
-          .remove([project.coverart]);
-        if (deleteCoverError) {
-          console.error("Error deleting old cover art file:", deleteCoverError);
-          // Optionally decide to stop execution or proceed
-        }
-      }
-      const coverUpload = await uploadCoverArt(newCoverArt, title);
-      if (!coverUpload.success) {
-        console.error("Error uploading new cover art:", coverUpload.error);
-        setUploading(false);
-        return;
-      }
-      coverArtFileName = coverUpload.filename || "";
-    }
-
-    // Update the projects table with the new title and file names.
-    const { error: updateError } = await supabase
-      .from("projects")
-      .update({
+    try {
+      await updateProject({
         title,
-        filename: masterFileName,
-        coverart: coverArtFileName,
-      })
-      .eq("id", project.id);
-
-    if (updateError) {
-      console.error("Error updating project:", updateError);
-    } else {
-      fetchProjects();
+        newMasterFile: newMasterFile || undefined,
+        newCoverArt: newCoverArt || undefined,
+      });
       openDialog(false);
+    } catch (error) {
+      console.error("Error updating project:", error);
     }
     setUploading(false);
   };
+  // const handleFormSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setUploading(true);
+
+  //   if (!session?.user.id) {
+  //     console.error("User ID not found");
+  //     setUploading(false);
+  //     return;
+  //   }
+
+  //   let masterFileName = project.filename;
+  //   let coverArtFileName = project.coverart;
+
+  //   // If a new master file is provided, delete the old one and upload the new file.
+  //   if (newMasterFile) {
+  //     // Delete the old master file from Supabase storage.
+  //     const { error: deleteMasterError } = await supabase.storage
+  //       .from("project_files") // adjust bucket name as needed
+  //       .remove([project.filename]);
+
+  //     if (deleteMasterError) {
+  //       console.error("Error deleting old master file:", deleteMasterError);
+  //       // Optionally decide to stop execution or proceed
+  //     }
+
+  //     // Upload the new master file.
+  //     const upload = await uploadMP3File(newMasterFile, title);
+  //     if (!upload.success) {
+  //       console.error("Error uploading new master file:", upload.error);
+  //       setUploading(false);
+  //       return;
+  //     }
+  //     masterFileName = upload.filename || "";
+  //   }
+
+  //   // If a new cover art file is provided, delete the old cover art (if it exists) and upload the new one.
+  //   if (newCoverArt) {
+  //     if (project.coverart) {
+  //       const { error: deleteCoverError } = await supabase.storage
+  //         .from("cover-art") // adjust bucket name as needed
+  //         .remove([project.coverart]);
+  //       if (deleteCoverError) {
+  //         console.error("Error deleting old cover art file:", deleteCoverError);
+  //         // Optionally decide to stop execution or proceed
+  //       }
+  //     }
+  //     const coverUpload = await uploadCoverArt(newCoverArt, title);
+  //     if (!coverUpload.success) {
+  //       console.error("Error uploading new cover art:", coverUpload.error);
+  //       setUploading(false);
+  //       return;
+  //     }
+  //     coverArtFileName = coverUpload.filename || "";
+  //   }
+
+  //   // Update the projects table with the new title and file names.
+  //   const { error: updateError } = await supabase
+  //     .from("projects")
+  //     .update({
+  //       title,
+  //       filename: masterFileName,
+  //       coverart: coverArtFileName,
+  //     })
+  //     .eq("id", project.id);
+
+  //   if (updateError) {
+  //     console.error("Error updating project:", updateError);
+  //   } else {
+  //     fetchProjects();
+  //     openDialog(false);
+  //   }
+  //   setUploading(false);
+  // };
 
   return (
     <div className="dialog-overlay">
@@ -116,7 +128,7 @@ const EditProject: React.FC<EditProjectProps> = ({
             {newMasterFile ? (
               <span> {newMasterFile.name} </span>
             ) : (
-              <span style={{ color: "gray" }}>{project.filename}</span>
+              <span style={{ color: "gray" }}>{currentProject?.filename}</span>
             )}
           </label>
           <audio controls style={{ width: "100%" }}>
@@ -180,8 +192,8 @@ const EditProject: React.FC<EditProjectProps> = ({
             >
               <img
                 src={
-                  project.coverart
-                    ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${sanitisedTitle}/${project.coverart}`
+                  currentProject?.coverart
+                    ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${currentProject.user_id}/${sanitisedTitle}/${currentProject.coverart}`
                     : "/not-found.jpg"
                 }
                 alt="Cover Art"
@@ -193,8 +205,8 @@ const EditProject: React.FC<EditProjectProps> = ({
               <span>{newCoverArt.name}</span>
             ) : (
               <span style={{ color: "gray" }}>
-                {project.coverart
-                  ? `${project.coverart}`
+                {currentProject?.coverart
+                  ? `${currentProject?.coverart}`
                   : "No cover art currently"}
               </span>
             )}

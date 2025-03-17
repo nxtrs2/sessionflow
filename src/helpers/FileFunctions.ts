@@ -54,7 +54,7 @@ export const loadTracksFromInstruments = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   loadingMsg: React.Dispatch<React.SetStateAction<string>>,
   user_id: string | undefined,
-  projectTitle: string | undefined
+  projectId: string | undefined
 ) => {
   if (!playersRef.current) {
     console.error("No master track loaded.");
@@ -67,16 +67,17 @@ export const loadTracksFromInstruments = (
     instruments.forEach((inst) => {
       if (inst.url && inst.filename) {
         const trackUrl =
-          user_id && projectTitle
+          user_id && projectId
             ? projectsURL +
               "/" +
               user_id +
               "/" +
-              projectTitle +
+              projectId +
               "/" +
               inst.filename
             : projectsURL + inst.url + inst.filename;
         if (!playersRef.current?.has(inst.id.toString())) {
+          console.log("Adding player:", inst.id, trackUrl);
           playersRef.current?.add(inst.id.toString(), trackUrl, () => {
             const player = playersRef.current!.player(
               inst.id.toString()
@@ -163,11 +164,8 @@ export const handleMasterTrackFileChange = (
 
 export async function uploadMP3File(
   file: File,
-  projectTitle: string
+  projectId: string
 ): Promise<UploadResponse> {
-  // const file = e.target.files && e.target.files[0];
-  const sanitisedProjectTitle = convertTitleToFilename(projectTitle);
-
   try {
     if (!file) {
       throw new Error("No file provided.");
@@ -194,10 +192,7 @@ export async function uploadMP3File(
     // Upload the file to the "project_files" bucket.
     const { data, error } = await supabase.storage
       .from("project_files")
-      .upload(
-        session.user.id + "/" + sanitisedProjectTitle + "/" + filePath,
-        file
-      );
+      .upload(session.user.id + "/" + projectId + "/" + filePath, file);
 
     if (error) {
       throw error;
@@ -227,10 +222,8 @@ export async function deleteMP3File(url: string): Promise<boolean> {
 
 export async function uploadCoverArt(
   file: File,
-  projectTitle: string
+  projectId: string
 ): Promise<UploadResponse> {
-  const sanitisedProjectTitle = convertTitleToFilename(projectTitle);
-
   try {
     if (!file) {
       throw new Error("No file provided.");
@@ -257,10 +250,7 @@ export async function uploadCoverArt(
     // Upload the file to the "project_files" bucket.
     const { data, error } = await supabase.storage
       .from("project_files")
-      .upload(
-        session.user.id + "/" + sanitisedProjectTitle + "/" + filePath,
-        file
-      );
+      .upload(session.user.id + "/" + projectId + "/" + filePath, file);
 
     if (error) {
       throw error;
