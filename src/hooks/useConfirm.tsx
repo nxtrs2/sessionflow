@@ -1,18 +1,18 @@
 import { useState, useCallback, FC } from "react";
 
 interface UsePromptReturn {
-  prompt: (msg: string) => Promise<boolean>;
+  confirm: (msg: string) => Promise<boolean>;
   Prompt: FC;
 }
 
-function usePrompt(): UsePromptReturn {
+function useConfirm(): UsePromptReturn {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [promiseResolve, setPromiseResolve] = useState<
     ((value: boolean) => void) | null
   >(null);
 
-  const prompt = useCallback((msg: string): Promise<boolean> => {
+  const confirm = useCallback((msg: string): Promise<boolean> => {
     setMessage(msg);
     setIsVisible(true);
     return new Promise<boolean>((resolve) => {
@@ -45,7 +45,7 @@ function usePrompt(): UsePromptReturn {
     );
   };
 
-  return { prompt, Prompt };
+  return { confirm, Prompt };
 }
 
-export default usePrompt;
+export default useConfirm;

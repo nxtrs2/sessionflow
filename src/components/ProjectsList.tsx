@@ -3,7 +3,7 @@ import { Project, SongData } from "../types";
 import EditProject from "./EditProject";
 import { useSession } from "../hooks/useSession";
 import { useProjects } from "../hooks/useProjects";
-import usePrompt from "../hooks/usePrompt";
+import useConfirm from "../hooks/useConfirm";
 import { Edit2, Trash2Icon, Save, File, RefreshCcw } from "lucide-react";
 
 interface ProjectsListProps {
@@ -28,7 +28,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   handleUpdateProjectSongData,
 }) => {
   const { isLoggedIn } = useSession();
-  const { prompt, Prompt } = usePrompt();
+  const { confirm, Prompt } = useConfirm();
   const {
     projects,
     currentProject,
@@ -42,7 +42,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
 
   const handleLoadProject = async (project: Project) => {
     if (projectNeedSave) {
-      const confirmLoad = await prompt(
+      const confirmLoad = await confirm(
         "You have unsaved changes. Proceed without saving?"
       );
       if (!confirmLoad) {
@@ -57,7 +57,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
 
   const handleLoadDemoProject = async (url: string) => {
     if (projectNeedSave) {
-      const confirmLoad = await prompt(
+      const confirmLoad = await confirm(
         "You have unsaved changes. Proceed loading Demo?"
       );
       if (!confirmLoad) {
@@ -72,7 +72,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
 
   const handleNewProject = async () => {
     if (projectNeedSave) {
-      const confirmLoad = await prompt("You have unsaved changes. Proceed?");
+      const confirmLoad = await confirm("You have unsaved changes. Proceed?");
       if (!confirmLoad) {
         return;
       }
@@ -81,6 +81,17 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
     setCurrentProject(null);
     setDemoLoaded(false);
     setShowNewProjectDialog(true);
+  };
+
+  const handleDeleteProject = async () => {
+    if (currentProject) {
+      const confirmDelete = await confirm(
+        `Are you sure you want to delete the project "${currentProject.title}"?`
+      );
+      if (confirmDelete) {
+        deleteProject();
+      }
+    }
   };
 
   return (
@@ -182,14 +193,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               <button
                 disabled={isPlaying}
                 onClick={() => {
-                  if (currentProject) {
-                    const confirmDelete = window.confirm(
-                      `Are you sure you want to delete the project "${currentProject.title}"?`
-                    );
-                    if (confirmDelete) {
-                      deleteProject();
-                    }
-                  }
+                  handleDeleteProject();
                 }}
                 style={{
                   color: isPlaying ? "rgb(93, 93, 93)" : "red",

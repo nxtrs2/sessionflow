@@ -211,6 +211,9 @@ export const renderTick2 = (
           {isMarker && (
             <button onClick={() => editMarker(tick, true)}>- Marker</button>
           )}
+          {isMarker && (
+            <button onClick={() => editMarker(tick, false)}>^ Marker</button>
+          )}
           {!isEvent && selectedInstrument && (
             <button onClick={() => editEvent(tick, false)}>+ Event</button>
           )}

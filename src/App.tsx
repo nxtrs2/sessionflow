@@ -13,6 +13,7 @@ import "./App.css";
 
 import { useSession } from "./hooks/useSession";
 import { useProjects } from "./hooks/useProjects";
+import useConfirm from "./hooks/useConfirm";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
 import { renderTick2 } from "./components/TimeLineRenderer";
@@ -53,6 +54,7 @@ const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
   const { setProjectNeedSave, updateProjectSongData, currentProject } =
     useProjects();
+  const { confirm, Prompt } = useConfirm();
 
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
 
@@ -462,13 +464,13 @@ const App: React.FC = () => {
     // setLoading(false);
   };
 
-  const handleAddEditMarker = (tick: TickData, deleteMarker: boolean) => {
+  const handleAddEditMarker = async (tick: TickData, deleteMarker: boolean) => {
     const existingMarker = markers.find(
       (marker) => marker.beat === tick.beatIndex
     );
     if (deleteMarker) {
       if (existingMarker) {
-        const confirmDelete = window.confirm(
+        const confirmDelete = await confirm(
           `Are you sure you want to delete the marker "${existingMarker.label}"?`
         );
         if (confirmDelete) {
@@ -481,7 +483,7 @@ const App: React.FC = () => {
       }
     } else {
       if (existingMarker) {
-        const newLabel = prompt("Edit marker label:", existingMarker.label);
+        const newLabel = prompt("Edit Marker label", existingMarker.label);
         if (newLabel) {
           setMarkers((prevMarkers) =>
             prevMarkers.map((marker) =>
@@ -621,7 +623,6 @@ const App: React.FC = () => {
       };
 
       await updateProjectSongData(songData);
-      setProjectNeedSave(false);
     }
   };
 
@@ -670,6 +671,8 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
+      <Prompt />
+
       {loading && <Loader message={loadingMsg} />}
       <Header setShowUserProfile={setShowProfile} setShowLogin={setShowLogin} />
       {showLogin && !isLoggedIn && (

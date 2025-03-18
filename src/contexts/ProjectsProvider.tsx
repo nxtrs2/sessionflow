@@ -304,8 +304,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
       if (error) {
         throw error;
       }
-      // Optionally update local state here if needed
-      alert("Project updated successfully.");
+      setProjectNeedSave(false);
     } catch (error) {
       console.error("Error updating project:", error);
       alert("Error updating project.");
