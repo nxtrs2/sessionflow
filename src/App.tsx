@@ -13,6 +13,7 @@ import "./App.css";
 
 import { useSession } from "./hooks/useSession";
 import { useProjects } from "./hooks/useProjects";
+import { useInstruments } from "./hooks/useInstruments";
 import useConfirm from "./hooks/useConfirm";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
@@ -25,7 +26,6 @@ import {
   TickData,
   TimeSignature,
   Structure,
-  Instrument,
   projectsURL,
 } from "./types";
 import { Repeat2 } from "lucide-react";
@@ -54,6 +54,12 @@ const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
   const { setProjectNeedSave, updateProjectSongData, currentProject } =
     useProjects();
+  const {
+    instruments,
+    selectedInstrument,
+    setSelectedInstrument,
+    setInstruments,
+  } = useInstruments();
   const { confirm, Prompt } = useConfirm();
 
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
@@ -128,9 +134,9 @@ const App: React.FC = () => {
 
   const [currentTickData, setCurrentTickData] = useState<TickData | null>(null);
 
-  const [instruments, setInstruments] = useState<Instrument[]>([]);
-  const [selectedInstrument, setSelectedInstrument] =
-    useState<Instrument | null>(null);
+  // const [instruments, setInstruments] = useState<Instrument[]>([]);
+  // const [selectedInstrument, setSelectedInstrument] =
+  //   useState<Instrument | null>(null);
 
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -207,6 +213,9 @@ const App: React.FC = () => {
   }, [duration, tempo, timeSignature, songTimeLines]);
 
   useEffect(() => {
+    // setSongTimeLines((prevTimeLines) =>
+    //   prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
+    // );
     if (instruments.length > 0) {
       loadTracksFromInstruments(
         instruments,
@@ -540,34 +549,34 @@ const App: React.FC = () => {
     setProjectNeedSave(true);
   };
 
-  const handleInstrumentsUpdate = (
-    instrument: Instrument,
-    deleteInstrument: boolean
-  ) => {
-    console.log("Instrument updated:", instrument);
-    if (deleteInstrument) {
-      setSongTimeLines((prevTimeLines) =>
-        prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
-      );
-      setInstruments((prevInstruments) =>
-        prevInstruments.filter((inst) => inst.id !== instrument.id)
-      );
-    } else {
-      setInstruments((prevInstruments) => {
-        const existingInstrumentIndex = prevInstruments.findIndex(
-          (inst) => inst.id === instrument.id
-        );
-        if (existingInstrumentIndex !== -1) {
-          const updatedInstruments = [...prevInstruments];
-          updatedInstruments[existingInstrumentIndex] = instrument;
-          return updatedInstruments;
-        } else {
-          return [...prevInstruments, instrument];
-        }
-      });
-    }
-    setProjectNeedSave(true);
-  };
+  // const handleInstrumentsUpdate = (
+  //   instrument: Instrument,
+  //   deleteInstrument: boolean
+  // ) => {
+  //   console.log("Instrument updated:", instrument);
+  //   if (deleteInstrument) {
+  //     setSongTimeLines((prevTimeLines) =>
+  //       prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
+  //     );
+  //     setInstruments((prevInstruments) =>
+  //       prevInstruments.filter((inst) => inst.id !== instrument.id)
+  //     );
+  //   } else {
+  //     setInstruments((prevInstruments) => {
+  //       const existingInstrumentIndex = prevInstruments.findIndex(
+  //         (inst) => inst.id === instrument.id
+  //       );
+  //       if (existingInstrumentIndex !== -1) {
+  //         const updatedInstruments = [...prevInstruments];
+  //         updatedInstruments[existingInstrumentIndex] = instrument;
+  //         return updatedInstruments;
+  //       } else {
+  //         return [...prevInstruments, instrument];
+  //       }
+  //     });
+  //   }
+  //   setProjectNeedSave(true);
+  // };
 
   // const exportSongData = () => {
   //   const songData: SongData = {
@@ -983,8 +992,7 @@ const App: React.FC = () => {
                       setMasterSolo={setMasterSolo}
                       masterMute={masterMute}
                       setMasterMute={setMasterMute}
-                      instruments={instruments}
-                      handleInstrumentsUpdate={handleInstrumentsUpdate}
+                      setSongTimeLines={setSongTimeLines}
                       playersRef={playersRef}
                       handleUpdateProjectSongData={handleUpdateProjectSongData}
                       handleLoadSongJSON={handleLoadSongJSON}

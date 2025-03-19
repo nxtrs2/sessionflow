@@ -95,38 +95,44 @@ export const loadTracksFromInstruments = (
   });
 };
 
-// export const loadTracksFromInstruments = (
-//   instruments: Instrument[],
-//   playersRef: React.MutableRefObject<Tone.Players | null>
-// ) => {
-//   // if (playersRef.current) {
-//   //   playersRef.current.dispose();
-//   // }
+export const loadInstrumentFromLocalFile = (
+  file: File,
+  trackId: string,
+  playersRef: React.MutableRefObject<Tone.Players | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loadingMsg: React.Dispatch<React.SetStateAction<string>>
+) => {
+  if (!playersRef.current) {
+    console.error("No master track loaded.");
+    return;
+  }
 
-//   const newPlayers = new Tone.Players(
-//     instruments.reduce((acc, inst) => {
-//       if (inst.url && inst.filename) {
-//         acc[inst.name] = inst.url + inst.filename;
-//       }
-//       return acc;
-//     }, {} as Record<string, string>)
-//   ).toDestination();
+  setLoading(true);
+  loadingMsg("Loading local track");
 
-//   Tone.loaded().then(() => {
-//     instruments.forEach((inst) => {
-//       const player = newPlayers.player(inst.name);
-//       // console.log("Player:", player.name);
-//       // player.volume.value = inst.volume;
-//       // player.mute = true;
-//       //player.sync().start(0);
-//       if (player.buffer) {
-//         // player.sync().start(0);
-//         playersRef.current?.add(inst.name, player.buffer);
-//         player.sync().start(0);
-//       }
-//     });
-//   });
-// };
+  // Create an object URL for the selected file
+  const fileUrl = URL.createObjectURL(file);
+
+  // Add the track if it hasn't been added already
+  if (!playersRef.current.has(trackId)) {
+    playersRef.current.add(trackId, fileUrl, () => {
+      const player = playersRef.current!.player(trackId) as CustomPlayer;
+      // Optionally adjust volume or other settings as needed
+      player.volume.value = 0; // default or preset volume
+      player.solo = false;
+      // Sync with Tone.js Transport and schedule to start at time 0
+      player.sync().start(0);
+    });
+  }
+
+  // Once all players are loaded, update the loading state
+  Tone.loaded().then(() => {
+    setLoading(false);
+    loadingMsg("");
+    // Optionally, you can revoke the object URL here if it's no longer needed:
+    // URL.revokeObjectURL(fileUrl);
+  });
+};
 
 export const handleMasterTrackFileChange = (
   e: ChangeEvent<HTMLInputElement>,
@@ -203,21 +209,6 @@ export async function uploadMP3File(
     return { success: false, error: "Error uploading file." };
   }
 }
-
-// export async function deleteMP3File(url: string): Promise<boolean> {
-//   try {
-//     const { error } = await supabase.storage
-//       .from("project_files")
-//       .remove([url]);
-//     if (error) {
-//       throw error;
-//     }
-//     return true;
-//   } catch (error) {
-//     console.error("Error deleting file:", error);
-//     return false;
-//   }
-// }
 
 export async function uploadCoverArt(
   file: File,

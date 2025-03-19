@@ -8,7 +8,7 @@ interface DialogProps {
   instCount: number;
   handleUpdateInstrument: (newInstrument: Instrument) => void;
   handleUpdateProjectSongData: () => void;
-  setAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddInstrumentDialog: React.FC<DialogProps> = ({
@@ -16,7 +16,7 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
   instCount,
   handleUpdateInstrument,
   handleUpdateProjectSongData,
-  setAddInstrument,
+  setShowAddInstrument,
 }) => {
   const { currentProject } = useProjects();
   const [newInst, setNewInst] = useState<Instrument>({
@@ -42,7 +42,7 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
     setUploading(true);
     if (!instFile) {
       handleUpdateInstrument(newInst);
-      setAddInstrument(false);
+      setShowAddInstrument(false);
       return;
     }
 
@@ -80,7 +80,7 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
     });
 
     handleUpdateProjectSongData();
-    setAddInstrument(false);
+    setShowAddInstrument(false);
   };
 
   return (
@@ -180,7 +180,7 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
           <div style={{ marginTop: "1em" }}>Track File is Optional</div>
           <div className="dialog-actions">
             {" "}
-            <button type="button" onClick={() => setAddInstrument(false)}>
+            <button type="button" onClick={() => setShowAddInstrument(false)}>
               Cancel
             </button>
             <button

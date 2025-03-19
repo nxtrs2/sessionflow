@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import * as Tone from "tone";
-import { Instrument, CustomPlayer, SongData } from "../types";
+import { Instrument, CustomPlayer, SongData, EventData } from "../types";
 import { Trash, Plus, X } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 import AddInstrumentDialog from "./AddInstrumentDialog";
 import { useSession } from "../hooks/useSession";
+import { useProjects } from "../hooks/useProjects";
+import { useInstruments } from "../hooks/useInstruments";
+import useConfirm from "../hooks/useConfirm";
 
 interface InstrumentsProps {
   masterMute: boolean;
   setMasterMute: React.Dispatch<React.SetStateAction<boolean>>;
   masterSolo: boolean;
   setMasterSolo: React.Dispatch<React.SetStateAction<boolean>>;
-  instruments: Instrument[];
-  handleInstrumentsUpdate: (
-    instrument: Instrument,
-    deleteInstrument: boolean
-  ) => void;
+  setSongTimeLines: React.Dispatch<React.SetStateAction<EventData[]>>;
   playersRef: React.MutableRefObject<Tone.Players | null>;
   handleUpdateProjectSongData: () => void;
   handleLoadSongJSON: (data: SongData) => void;
@@ -25,45 +24,60 @@ const Instruments: React.FC<InstrumentsProps> = ({
   masterMute,
   setMasterMute,
   masterSolo,
+  setSongTimeLines,
   setMasterSolo,
-  instruments,
-  handleInstrumentsUpdate,
   playersRef,
   handleUpdateProjectSongData,
 }) => {
   const { session } = useSession();
-  const [selectedInstrument, setSelectedInstrument] =
-    useState<Instrument | null>(null);
-  const [addInstrument, setAddInstrument] = useState<boolean>(false);
+  const { setProjectNeedSave } = useProjects();
+  const {
+    instruments,
+    selectedInstrument,
+    setSelectedInstrument,
+    updateInstrument,
+    deleteInstrument,
+  } = useInstruments();
+  const { confirm, Prompt } = useConfirm();
+  // const [selectedInstrument, setSelectedInstrument] =
+  //   useState<Instrument | null>(null);
+  const [showAddInstrument, setShowAddInstrument] = useState<boolean>(false);
 
-  const handleUpdateInstrument = (newInstrument: Instrument) => {
-    handleInstrumentsUpdate(newInstrument, false);
+  const handleUpdateInstrument = (updatedInstrument: Instrument) => {
+    updateInstrument(updatedInstrument);
+    setProjectNeedSave(true);
   };
 
-  const handleDeleteInstrument = () => {
+  const handleDeleteInstrument = async () => {
     if (
-      window.confirm(
-        `This will erase all events for this instrument. \n"Are you sure you want to delete the instrument "${selectedInstrument?.name}"?`
+      await confirm(
+        `This will erase all events for "${selectedInstrument?.name}". Proceed? ?`
       )
     ) {
       const instrumentToDelete = instruments.find(
         (inst) => inst.name === selectedInstrument?.name
       );
       if (instrumentToDelete) {
-        handleInstrumentsUpdate(instrumentToDelete, true);
+        deleteInstrument(instrumentToDelete);
       }
+      setSongTimeLines((prevTimeLines) =>
+        prevTimeLines.filter(
+          (line) => line.instrumentId !== selectedInstrument?.id
+        )
+      );
     }
   };
 
   return (
     <div className="settings">
+      <Prompt />
       <h2>Instruments</h2>
-      {addInstrument && (
+      {showAddInstrument && (
         <AddInstrumentDialog
           user_id={session?.user.id}
           instCount={instruments.length}
           handleUpdateInstrument={handleUpdateInstrument}
-          setAddInstrument={setAddInstrument}
+          setShowAddInstrument={setShowAddInstrument}
           handleUpdateProjectSongData={handleUpdateProjectSongData}
         />
       )}
@@ -303,7 +317,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
                 }}
                 type="button"
                 onClick={() => {
-                  setAddInstrument(!addInstrument);
+                  setShowAddInstrument(!showAddInstrument);
                   // document.getElementById("track-upload")?.click();
                 }}
               >
