@@ -65,6 +65,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
           (line) => line.instrumentId !== selectedInstrument?.id
         )
       );
+      setProjectNeedSave(true);
     }
   };
 

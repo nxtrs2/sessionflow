@@ -213,9 +213,6 @@ const App: React.FC = () => {
   }, [duration, tempo, timeSignature, songTimeLines]);
 
   useEffect(() => {
-    // setSongTimeLines((prevTimeLines) =>
-    //   prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
-    // );
     if (instruments.length > 0) {
       loadTracksFromInstruments(
         instruments,
