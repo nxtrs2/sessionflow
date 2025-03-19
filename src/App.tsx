@@ -8,9 +8,6 @@ import React, {
 
 import * as Tone from "tone";
 import "./App.css";
-// import { supabase } from "./supabase/supabaseClient";
-// import { Session } from "@supabase/supabase-js";
-
 import { useSession } from "./hooks/useSession";
 import { useProjects } from "./hooks/useProjects";
 import { useInstruments } from "./hooks/useInstruments";
@@ -71,9 +68,8 @@ const App: React.FC = () => {
     useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState<string>("projects");
-  // const playerRef = useRef<Tone.Player | undefined>(undefined);
-  const playersRef = useRef<Tone.Players | null>(null);
 
+  const playersRef = useRef<Tone.Players | null>(null);
   const clickSynthRef = useRef<Tone.Synth | null>(null);
 
   const [beatData, setBeatData] = useState<BeatData[]>([]);
@@ -545,66 +541,6 @@ const App: React.FC = () => {
     }
     setProjectNeedSave(true);
   };
-
-  // const handleInstrumentsUpdate = (
-  //   instrument: Instrument,
-  //   deleteInstrument: boolean
-  // ) => {
-  //   console.log("Instrument updated:", instrument);
-  //   if (deleteInstrument) {
-  //     setSongTimeLines((prevTimeLines) =>
-  //       prevTimeLines.filter((line) => line.instrumentId !== instrument.id)
-  //     );
-  //     setInstruments((prevInstruments) =>
-  //       prevInstruments.filter((inst) => inst.id !== instrument.id)
-  //     );
-  //   } else {
-  //     setInstruments((prevInstruments) => {
-  //       const existingInstrumentIndex = prevInstruments.findIndex(
-  //         (inst) => inst.id === instrument.id
-  //       );
-  //       if (existingInstrumentIndex !== -1) {
-  //         const updatedInstruments = [...prevInstruments];
-  //         updatedInstruments[existingInstrumentIndex] = instrument;
-  //         return updatedInstruments;
-  //       } else {
-  //         return [...prevInstruments, instrument];
-  //       }
-  //     });
-  //   }
-  //   setProjectNeedSave(true);
-  // };
-
-  // const exportSongData = () => {
-  //   const songData: SongData = {
-  //     project: {
-  //       skipBeats,
-  //       skipBeatsBy,
-  //       masterVolume,
-  //       masterPan,
-  //       masterMute,
-  //       masterSolo,
-  //       countIn,
-  //       numerator: timeSignature.numerator,
-  //       denominator: timeSignature.denominator,
-  //       tempo,
-  //     },
-  //     notes,
-  //     structure,
-  //     timeline: songTimeLines,
-  //     markers,
-  //     instruments,
-  //   };
-  //   const dataStr =
-  //     "data:text/json;charset=utf-8," +
-  //     encodeURIComponent(JSON.stringify(songData, null, 2));
-  //   const downloadAnchorNode = document.createElement("a");
-  //   downloadAnchorNode.setAttribute("href", dataStr);
-  //   downloadAnchorNode.setAttribute("download", "song.json");
-  //   document.body.appendChild(downloadAnchorNode); // required for firefox
-  //   downloadAnchorNode.click();
-  //   downloadAnchorNode.remove();
-  // };
 
   const handleUpdateProjectSongData = async () => {
     if (session && currentProject) {
@@ -1093,9 +1029,7 @@ const App: React.FC = () => {
           <EventDialog
             mode={existingEvent ? "edit" : "new"}
             tickData={currentTickData}
-            // instruments={instruments}
             existingEvent={existingEvent}
-            selectedInstrument={selectedInstrument}
             setSongTimeLines={setSongTimeLines}
             setShowEventDialog={setShowEditEventDialog}
           />

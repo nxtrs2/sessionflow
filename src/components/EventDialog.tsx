@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { TickData, EventData, Instrument, Mode } from "../types";
+import { TickData, EventData, Mode } from "../types";
+import { useInstruments } from "../hooks/useInstruments";
 
 interface EventDialogProps {
   mode: Mode;
   tickData: TickData;
   existingEvent?: EventData; // for edit mode, the current event data
-  selectedInstrument: Instrument;
   setSongTimeLines: React.Dispatch<React.SetStateAction<EventData[]>>;
   setShowEventDialog: (show: boolean) => void;
 }
@@ -14,7 +14,6 @@ const EventDialog: React.FC<EventDialogProps> = ({
   mode,
   tickData,
   existingEvent,
-  selectedInstrument,
   setSongTimeLines,
   setShowEventDialog,
 }) => {
@@ -26,6 +25,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
   //     eventData ? eventData.instrumentId : null
   //   );
 
+  const { selectedInstrument } = useInstruments();
   const [message, setMessage] = useState<string>(
     existingEvent ? existingEvent.message : ""
   );
@@ -72,7 +72,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
         tickData.beatIndex > countOut
           ? tickData.beatIndex - countOut
           : tickData.beatIndex,
-      instrumentId: selectedInstrument.id,
+      instrumentId: selectedInstrument ? selectedInstrument?.id : null,
       message,
       countOut,
     };
