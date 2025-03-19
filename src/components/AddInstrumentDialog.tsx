@@ -2,25 +2,23 @@ import React, { useState } from "react";
 import { Instrument } from "../types";
 import { uploadMP3File } from "../helpers/FileFunctions";
 import { useProjects } from "../hooks/useProjects";
+import { useSession } from "../hooks/useSession";
+import { useInstruments } from "../hooks/useInstruments";
 
 interface DialogProps {
-  user_id?: string;
-  instCount: number;
-  handleUpdateInstrument: (newInstrument: Instrument) => void;
   handleUpdateProjectSongData: () => void;
   setShowAddInstrument: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddInstrumentDialog: React.FC<DialogProps> = ({
-  user_id,
-  instCount,
-  handleUpdateInstrument,
   handleUpdateProjectSongData,
   setShowAddInstrument,
 }) => {
   const { currentProject } = useProjects();
+  const { addInstrument, getNextInstrumentIndex } = useInstruments();
+  const { session } = useSession();
   const [newInst, setNewInst] = useState<Instrument>({
-    id: instCount + 1,
+    id: getNextInstrumentIndex(),
     name: "",
     filename: "",
     url: "",
@@ -41,12 +39,12 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
     e.preventDefault();
     setUploading(true);
     if (!instFile) {
-      handleUpdateInstrument(newInst);
+      addInstrument(newInst);
       setShowAddInstrument(false);
       return;
     }
 
-    if (!user_id || !currentProject) {
+    if (!session?.user.id || !currentProject) {
       console.error("User ID not found");
       setUploading(false);
       return;
@@ -73,10 +71,10 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
 
     // console.log("File uploaded:", filename);
 
-    handleUpdateInstrument({
+    addInstrument({
       ...newInst,
       filename,
-      url: user_id,
+      url: session.user.id,
     });
 
     handleUpdateProjectSongData();

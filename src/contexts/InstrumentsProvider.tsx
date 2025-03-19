@@ -41,6 +41,10 @@ export const InstrumentsProvider: React.FC<InstrumentsProviderProps> = ({
     );
   };
 
+  const getNextInstrumentIndex = () => {
+    return instruments.length + 1;
+  };
+
   const value: InstrumentsContextType = {
     instruments,
     selectedInstrument,
@@ -49,6 +53,7 @@ export const InstrumentsProvider: React.FC<InstrumentsProviderProps> = ({
     addInstrument,
     updateInstrument,
     deleteInstrument,
+    getNextInstrumentIndex,
   };
 
   return (

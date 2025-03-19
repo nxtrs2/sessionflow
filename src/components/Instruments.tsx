@@ -4,7 +4,7 @@ import { Instrument, CustomPlayer, SongData, EventData } from "../types";
 import { Trash, Plus, X } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 import AddInstrumentDialog from "./AddInstrumentDialog";
-import { useSession } from "../hooks/useSession";
+// import { useSession } from "../hooks/useSession";
 import { useProjects } from "../hooks/useProjects";
 import { useInstruments } from "../hooks/useInstruments";
 import useConfirm from "../hooks/useConfirm";
@@ -29,7 +29,7 @@ const Instruments: React.FC<InstrumentsProps> = ({
   playersRef,
   handleUpdateProjectSongData,
 }) => {
-  const { session } = useSession();
+  // const { session } = useSession();
   const { setProjectNeedSave } = useProjects();
   const {
     instruments,
@@ -75,9 +75,6 @@ const Instruments: React.FC<InstrumentsProps> = ({
       <h2>Instruments</h2>
       {showAddInstrument && (
         <AddInstrumentDialog
-          user_id={session?.user.id}
-          instCount={instruments.length}
-          handleUpdateInstrument={handleUpdateInstrument}
           setShowAddInstrument={setShowAddInstrument}
           handleUpdateProjectSongData={handleUpdateProjectSongData}
         />

@@ -12,6 +12,7 @@ export interface InstrumentsContextType {
   addInstrument(instrument: Instrument): void;
   updateInstrument(instrument: Instrument): void;
   deleteInstrument(instrument: Instrument): void;
+  getNextInstrumentIndex(): number;
 }
 
 export const InstrumentsContext = createContext<
