@@ -3,6 +3,7 @@ import { Project, SongData } from "../types";
 import EditProject from "./EditProject";
 import { useSession } from "../hooks/useSession";
 import { useProjects } from "../hooks/useProjects";
+import { useCurrentProject } from "../hooks/useCurrentProject";
 import useConfirm from "../hooks/useConfirm";
 import { Edit2, Trash2Icon, Save, File, RefreshCcw } from "lucide-react";
 
@@ -32,12 +33,11 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   const {
     projects,
     currentProject,
-    projectNeedSave,
-    setProjectNeedSave,
-    setCurrentProject,
+    setSelectedProject,
     fetchProjects,
     deleteProject,
   } = useProjects();
+  const { projectNeedSave, setProjectNeedSave } = useCurrentProject();
   const [showEditProject, setShowEditProject] = React.useState(false);
 
   const handleLoadProject = async (project: Project) => {
@@ -50,7 +50,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       }
       setProjectNeedSave(false);
     }
-    setCurrentProject(project);
+    setSelectedProject(project);
     setDemoLoaded(false);
     handleLoadSongJSON(project.data);
   };
@@ -65,7 +65,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       }
       setProjectNeedSave(false);
     }
-    setCurrentProject(null);
+    setSelectedProject(null);
     handleLoadSongJSONFile(url);
     setDemoLoaded(true);
   };
@@ -78,7 +78,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       }
       setProjectNeedSave(false);
     }
-    setCurrentProject(null);
+    setSelectedProject(null);
     setDemoLoaded(false);
     setShowNewProjectDialog(true);
   };

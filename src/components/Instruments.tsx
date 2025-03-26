@@ -5,8 +5,8 @@ import { Trash, Plus, X } from "lucide-react";
 import VerticalSlider from "./VerticalSlider";
 import AddInstrumentDialog from "./AddInstrumentDialog";
 // import { useSession } from "../hooks/useSession";
-import { useProjects } from "../hooks/useProjects";
-import { useInstruments } from "../hooks/useInstruments";
+// import { useProjects } from "../hooks/useProjects";
+import { useCurrentProject } from "../hooks/useCurrentProject";
 import useConfirm from "../hooks/useConfirm";
 
 interface InstrumentsProps {
@@ -29,15 +29,14 @@ const Instruments: React.FC<InstrumentsProps> = ({
   playersRef,
   handleUpdateProjectSongData,
 }) => {
-  // const { session } = useSession();
-  const { setProjectNeedSave } = useProjects();
   const {
     instruments,
     selectedInstrument,
     setSelectedInstrument,
     updateInstrument,
     deleteInstrument,
-  } = useInstruments();
+    setProjectNeedSave,
+  } = useCurrentProject();
   const { confirm, Prompt } = useConfirm();
   // const [selectedInstrument, setSelectedInstrument] =
   //   useState<Instrument | null>(null);

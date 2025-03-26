@@ -16,16 +16,22 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingProjects, setLoadingProjects] = useState<boolean>(false);
   const [loadingMsg, setLoadingMsg] = useState<string>("");
-  const [projectNeedSave, setProjectNeedSave] = useState<boolean>(false);
+
+  const setSelectedProject = (project: Project | null) => {
+    if (project) {
+      project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
+    }
+    setCurrentProject(project);
+  };
 
   // Fetch projects from Supabase
   const fetchProjects = async () => {
     setLoadingMsg("Loading Projects");
     if (session) {
       try {
-        setLoading(true);
+        setLoadingProjects(true);
         const { data, error } = await supabase
           .from("projects")
           .select("*")
@@ -39,11 +45,11 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
       } catch (error) {
         console.error("Error fetching projects:", error);
       } finally {
-        setLoading(false);
+        setLoadingProjects(false);
       }
     } else {
       setProjects([]);
-      setLoading(false);
+      setLoadingProjects(false);
     }
   };
 
@@ -286,33 +292,6 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
     await fetchProjects();
   };
 
-  const updateProjectSongData = async (songData: SongData) => {
-    if (!session) return;
-    try {
-      setLoading(true);
-      const { error } = await supabase
-        .from("projects")
-        .update({
-          user_id: session.user.id,
-          title: currentProject?.title,
-          filename: currentProject?.filename,
-          url: session.user.id,
-          data: songData,
-        })
-        .eq("id", currentProject?.id);
-
-      if (error) {
-        throw error;
-      }
-      setProjectNeedSave(false);
-    } catch (error) {
-      console.error("Error updating project:", error);
-      alert("Error updating project.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const deleteProject = async () => {
     const folderPath = `${currentProject?.user_id}/${currentProject?.id}`;
 
@@ -359,15 +338,15 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
   const contextValue: ProjectsContextProps = {
     projects,
     currentProject,
-    loading,
+    loadingProjects,
     loadingMsg,
-    projectNeedSave,
+
     fetchProjects,
-    setCurrentProject,
-    setProjectNeedSave,
+    setSelectedProject,
+    setLoadingProjects,
     createProject,
     updateProject,
-    updateProjectSongData,
+
     deleteProject,
   };
 

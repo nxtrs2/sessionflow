@@ -3,7 +3,7 @@ import { Instrument } from "../types";
 import { uploadMP3File } from "../helpers/FileFunctions";
 import { useProjects } from "../hooks/useProjects";
 import { useSession } from "../hooks/useSession";
-import { useInstruments } from "../hooks/useInstruments";
+import { useCurrentProject } from "../hooks/useCurrentProject";
 
 interface DialogProps {
   handleUpdateProjectSongData: () => void;
@@ -15,7 +15,7 @@ const AddInstrumentDialog: React.FC<DialogProps> = ({
   setShowAddInstrument,
 }) => {
   const { currentProject } = useProjects();
-  const { addInstrument, getNextInstrumentIndex } = useInstruments();
+  const { addInstrument, getNextInstrumentIndex } = useCurrentProject();
   const { session } = useSession();
   const [newInst, setNewInst] = useState<Instrument>({
     id: getNextInstrumentIndex(),

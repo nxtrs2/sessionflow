@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TickData, EventData, Mode } from "../types";
-import { useInstruments } from "../hooks/useInstruments";
+import { useCurrentProject } from "../hooks/useCurrentProject";
 
 interface EventDialogProps {
   mode: Mode;
@@ -25,7 +25,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
   //     eventData ? eventData.instrumentId : null
   //   );
 
-  const { selectedInstrument } = useInstruments();
+  const { selectedInstrument } = useCurrentProject();
   const [message, setMessage] = useState<string>(
     existingEvent ? existingEvent.message : ""
   );

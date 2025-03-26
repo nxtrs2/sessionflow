@@ -110,6 +110,9 @@ export interface Project {
   filename: string;
   url: string;
   coverart: string;
+  notes: string;
+  created_at: Date;
+  modified_at: Date;
 }
 
 export interface UploadResponse {

@@ -1,15 +1,14 @@
 import { createContext } from "react";
-import { Project, SongData } from "../types";
+import { Project } from "../types";
 
 export interface ProjectsContextProps {
   projects: Project[];
   currentProject: Project | null;
-  loading: boolean;
+  loadingProjects: boolean;
   loadingMsg: string;
-  projectNeedSave: boolean;
-  setProjectNeedSave: (value: boolean) => void;
+  setLoadingProjects: (loading: boolean) => void;
   fetchProjects: () => Promise<void>;
-  setCurrentProject: (project: Project | null) => void;
+  setSelectedProject: (project: Project | null) => void;
   createProject: (params: {
     title: string;
     masterFile: File;
@@ -23,7 +22,7 @@ export interface ProjectsContextProps {
     newMasterFile?: File;
     newCoverArt?: File;
   }) => Promise<void>;
-  updateProjectSongData: (songData: SongData) => Promise<void>;
+
   deleteProject: () => Promise<boolean>;
 }
 

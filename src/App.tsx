@@ -10,7 +10,7 @@ import * as Tone from "tone";
 import "./App.css";
 import { useSession } from "./hooks/useSession";
 import { useProjects } from "./hooks/useProjects";
-import { useInstruments } from "./hooks/useInstruments";
+import { useCurrentProject } from "./hooks/useCurrentProject";
 import useConfirm from "./hooks/useConfirm";
 import CountIn from "./components/CountIn";
 import CountOut from "./components/CountOut";
@@ -49,14 +49,15 @@ import NewProject from "./components/NewProject";
 
 const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
-  const { setProjectNeedSave, updateProjectSongData, currentProject } =
-    useProjects();
+  const { currentProject } = useProjects();
   const {
     instruments,
     selectedInstrument,
+    setProjectNeedSave,
+    updateProjectSongData,
     setSelectedInstrument,
     setInstruments,
-  } = useInstruments();
+  } = useCurrentProject();
   const { confirm, Prompt } = useConfirm();
 
   const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
