@@ -21,8 +21,8 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
   const [newCoverArt, setNewCoverArt] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const sanitisedTitle = convertTitleToFilename(title || "");
-  const masterFileUrl = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${currentProject?.user_id}/${sanitisedTitle}/${currentProject?.filename}`;
+  // const sanitisedTitle = convertTitleToFilename(title || "");
+  const masterFileUrl = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${currentProject?.user_id}/${currentProject?.id}/${currentProject?.filename}`;
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,7 +193,7 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
               <img
                 src={
                   currentProject?.coverart
-                    ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${currentProject.user_id}/${sanitisedTitle}/${currentProject.coverart}`
+                    ? `${currentProject.coverart}`
                     : "/not-found.jpg"
                 }
                 alt="Cover Art"
@@ -206,7 +206,9 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
             ) : (
               <span style={{ color: "gray" }}>
                 {currentProject?.coverart
-                  ? `${currentProject?.coverart}`
+                  ? currentProject.coverart.substring(
+                      currentProject.coverart.lastIndexOf("/") + 1
+                    )
                   : "No cover art currently"}
               </span>
             )}

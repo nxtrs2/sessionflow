@@ -10,8 +10,6 @@ import { Edit2, Trash2Icon, Save, File, RefreshCcw } from "lucide-react";
 interface ProjectsListProps {
   isPlaying: boolean;
   projectLoaded: boolean;
-  demoLoaded: boolean;
-  setDemoLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   setShowNewProjectDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
@@ -21,8 +19,6 @@ interface ProjectsListProps {
 const ProjectsList: React.FC<ProjectsListProps> = ({
   isPlaying,
   projectLoaded,
-  demoLoaded,
-  setDemoLoaded,
   setShowNewProjectDialog,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
@@ -33,9 +29,11 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   const {
     projects,
     currentProject,
+    isDemoLoaded,
     setSelectedProject,
     fetchProjects,
     deleteProject,
+    setIsDemoLoaded,
   } = useProjects();
   const { projectNeedSave, setProjectNeedSave } = useCurrentProject();
   const [showEditProject, setShowEditProject] = React.useState(false);
@@ -51,7 +49,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       setProjectNeedSave(false);
     }
     setSelectedProject(project);
-    setDemoLoaded(false);
+    setIsDemoLoaded(false);
     handleLoadSongJSON(project.data);
   };
 
@@ -67,7 +65,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
     }
     setSelectedProject(null);
     handleLoadSongJSONFile(url);
-    setDemoLoaded(true);
+    setIsDemoLoaded(true);
   };
 
   const handleNewProject = async () => {
@@ -78,8 +76,8 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       }
       setProjectNeedSave(false);
     }
-    setSelectedProject(null);
-    setDemoLoaded(false);
+    // setSelectedProject(null);
+    // setIsDemoLoaded(false);
     setShowNewProjectDialog(true);
   };
 
@@ -170,7 +168,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               <File size={18} />
             </button>
           )}
-          {!demoLoaded && projectLoaded && isLoggedIn && currentProject && (
+          {!isDemoLoaded && projectLoaded && isLoggedIn && currentProject && (
             <>
               <button
                 disabled={isPlaying || !projectNeedSave}
@@ -228,7 +226,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                       <img
                         src={
                           project.coverart
-                            ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`
+                            ? `${project.coverart}`
                             : "/not-found.jpg"
                         }
                         alt={`${project.title} cover art`}

@@ -15,15 +15,27 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
   session,
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [isDemoLoaded, setIsDemoLoaded] = useState<boolean>(false);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [loadingProjects, setLoadingProjects] = useState<boolean>(false);
   const [loadingMsg, setLoadingMsg] = useState<string>("");
 
   const setSelectedProject = (project: Project | null) => {
-    if (project) {
-      project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
-    }
+    // if (project) {
+    //   project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
+    // }
     setCurrentProject(project);
+    console.log(project?.notes);
+  };
+
+  const setProjectsData = (projects: Project[]) => {
+    const updatedProjects = projects.map((project) => {
+      if (project.coverart) {
+        project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
+      }
+      return project;
+    });
+    setProjects(updatedProjects);
   };
 
   // Fetch projects from Supabase
@@ -41,7 +53,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
           throw error;
         }
 
-        setProjects(data);
+        setProjectsData(data);
       } catch (error) {
         console.error("Error fetching projects:", error);
       } finally {
@@ -340,7 +352,8 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
     currentProject,
     loadingProjects,
     loadingMsg,
-
+    isDemoLoaded,
+    setIsDemoLoaded,
     fetchProjects,
     setSelectedProject,
     setLoadingProjects,

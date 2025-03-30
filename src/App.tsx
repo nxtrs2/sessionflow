@@ -49,7 +49,7 @@ import NewProject from "./components/NewProject";
 
 const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
-  const { currentProject } = useProjects();
+  const { currentProject, isDemoLoaded } = useProjects();
   const {
     instruments,
     selectedInstrument,
@@ -59,8 +59,6 @@ const App: React.FC = () => {
     setInstruments,
   } = useCurrentProject();
   const { confirm, Prompt } = useConfirm();
-
-  const [demoLoaded, setDemoLoaded] = useState<boolean>(false);
 
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState<boolean>(false);
@@ -158,7 +156,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (songData) {
-      const songPath = demoLoaded
+      const songPath = isDemoLoaded
         ? "demo/signals-master.mp3"
         : session?.user.id +
           "/" +
@@ -447,7 +445,7 @@ const App: React.FC = () => {
   const handleLoadSongJSONFile = async (file: string) => {
     setLoading(true);
     setLoadingMsg("Loading Project File");
-    console.log("Loading Project File:", file);
+    //console.log("Loading Project File:", file);
 
     const loaded = await loadSongFile(file, setSongData, setFileLoaded);
     if (!loaded) {
@@ -581,7 +579,6 @@ const App: React.FC = () => {
     setInstruments([]);
     setSelectedInstrument(null);
     setFileLoaded(false);
-    setDemoLoaded(false);
     setAudioSrc(null);
     setDuration(0);
     setIsPlaying(false);
@@ -674,7 +671,14 @@ const App: React.FC = () => {
               )}
             </div>
             <div className="timeline-title">
-              {fileLoaded && currentProject && <h2>{currentProject.title}</h2>}
+              {currentBeat < 1 && fileLoaded && currentProject && (
+                <h2>{currentProject.title}</h2>
+              )}
+            </div>
+            <div className="timeline-notes">
+              {currentBeat < 1 && fileLoaded && currentProject && (
+                <p>{isDemoLoaded ? "notes" : currentProject.notes}</p>
+              )}
             </div>
             {showCountIn && (
               <CountIn
@@ -901,7 +905,9 @@ const App: React.FC = () => {
                         min="-20"
                         max="5"
                         step="1"
-                        defaultValue="-20"
+                        defaultValue={
+                          clickSynthRef.current?.volume.value || -20
+                        }
                         onChange={(e) => {
                           if (clickSynthRef.current) {
                             clickSynthRef.current.volume.value = parseInt(
@@ -1013,8 +1019,6 @@ const App: React.FC = () => {
                 <ProjectsList
                   isPlaying={isPlaying}
                   projectLoaded={fileLoaded}
-                  demoLoaded={demoLoaded}
-                  setDemoLoaded={setDemoLoaded}
                   setShowNewProjectDialog={setShowNewProjectDialog}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
