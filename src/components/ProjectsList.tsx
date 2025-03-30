@@ -226,7 +226,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                       <img
                         src={
                           project.coverart
-                            ? `${project.coverart}`
+                            ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`
                             : "/not-found.jpg"
                         }
                         alt={`${project.title} cover art`}

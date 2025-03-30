@@ -25,17 +25,17 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
     //   project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
     // }
     setCurrentProject(project);
-    console.log(project?.notes);
+    // console.log(project);
   };
 
   const setProjectsData = (projects: Project[]) => {
-    const updatedProjects = projects.map((project) => {
-      if (project.coverart) {
-        project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
-      }
-      return project;
-    });
-    setProjects(updatedProjects);
+    // const updatedProjects = projects.map((project) => {
+    //   if (project.coverart) {
+    //     project.coverart = `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${project.user_id}/${project.id}/${project.coverart}`;
+    //   }
+    //   return project;
+    // });
+    setProjects(projects);
   };
 
   // Fetch projects from Supabase
@@ -233,10 +233,11 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
 
   const updateProject = async (params: {
     title?: string;
+    notes?: string;
     newMasterFile?: File;
     newCoverArt?: File;
   }): Promise<void> => {
-    const { title, newMasterFile, newCoverArt } = params;
+    const { title, notes, newMasterFile, newCoverArt } = params;
 
     if (currentProject === null) {
       throw new Error("No project selected");
@@ -292,6 +293,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({
       .from("projects")
       .update({
         title,
+        notes,
         filename: masterFileName,
         coverart: coverArtFileName,
       })

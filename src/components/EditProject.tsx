@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import {
-  // uploadMP3File,
-  // uploadCoverArt,
-  convertTitleToFilename,
-} from "../helpers/FileFunctions";
+// import {
+//   // uploadMP3File,
+//   // uploadCoverArt,
+//   convertTitleToFilename,
+// } from "../helpers/FileFunctions";
 // import { supabase } from "../supabase/supabaseClient";
 // import { useSession } from "../hooks/useSession";
 import { useProjects } from "../hooks/useProjects";
@@ -17,6 +17,7 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
   // const { session } = useSession();
   const { updateProject, currentProject } = useProjects();
   const [title, setTitle] = useState(currentProject?.title);
+  const [notes, setNotes] = useState(currentProject?.notes);
   const [newMasterFile, setNewMasterFile] = useState<File | null>(null);
   const [newCoverArt, setNewCoverArt] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -31,6 +32,7 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
     try {
       await updateProject({
         title,
+        notes,
         newMasterFile: newMasterFile || undefined,
         newCoverArt: newCoverArt || undefined,
       });
@@ -170,7 +172,7 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
               alignItems: "center",
             }}
           >
@@ -193,25 +195,25 @@ const EditProject: React.FC<EditProjectProps> = ({ openDialog }) => {
               <img
                 src={
                   currentProject?.coverart
-                    ? `${currentProject.coverart}`
+                    ? `${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/${currentProject.user_id}/${currentProject.id}/${currentProject.coverart}`
                     : "/not-found.jpg"
                 }
                 alt="Cover Art"
                 style={{ width: "100px", height: "100px" }}
               />
             </button>
-            <br />
-            {newCoverArt ? (
-              <span>{newCoverArt.name}</span>
-            ) : (
-              <span style={{ color: "gray" }}>
-                {currentProject?.coverart
-                  ? currentProject.coverart.substring(
-                      currentProject.coverart.lastIndexOf("/") + 1
-                    )
-                  : "No cover art currently"}
-              </span>
-            )}
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add notes here..."
+              style={{
+                width: "100%",
+                height: "100px",
+                marginLeft: "1rem",
+                padding: "0.5rem",
+                fontSize: "1em",
+              }}
+            />
           </div>
 
           <div className="dialog-actions">

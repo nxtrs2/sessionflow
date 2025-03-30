@@ -21,6 +21,7 @@ export interface ProjectsContextProps {
   }) => Promise<void>;
   updateProject: (params: {
     title?: string;
+    notes?: string;
     newMasterFile?: File;
     newCoverArt?: File;
   }) => Promise<void>;

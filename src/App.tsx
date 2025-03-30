@@ -156,6 +156,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (songData) {
+      console.log("Song Data:", songData);
       const songPath = isDemoLoaded
         ? "demo/signals-master.mp3"
         : session?.user.id +
@@ -448,6 +449,7 @@ const App: React.FC = () => {
     //console.log("Loading Project File:", file);
 
     const loaded = await loadSongFile(file, setSongData, setFileLoaded);
+
     if (!loaded) {
       alert("Error loading song file.");
     }
@@ -671,13 +673,13 @@ const App: React.FC = () => {
               )}
             </div>
             <div className="timeline-title">
-              {currentBeat < 1 && fileLoaded && currentProject && (
-                <h2>{currentProject.title}</h2>
+              {currentBeat < 1 && fileLoaded && (
+                <h2>{isDemoLoaded ? "Demo Song" : currentProject?.title}</h2>
               )}
             </div>
             <div className="timeline-notes">
-              {currentBeat < 1 && fileLoaded && currentProject && (
-                <p>{isDemoLoaded ? "notes" : currentProject.notes}</p>
+              {currentBeat < 1 && fileLoaded && (
+                <p>{isDemoLoaded ? notes : currentProject?.notes}</p>
               )}
             </div>
             {showCountIn && (

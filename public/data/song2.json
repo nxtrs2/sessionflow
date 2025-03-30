@@ -12,7 +12,7 @@
     "masterMute": false,
     "masterSolo": false
   },
-  "notes": "This is a song about signals. It's a song about something.",
+  "notes": "This is the Demo Song. Above is the transport controls and bar and beat counter. Below is the Timeline. Below that are the instrument tracks. Click one to show the prompts for that instrument only.",
   "structure": [],
   "instruments": [
     {
@@ -120,6 +120,48 @@
       "countOut": 0,
       "instrument": "DRUMS",
       "instrumentId": 1
+    },
+    {
+      "beat": 1,
+      "message": "This is a Prompt for SYNTH1",
+      "countOut": 0,
+      "instrument": "SYNTH1",
+      "instrumentId": 0
+    },
+    {
+      "beat": 3,
+      "message": "DRUMS PROMPT",
+      "countOut": 0,
+      "instrument": "DRUMS",
+      "instrumentId": 1
+    },
+    {
+      "beat": 3,
+      "message": "BASS",
+      "countOut": 0,
+      "instrument": "BASS",
+      "instrumentId": 2
+    },
+    {
+      "beat": 5,
+      "message": "Prompts could be any info",
+      "countOut": 0,
+      "instrument": "BASS",
+      "instrumentId": 2
+    },
+    {
+      "beat": 6,
+      "message": "They turn grey as they pass",
+      "countOut": 0,
+      "instrument": "BASS",
+      "instrumentId": 2
+    },
+    {
+      "beat": 7,
+      "message": "current beat indicator",
+      "countOut": 0,
+      "instrument": "BASS",
+      "instrumentId": 2
     },
     {
       "beat": 112,
@@ -379,6 +421,10 @@
     {
       "label": "END OFF BEAT",
       "beat": 368
+    },
+    {
+      "label": "This is a marker - hover to edit or delete",
+      "beat": 8
     }
   ]
 }

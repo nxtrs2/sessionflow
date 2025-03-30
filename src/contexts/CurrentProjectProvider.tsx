@@ -34,6 +34,7 @@ export const CurrentProjectProvider: React.FC<CurrentProjectProviderProps> = ({
         .update({
           user_id: session.user.id,
           title: currentProject?.title,
+          notes: currentProject?.notes,
           filename: currentProject?.filename,
           url: session.user.id,
           data: songData,
