@@ -1,5 +1,5 @@
 import React from "react";
-import { Project, SongData } from "../types";
+import { DemoProject, Project, SongData } from "../types";
 import EditProject from "./EditProject";
 import { useSession } from "../hooks/useSession";
 import { useProjects } from "../hooks/useProjects";
@@ -13,6 +13,7 @@ interface ProjectsListProps {
   setShowNewProjectDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleLoadSongJSONFile: (path: string) => void;
   handleLoadSongJSON: (data: SongData) => void;
+  setDemoProject: React.Dispatch<React.SetStateAction<DemoProject | null>>;
   handleUpdateProjectSongData: () => void;
 }
 
@@ -22,6 +23,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   setShowNewProjectDialog,
   handleLoadSongJSONFile,
   handleLoadSongJSON,
+  setDemoProject,
   handleUpdateProjectSongData,
 }) => {
   const { isLoggedIn } = useSession();
@@ -63,9 +65,9 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       }
       setProjectNeedSave(false);
     }
+    setIsDemoLoaded(true);
     setSelectedProject(null);
     handleLoadSongJSONFile(url);
-    setIsDemoLoaded(true);
   };
 
   const handleNewProject = async () => {
@@ -114,6 +116,11 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               }}
               disabled={isPlaying}
               onClick={() => {
+                setDemoProject({
+                  title: "Demo: Signals",
+                  url: "/data/song2.json",
+                  filename: "demo/signals-master.mp3",
+                });
                 handleLoadDemoProject("/data/song2.json");
               }}
             >
@@ -124,6 +131,35 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               />
             </button>
             <h3>Signals</h3>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <button
+              style={{
+                fontSize: "1em",
+              }}
+              disabled={isPlaying}
+              onClick={() => {
+                setDemoProject({
+                  title: "Demo: $ide $croller",
+                  url: "/data/song.json",
+                  filename: "demo2/side-scroller-master.mp3",
+                });
+                handleLoadDemoProject("/data/song.json");
+              }}
+            >
+              <img
+                // src={coverartUrls[projects.indexOf(project)]}
+                src={`${process.env.REACT_SUPABASE_URL}/storage/v1/object/project_files/demo2/coverart-sidescroller.jpeg`}
+                style={{ width: "100px", height: "100px" }}
+              />
+            </button>
+            <h3>$ide $croller</h3>
           </div>
           {/* <button
         disabled={isPlaying}

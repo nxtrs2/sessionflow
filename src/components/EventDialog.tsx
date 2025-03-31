@@ -177,7 +177,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Enter message"
+                  placeholder="Enter prompt"
                 />
               </div>
               <div>

@@ -52,7 +52,6 @@ const Login: React.FC<LoginProps> = ({
           <div>
             <button
               style={{
-                display: "none",
                 fontSize: "1em",
                 background: "none",
                 border: "none",

@@ -24,6 +24,7 @@ import {
   TimeSignature,
   Structure,
   projectsURL,
+  DemoProject,
 } from "./types";
 import { Repeat2 } from "lucide-react";
 
@@ -85,7 +86,7 @@ const App: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [showEditEventDialog, setShowEditEventDialog] =
     useState<boolean>(false);
-  const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [canEdit, setCanEdit] = useState<boolean>(true);
   // const [songEnded, setSongEnded] = useState<boolean>(false);
 
   const [loop, setLoop] = useState<boolean>(false);
@@ -140,6 +141,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMsg, setLoadingMsg] = useState<string>("");
   const [fileLoaded, setFileLoaded] = useState<boolean>(false);
+  const [demoProject, setDemoProject] = useState<DemoProject | null>(null);
 
   // High-frequency update using requestAnimationFrame
   useEffect(() => {
@@ -156,14 +158,15 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (songData) {
-      console.log("Song Data:", songData);
-      const songPath = isDemoLoaded
-        ? "demo/signals-master.mp3"
-        : session?.user.id +
-          "/" +
-          currentProject?.id +
-          "/" +
-          currentProject?.filename;
+      // console.log("Song Data:", songData);
+      const songPath =
+        isDemoLoaded && demoProject
+          ? demoProject?.filename /* "demo/signals-master.mp3" */
+          : session?.user.id +
+            "/" +
+            currentProject?.id +
+            "/" +
+            currentProject?.filename;
 
       try {
         handleLoadMasterTrack(songPath);
@@ -440,7 +443,7 @@ const App: React.FC = () => {
     if (clickSynthRef.current) {
       clickSynthRef.current.triggerAttackRelease("C5", "8n");
     }
-    console.log("Beat:", beat);
+    console.log(beat);
   };
 
   const handleLoadSongJSONFile = async (file: string) => {
@@ -674,7 +677,9 @@ const App: React.FC = () => {
             </div>
             <div className="timeline-title">
               {currentBeat < 1 && fileLoaded && (
-                <h2>{isDemoLoaded ? "Demo Song" : currentProject?.title}</h2>
+                <h2>
+                  {isDemoLoaded ? demoProject?.title : currentProject?.title}
+                </h2>
               )}
             </div>
             <div className="timeline-notes">
@@ -1024,6 +1029,7 @@ const App: React.FC = () => {
                   setShowNewProjectDialog={setShowNewProjectDialog}
                   handleLoadSongJSONFile={handleLoadSongJSONFile}
                   handleLoadSongJSON={handleLoadSongJSON}
+                  setDemoProject={setDemoProject}
                   handleUpdateProjectSongData={handleUpdateProjectSongData}
                 />
               </Suspense>

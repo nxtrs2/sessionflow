@@ -1,114 +1,102 @@
 {
   "project": {
-    "title": "Seafarer",
-    "filename": "seafarer.mp3",
-    "url": "/songs/",
     "tempo": 144,
-    "timesignature": "3/4",
-    "numerator": 3,
+    "timesignature": "4/4",
+    "numerator": 4,
     "denominator": 4,
-    "countIn": 3,
-    "skipBeatsBy": 1,
-    "skipBeats": 0
+    "countIn": 4,
+    "skipBeatsBy": 4,
+    "skipBeats": 0,
+    "masterVolume": 50,
+    "masterPan": 0,
+    "masterMute": false,
+    "masterSolo": false
   },
-  "notes": "This is a song about the sea? Maybe. It's a song about something.",
+  "notes": "This is a demo song. There are no prompts for this song yet. You can add prompts by selecting an instrument from below then clicking on the timeline. On the Playback tab you can also loop between the markers already set. Try it 😊",
   "structure": [],
   "instruments": [
     {
       "id": 0,
-      "name": "SYNTH1",
-      "filename": "seafarer.mp3",
-      "url": "/songs/",
+      "name": "DRUMS",
+      "filename": "side-scroller-drums.mp3",
+      "url": "/demo2/",
       "color": "#ffffff",
-      "bgcolor": "#ff0000"
+      "bgcolor": "#ff0000",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     },
     {
       "id": 1,
-      "name": "DRUMS",
-      "filename": "seafarer.mp3",
-      "url": "/songs/",
-      "color": "#000000",
-      "bgcolor": "#00ff00"
+      "name": "BASS",
+      "filename": "side-scroller-bass.mp3",
+      "url": "/demo2/",
+      "color": "#ffffff",
+      "bgcolor": "#ff00ff",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     },
     {
       "id": 2,
-      "name": "SYNTH2",
-      "filename": "seafarer.mp3",
-      "url": "/songs/",
+      "name": "PADS",
+      "filename": "side-scroller-pads.mp3",
+      "url": "/demo2/",
       "color": "#000000",
-      "bgcolor": "#00ffff"
+      "bgcolor": "#00ffff",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
+    },
+    {
+      "id": 3,
+      "name": "LEAD",
+      "filename": "side-scroller-lead.mp3",
+      "url": "/demo2/",
+      "color": "#000000",
+      "bgcolor": "#ffff00",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
+    },
+    {
+      "id": 4,
+      "name": "SYNTH",
+      "filename": "side-scroller-lead2.mp3",
+      "url": "/demo2/",
+      "color": "#000000",
+      "bgcolor": "#00ff00",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
+    },
+    {
+      "id": 5,
+      "name": "PERC",
+      "filename": "side-scroller-perc.mp3",
+      "url": "/demo2/",
+      "color": "#000000",
+      "bgcolor": "#add8e6",
+      "volume": -6,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     }
   ],
-  "timeline": [
-    {
-      "beat": 24,
-      "instrument": "SYNTH1",
-      "instrumentId": 0,
-      "message": "Melody Starts",
-      "countOut": 0
-    },
-    {
-      "beat": 72,
-      "instrument": "SYNTH2",
-      "instrumentId": 2,
-      "message": "Pizzicato",
-      "countOut": 0
-    },
-    {
-      "beat": 96,
-      "instrument": "SYNTH2",
-      "instrumentId": 2,
-      "message": "Stuccato",
-      "countOut": 0
-    },
-    {
-      "beat": 113,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
-      "message": "CRASH COMING IN",
-      "countOut": 6
-    },
-    {
-      "beat": 120,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
-      "message": "CRASH!",
-      "countOut": 0
-    },
-    {
-      "beat": 144,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
-      "message": "CRASH!",
-      "countOut": 0
-    },
-    {
-      "beat": 156,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
-      "message": "SLOW CRASH!",
-      "countOut": 0
-    },
-    {
-      "beat": 159,
-      "instrument": "DRUMS",
-      "instrumentId": 1,
-      "message": "DRUM ROLL IN",
-      "countOut": 6
-    }
-  ],
+  "timeline": [],
   "markers": [
     {
-      "beat": 24,
-      "label": "Melody Mark"
+      "label": "LOOP START",
+      "beat": 64
     },
     {
-      "beat": 72,
-      "label": "Pizzicato"
-    },
-    {
-      "beat": 40,
-      "label": "Marker 3"
+      "label": "LOOP END",
+      "beat": 76
     }
   ]
 }

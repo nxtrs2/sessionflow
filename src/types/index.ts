@@ -115,6 +115,12 @@ export interface Project {
   modified_at: Date;
 }
 
+export interface DemoProject {
+  title: string;
+  url: string;
+  filename: string;
+}
+
 export interface UploadResponse {
   success: boolean;
   filename?: string | null;
