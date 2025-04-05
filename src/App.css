@@ -260,13 +260,14 @@ body {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
+  height: 4px;
   background-color: rgb(255, 230, 0);
   pointer-events: none;
 }
 
 .center-indicator.pulse {
-  height: 4px;
+  height: 10px;
+  background-color: white;
 }
 
 /* Main content area */
@@ -582,7 +583,7 @@ select {
   text-align: center;
   font-family: "Roboto", serif;
   width: 100%;
-  top: 100px;
+  top: 75px;
   font-size: 1.5rem;
   color: black;
   text-shadow: 2px 0px 1px rgb(46, 42, 75);
@@ -593,9 +594,27 @@ select {
   text-align: center;
   font-family: "Roboto", serif;
   width: 100%;
-  top: 170px;
+  padding: 0 80px;
+  top: 180px;
   font-size: 1rem;
   color: rgb(153, 153, 153);
+}
+
+.notes-button {
+  color: darkslategray;
+}
+
+.notes-button button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  padding: 0;
+}
+.notes-button:hover {
+  background: none;
+  border: none;
+  border: none;
+  color: cyan;
 }
 
 /* .timeline-footer {
@@ -641,10 +660,10 @@ select {
 .time-display {
   z-index: 100;
   margin-right: 0px;
-  align-items: right;
+
   display: flex;
   flex-direction: row;
-  justify-content: left;
+  justify-content: center;
   color: rgb(0, 255, 34);
   font-size: 2rem;
   pointer-events: none;

@@ -26,7 +26,7 @@ import {
   projectsURL,
   DemoProject,
 } from "./types";
-import { Repeat2 } from "lucide-react";
+import { Info, Notebook, Repeat2 } from "lucide-react";
 
 import {
   loadMasterTrackFromJson,
@@ -117,7 +117,7 @@ const App: React.FC = () => {
   // Timeline configuration (vertical)
   const pixelsPerBeat = 50; // vertical scale: pixels per beat
   const containerHeight = 700; // container height in px
-  const containerCenter = containerHeight / 2; // vertical center
+  const containerCenter = containerHeight / 4.5; // vertical center
 
   const [songData, setSongData] = useState<SongData | null>(null);
   const [notes, setNotes] = useState<string>("");
@@ -663,15 +663,23 @@ const App: React.FC = () => {
                     setShowCountIn={setShowCountIn}
                   />
 
-                  {/* <div className="time-display">
+                  <div className="time-display">
                     {timeSignature.numerator + "/" + timeSignature.denominator}
-                  </div> */}
+                  </div>
                   <div className="time-display" style={{ width: "100px" }}>
                     <div>
                       {`${Math.floor(currentBar)}`} :{" "}
                       {`${Math.floor(beatCount)}`}
                     </div>
                   </div>
+                  {/* <button
+                    className="notes-button"
+                    onClick={() => {
+                      handleRestart(setCurrentTime, setIsPlaying);
+                    }}
+                  >
+                    <Info />
+                  </button> */}
                 </>
               )}
             </div>
