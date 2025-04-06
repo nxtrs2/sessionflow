@@ -23,7 +23,7 @@ const Profile: React.FC<ProfileProps> = ({ closeDialog, handleResetApp }) => {
       <div className="dialog">
         <h1>Logout?</h1>
         {/* <ChangePassword username={username} /> */}
-        <div>
+        <div className="dialog-actions">
           <button
             style={{
               fontSize: "1em",

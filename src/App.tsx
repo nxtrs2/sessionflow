@@ -26,7 +26,7 @@ import {
   projectsURL,
   DemoProject,
 } from "./types";
-import { Repeat2 } from "lucide-react";
+import { Info, Repeat2 } from "lucide-react";
 
 import {
   loadMasterTrackFromJson,
@@ -47,6 +47,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
 import NewProject from "./components/NewProject";
+import Notes from "./components/Notes";
 
 const App: React.FC = () => {
   const { session, isLoggedIn } = useSession();
@@ -54,6 +55,8 @@ const App: React.FC = () => {
   const {
     instruments,
     selectedInstrument,
+    showNotes,
+    setShowNotes,
     setProjectNeedSave,
     updateProjectSongData,
     setSelectedInstrument,
@@ -638,6 +641,9 @@ const App: React.FC = () => {
           <NewProject openDialog={() => setShowNewProjectDialog(false)} />
         </Suspense>
       )}
+      {showNotes && !loading && (
+        <Notes closeDialog={() => setShowNotes(false)} notes={notes} />
+      )}
       <div className="app-content">
         <div className="timeline-sidebar">
           <div
@@ -672,14 +678,6 @@ const App: React.FC = () => {
                       {`${Math.floor(beatCount)}`}
                     </div>
                   </div>
-                  {/* <button
-                    className="notes-button"
-                    onClick={() => {
-                      handleRestart(setCurrentTime, setIsPlaying);
-                    }}
-                  >
-                    <Info />
-                  </button> */}
                 </>
               )}
             </div>
@@ -690,11 +688,11 @@ const App: React.FC = () => {
                 </h2>
               )}
             </div>
-            <div className="timeline-notes">
+            {/* <div className="timeline-notes">
               {currentBeat < 1 && fileLoaded && (
                 <p>{isDemoLoaded ? notes : currentProject?.notes}</p>
               )}
-            </div>
+            </div> */}
             {showCountIn && (
               <CountIn
                 countIn={countIn}

@@ -24,6 +24,7 @@ export const CurrentProjectProvider: React.FC<CurrentProjectProviderProps> = ({
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [selectedInstrument, setSelectedInstrument] =
     useState<Instrument | null>(null);
+  const [showNotes, setShowNotes] = useState(false);
 
   const updateProjectSongData = async (songData: SongData) => {
     if (!session) return;
@@ -87,6 +88,8 @@ export const CurrentProjectProvider: React.FC<CurrentProjectProviderProps> = ({
     instruments,
     selectedInstrument,
     projectNeedSave,
+    showNotes,
+    setShowNotes,
     setLoadingProject,
     setProjectNeedSave,
     updateProjectSongData,

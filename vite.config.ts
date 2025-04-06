@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   return {
     define: {
       "process.env": env,
+      "window.TONE_SILENCE_LOGGING": true,
     },
     plugins: [react()],
   };

@@ -9,6 +9,8 @@ export interface CurrentProjectContextType {
   instruments: Instrument[];
   selectedInstrument: Instrument | null;
   projectNeedSave: boolean;
+  showNotes: boolean;
+  setShowNotes: React.Dispatch<React.SetStateAction<boolean>>;
   setLoadingProject: (loading: boolean) => void;
   setProjectNeedSave: (value: boolean) => void;
 

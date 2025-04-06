@@ -37,7 +37,8 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
     deleteProject,
     setIsDemoLoaded,
   } = useProjects();
-  const { projectNeedSave, setProjectNeedSave } = useCurrentProject();
+  const { projectNeedSave, setShowNotes, setProjectNeedSave } =
+    useCurrentProject();
   const [showEditProject, setShowEditProject] = React.useState(false);
 
   const handleLoadProject = async (project: Project) => {
@@ -66,6 +67,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       setProjectNeedSave(false);
     }
     setIsDemoLoaded(true);
+    setShowNotes(true);
     setSelectedProject(null);
     handleLoadSongJSONFile(url);
   };
