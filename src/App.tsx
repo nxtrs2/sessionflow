@@ -26,7 +26,7 @@ import {
   projectsURL,
   DemoProject,
 } from "./types";
-import { Info, Repeat2 } from "lucide-react";
+import { Repeat2 } from "lucide-react";
 
 import {
   loadMasterTrackFromJson,
