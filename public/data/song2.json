@@ -51,6 +51,18 @@
       "pan": 0,
       "mute": false,
       "solo": false
+    },
+    {
+      "id": 3,
+      "name": "OTHER",
+      "filename": "",
+      "url": "",
+      "color": "#000000",
+      "bgcolor": "#ffffff",
+      "volume": -15,
+      "pan": 0,
+      "mute": false,
+      "solo": false
     }
   ],
   "timeline": [
@@ -63,7 +75,7 @@
     },
     {
       "beat": 46,
-      "message": "BASS RUN",
+      "message": "BASS RUN (F#, G#, A#, G#)",
       "countOut": 0,
       "instrument": "BASS",
       "instrumentId": 2
@@ -123,45 +135,24 @@
     },
     {
       "beat": 1,
-      "message": "This is a Prompt for SYNTH1",
+      "message": "Arp in A#m",
       "countOut": 0,
       "instrument": "SYNTH1",
       "instrumentId": 0
     },
     {
-      "beat": 3,
-      "message": "DRUMS PROMPT",
-      "countOut": 0,
-      "instrument": "DRUMS",
-      "instrumentId": 1
-    },
-    {
-      "beat": 3,
-      "message": "BASS",
+      "beat": 49,
+      "message": "Play: A#, F notes",
       "countOut": 0,
       "instrument": "BASS",
       "instrumentId": 2
     },
     {
-      "beat": 5,
-      "message": "Prompts could be any info",
+      "beat": 16,
+      "message": "Synth Lead 1 Start",
       "countOut": 0,
-      "instrument": "BASS",
-      "instrumentId": 2
-    },
-    {
-      "beat": 6,
-      "message": "They turn grey as they pass",
-      "countOut": 0,
-      "instrument": "BASS",
-      "instrumentId": 2
-    },
-    {
-      "beat": 7,
-      "message": "current beat indicator",
-      "countOut": 0,
-      "instrument": "BASS",
-      "instrumentId": 2
+      "instrument": "OTHER",
+      "instrumentId": 3
     },
     {
       "beat": 112,
@@ -240,6 +231,42 @@
       "beat": 144,
       "instrumentId": 1,
       "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 144,
+      "instrumentId": 3,
+      "message": "Synth Solo 2",
+      "countOut": 0
+    },
+    {
+      "beat": 144,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 176,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 208,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 192,
+      "instrumentId": 0,
+      "message": "C#m",
+      "countOut": 0
+    },
+    {
+      "beat": 160,
+      "instrumentId": 0,
+      "message": "C#m",
       "countOut": 0
     },
     {
@@ -333,9 +360,57 @@
       "countOut": 0
     },
     {
+      "beat": 368,
+      "instrumentId": 1,
+      "message": "CRASH + NORMAL PATTERN",
+      "countOut": 0
+    },
+    {
+      "beat": 364,
+      "instrumentId": 1,
+      "message": "DRUM ROLL",
+      "countOut": 0
+    },
+    {
       "beat": 221,
       "instrumentId": 1,
       "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 377,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 379,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 381,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 382,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 383,
+      "instrumentId": 1,
+      "message": "CRASH",
+      "countOut": 0
+    },
+    {
+      "beat": 384,
+      "instrumentId": 1,
+      "message": "CRASH & END",
       "countOut": 0
     },
     {
@@ -351,6 +426,108 @@
       "countOut": 0
     },
     {
+      "beat": 224,
+      "instrumentId": 3,
+      "message": "Bell Riff",
+      "countOut": 0
+    },
+    {
+      "beat": 232,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 264,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 280,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 224,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 256,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 240,
+      "instrumentId": 0,
+      "message": "D#m",
+      "countOut": 0
+    },
+    {
+      "beat": 272,
+      "instrumentId": 0,
+      "message": "D#m",
+      "countOut": 0
+    },
+    {
+      "beat": 304,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 336,
+      "instrumentId": 0,
+      "message": "A#m",
+      "countOut": 0
+    },
+    {
+      "beat": 312,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 320,
+      "instrumentId": 0,
+      "message": "D#m",
+      "countOut": 0
+    },
+    {
+      "beat": 344,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 328,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 360,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
+      "beat": 352,
+      "instrumentId": 0,
+      "message": "D#m",
+      "countOut": 0
+    },
+    {
+      "beat": 248,
+      "instrumentId": 0,
+      "message": "E#m",
+      "countOut": 0
+    },
+    {
       "beat": 256,
       "instrumentId": 2,
       "message": "BASS START",
@@ -359,7 +536,7 @@
     {
       "beat": 284,
       "instrumentId": 2,
-      "message": "BASS RUN",
+      "message": "BASS RUN (D#,C#, G#, A#, F#, G#, F#, G#)",
       "countOut": 0
     },
     {
