@@ -1,5 +1,7 @@
 # Session Flow
 
+[Live Demo](https://sessionflow.nxt.rs)
+
 Session Flow is a music player designed specifically for session musicians to learn parts, flow, and more. It provides an intuitive interface and powerful features to help musicians practice and perfect their performances.
 
 ## Features
@@ -47,7 +49,3 @@ We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For any questions or feedback, please contact us at [support@Session Flow.com](mailto:support@Session Flow.com).
